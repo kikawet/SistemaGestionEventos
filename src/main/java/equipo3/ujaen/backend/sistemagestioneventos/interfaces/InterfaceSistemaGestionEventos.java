@@ -3,12 +3,14 @@ package equipo3.ujaen.backend.sistemagestioneventos.interfaces;
 import java.util.List;
 
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
+import equipo3.ujaen.backend.sistemagestioneventos.utils.Pair;
 
 public interface InterfaceSistemaGestionEventos {
 
 	public void registroUsuarios(String login, String password);
 	public String loginUsuario(String login, String password);
 	public List<Evento> listarEventos();
+	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login);
 	public void crearEvento(Evento evento);
 	public void crearEventoPorusuario(String login, Evento evento);
 	public void cancelarEvento(String idEvento);

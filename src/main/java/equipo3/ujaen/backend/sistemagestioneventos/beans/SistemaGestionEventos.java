@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,8 +10,12 @@ import org.springframework.stereotype.Component;
 
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
+import equipo3.ujaen.backend.sistemagestioneventos.utils.Pair;
 
 
 @Component
@@ -49,10 +54,40 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos{
 		return eventos.values().stream().collect(Collectors.toList());
 	}
 
+
+	@Override
+	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login) {
+		// TODO Auto-generated method stub
+		
+		if(!usuarios.containsKey(login))
+			throw new UsuarioNoRegistrado();
+		List<Pair<Boolean, Evento>> eventosUsuarios = new ArrayList<>();
+		
+		for(Evento e : eventos.values()) {
+			for(Usuario u : e.getAsistentes()) {
+				if(u.getLogin().equals(login)) {
+					eventosUsuarios.add(new Pair(true, e));		
+				}
+			}
+			
+			for(Usuario u : e.getListaEspera()) {
+				if(u.getLogin().equals(login)) {
+					eventosUsuarios.add(new Pair(false, e));
+				}
+			}
+		}
+		
+		
+		return eventosUsuarios;
+	}
+	
 	@Override
 	public void crearEvento(Evento evento) {
 		// TODO Auto-generated method stub
+		if(eventos.containsValue(evento))
+			throw new EventoYaRegistrado();
 		
+		eventos.put(evento.getIdEvento(), evento);
 	}
 
 	@Override
@@ -77,6 +112,13 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos{
 	public void inscribirUsuario(String login, String idEvento) {
 		// TODO Auto-generated method stub
 		
+		if(!usuarios.containsKey(login))
+			throw new UsuarioNoRegistrado();
+		
+		if(!eventos.containsKey(idEvento))
+			throw new EventoNoRegistrado();
+		
+		eventos.get(idEvento).anadirAsistente(usuarios.get(login));
 	}
 
 	@Override
@@ -84,6 +126,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos{
 		// TODO Auto-generated method stub
 		
 	}
+
+	
 	
 	
 	
