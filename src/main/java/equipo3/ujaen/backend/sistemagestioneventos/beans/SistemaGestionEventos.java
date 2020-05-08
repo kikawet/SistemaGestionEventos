@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component;
 
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
