@@ -14,9 +14,7 @@ public class Usuario {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Evento nuevoEvento() {
-		return null;
-	}
+	
 
 	public Usuario(String login, String password) {
 		super();
@@ -26,6 +24,11 @@ public class Usuario {
 		this.eventosCreados = new ArrayList<>();
 	}
 
+	
+	public Evento nuevoEvento() {
+		return null;
+	}
+	
 
 	public String getPassword() {
 		return password;
