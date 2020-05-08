@@ -6,22 +6,20 @@ import java.util.List;
 
 public class Evento {
 
-	
 	public enum TipoEvento {
-		BENEFICO,
-		NO_BENEFICO
+		BENEFICO, NO_BENEFICO
 	}
-	
-	private String lugar;
-	private Date fecha;
-	private TipoEvento tipoEvento;
-	private String descripcion;
+
 	private int aforoMaximo;
-	private String idEvento;
-	
 	private List<Usuario> asistentes;
+	private String descripcion;
+	private Date fecha;
+	private String idEvento;
 	private List<Usuario> listaEspera;
-	
+
+	private String lugar;
+	private TipoEvento tipoEvento;
+
 	public Evento() {
 		// TODO Auto-generated constructor stub
 	}
@@ -35,25 +33,40 @@ public class Evento {
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = idEvento;
-		
+
 		this.asistentes = new ArrayList<>();
 		this.listaEspera = new ArrayList<>();
 	}
 
-	public Date getFecha() {
-		return fecha;
+	public void anadirAsistente(Usuario u) {
+		if (this.asistentes.size() < this.aforoMaximo)
+			this.asistentes.add(u);
+		else
+			this.listaEspera.add(u);
 	}
 
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
+	public int getAforoMaximo() {
+		return aforoMaximo;
+	}
+
+	public List<Usuario> getAsistentes() {
+		return asistentes;
 	}
 
 	public String getDescripcion() {
 		return descripcion;
 	}
 
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public String getIdEvento() {
+		return idEvento;
+	}
+
+	public List<Usuario> getListaEspera() {
+		return listaEspera;
 	}
 
 	public String getLugar() {
@@ -64,24 +77,12 @@ public class Evento {
 		return tipoEvento;
 	}
 
-	public int getAforoMaximo() {
-		return aforoMaximo;
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
 	}
 
-	public String getIdEvento() {
-		return idEvento;
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
 	}
 
-	public List<Usuario> getAsistentes() {
-		return asistentes;
-	}
-
-	public List<Usuario> getListaEspera() {
-		return listaEspera;
-	}
-	
-	
-	
-	
-	
 }
