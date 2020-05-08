@@ -14,7 +14,9 @@ public class Usuario {
 		// TODO Auto-generated constructor stub
 	}
 	
-	
+	public Evento nuevoEvento() {
+		return null;
+	}
 
 	public Usuario(String login, String password) {
 		super();
