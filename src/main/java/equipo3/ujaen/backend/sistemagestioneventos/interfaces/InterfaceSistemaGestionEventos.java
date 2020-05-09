@@ -10,6 +10,9 @@ public interface InterfaceSistemaGestionEventos {
 	public void registroUsuarios(String login, String password);
 	public String loginUsuario(String login, String password);
 	public List<Evento> listarEventos();
+	//El booleano indica si está en lista de espera o no:
+	//True: no está en lista de espera
+	//False: está en lista de espera
 	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login);
 	public void crearEvento(Evento evento);
 	public void crearEventoPorusuario(String login, Evento evento);
