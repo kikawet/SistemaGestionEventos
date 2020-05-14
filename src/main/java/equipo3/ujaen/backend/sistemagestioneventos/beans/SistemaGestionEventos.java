@@ -122,7 +122,13 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void cancelarEvento(String idEvento) {
 		// TODO Auto-generated method stub
-
+		Evento evt=eventos.get(idEvento);
+		
+		if(evt.equals(null)) {
+			throw new EventoNoExiste();
+		}
+		
+		eventos.remove(evt.getIdEvento());
 	}
 
 	@Override
@@ -164,6 +170,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void cancelarInscripcionUsuario(String login, String idEvento) {
 		// TODO Auto-generated method stub
-
+		if(!usuarios.containsKey(login)) {
+			throw new UsuarioNoRegistrado();
+		}
+		if(!eventos.containsKey(idEvento)) {
+			throw new EventoNoRegistrado();
+		}
+		eventos.get(idEvento).eliminarAsistente(usuarios.get(login));
 	}
 }
