@@ -14,6 +14,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
@@ -46,7 +47,18 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public String loginUsuario(String login, String password) {
 		// TODO Auto-generated method stub
-		return null;
+		Usuario usuario=usuarios.get(login);
+		
+		if(usuario.equals(null)) {
+			throw new UsuarioNoRegistrado();
+		}
+		
+		
+		if(!usuario.getPassword().equals(password)) {
+			throw new AccesoDenegado();
+		}
+		
+		return "LOGIN COMPLETADO";
 	}
 
 	@Override
