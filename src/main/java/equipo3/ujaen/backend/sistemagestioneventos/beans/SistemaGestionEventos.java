@@ -13,7 +13,6 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
-import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
@@ -90,17 +89,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 
 	@Override
-	public void crearEvento(Evento evento) {
-		// TODO Auto-generated method stub
-
-		if (eventos.containsValue(evento))
-			throw new EventoYaRegistrado();
-
-		eventos.put(evento.getIdEvento(), evento);
-
-	}
-
-	@Override
 	public void crearEventoPorusuario(String login, Evento evento) {
 		// TODO Auto-generated method stub
 
@@ -113,18 +101,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuario.crearEvento(evento);
 
 		eventos.put(evento.getIdEvento(), evento);
-	}
-
-	@Override
-	public void cancelarEvento(String idEvento) {
-		// TODO Auto-generated method stub
-		Evento evt = eventos.get(idEvento);
-
-		if (evt.equals(null)) {
-			throw new EventoNoExiste();
-		}
-
-		eventos.remove(evt.getIdEvento());
 	}
 
 	@Override
@@ -141,7 +117,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		int pos = usuario.getEventosCreados().indexOf(evento);
 
-		if (pos == -1)
+		if (!usuario.getRol().equals(Usuario.RolUsuario.ADMIN) && pos == -1)
 			throw new AccesoDenegado();
 
 		usuario.getEventosCreados().remove(pos);
