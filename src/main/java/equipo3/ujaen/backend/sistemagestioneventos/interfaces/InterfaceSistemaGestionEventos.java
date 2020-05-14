@@ -18,11 +18,7 @@ public interface InterfaceSistemaGestionEventos {
 	// False: está en lista de espera
 	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login);
 
-	public void crearEvento(Evento evento);
-
 	public void crearEventoPorusuario(String login, Evento evento);
-
-	public void cancelarEvento(String idEvento);
 
 	public void cancelarEventoPorUsuario(String login, String idEvento);
 
