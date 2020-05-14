@@ -107,7 +107,16 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void crearEventoPorusuario(String login, Evento evento) {
 		// TODO Auto-generated method stub
-
+		
+		Usuario usuario = usuarios.get(login);
+		
+		if(usuario == null) {
+			throw new UsuarioNoRegistrado();
+		}
+		
+		usuario.crearEvento(evento);
+		
+		eventos.put(evento.getIdEvento(), evento);
 	}
 
 	@Override

@@ -46,6 +46,8 @@ public class Usuario {
 		return eventosCreados;
 	}
 	
-	
+	public void crearEvento(Evento e) {
+		eventosCreados.add(e);
+	}
 	
 }
