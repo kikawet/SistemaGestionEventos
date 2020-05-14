@@ -8,17 +8,26 @@ import equipo3.ujaen.backend.sistemagestioneventos.utils.Pair;
 public interface InterfaceSistemaGestionEventos {
 
 	public void registroUsuarios(String login, String password);
+
 	public String loginUsuario(String login, String password);
+
 	public List<Evento> listarEventos();
-	//El booleano indica si está en lista de espera o no:
-	//True: no está en lista de espera
-	//False: está en lista de espera
+
+	// El booleano indica si está en lista de espera o no:
+	// True: no está en lista de espera
+	// False: está en lista de espera
 	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login);
+
 	public void crearEvento(Evento evento);
+
 	public void crearEventoPorusuario(String login, Evento evento);
+
 	public void cancelarEvento(String idEvento);
-	public void cancelarEventoPorUsuario(String idEvento, String login);
+
+	public void cancelarEventoPorUsuario(String login, String idEvento);
+
 	public void inscribirUsuario(String login, String idEvento);
+
 	public void cancelarInscripcionUsuario(String login, String idEvento);
-	
+
 }

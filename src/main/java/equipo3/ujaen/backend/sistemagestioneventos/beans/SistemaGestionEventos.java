@@ -46,17 +46,16 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public String loginUsuario(String login, String password) {
 		// TODO Auto-generated method stub
-		Usuario usuario=usuarios.get(login);
-		
-		if(usuario.equals(null)) {
+		Usuario usuario = usuarios.get(login);
+
+		if (usuario.equals(null)) {
 			throw new UsuarioNoRegistrado();
 		}
-		
-		
-		if(!usuario.getPassword().equals(password)) {
+
+		if (!usuario.getPassword().equals(password)) {
 			throw new AccesoDenegado();
 		}
-		
+
 		return "LOGIN COMPLETADO";
 	}
 
@@ -65,40 +64,38 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return eventos.values().stream().collect(Collectors.toList());
 	}
 
-
 	@Override
 	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login) {
 		// TODO Auto-generated method stub
-		
-		if(!usuarios.containsKey(login))
+
+		if (!usuarios.containsKey(login))
 			throw new UsuarioNoRegistrado();
 		List<Pair<Boolean, Evento>> eventosUsuarios = new ArrayList<>();
-		
-		for(Evento e : eventos.values()) {
-			for(Usuario u : e.getAsistentes()) {
-				if(u.getLogin().equals(login)) {
-					eventosUsuarios.add(new Pair(true, e));		
+
+		for (Evento e : eventos.values()) {
+			for (Usuario u : e.getAsistentes()) {
+				if (u.getLogin().equals(login)) {
+					eventosUsuarios.add(new Pair(true, e));
 				}
 			}
-			
-			for(Usuario u : e.getListaEspera()) {
-				if(u.getLogin().equals(login)) {
+
+			for (Usuario u : e.getListaEspera()) {
+				if (u.getLogin().equals(login)) {
 					eventosUsuarios.add(new Pair(false, e));
 				}
 			}
 		}
-		
-		
+
 		return eventosUsuarios;
 	}
-	
+
 	@Override
 	public void crearEvento(Evento evento) {
 		// TODO Auto-generated method stub
 
-		if(eventos.containsValue(evento))
+		if (eventos.containsValue(evento))
 			throw new EventoYaRegistrado();
-		
+
 		eventos.put(evento.getIdEvento(), evento);
 
 	}
@@ -106,32 +103,32 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void crearEventoPorusuario(String login, Evento evento) {
 		// TODO Auto-generated method stub
-		
+
 		Usuario usuario = usuarios.get(login);
-		
-		if(usuario == null) {
+
+		if (usuario == null) {
 			throw new UsuarioNoRegistrado();
 		}
-		
+
 		usuario.crearEvento(evento);
-		
+
 		eventos.put(evento.getIdEvento(), evento);
 	}
 
 	@Override
 	public void cancelarEvento(String idEvento) {
 		// TODO Auto-generated method stub
-		Evento evt=eventos.get(idEvento);
-		
-		if(evt.equals(null)) {
+		Evento evt = eventos.get(idEvento);
+
+		if (evt.equals(null)) {
 			throw new EventoNoExiste();
 		}
-		
+
 		eventos.remove(evt.getIdEvento());
 	}
 
 	@Override
-	public void cancelarEventoPorUsuario(String idEvento, String login) {
+	public void cancelarEventoPorUsuario(String login, String idEvento) {
 
 		Evento evento = this.eventos.get(idEvento);
 		Usuario usuario = this.usuarios.get(login);
@@ -155,13 +152,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	public void inscribirUsuario(String login, String idEvento) {
 		// TODO Auto-generated method stub
 
-		
-		if(!usuarios.containsKey(login))
+		if (!usuarios.containsKey(login))
 			throw new UsuarioNoRegistrado();
-		
-		if(!eventos.containsKey(idEvento))
+
+		if (!eventos.containsKey(idEvento))
 			throw new EventoNoRegistrado();
-		
+
 		eventos.get(idEvento).anadirAsistente(usuarios.get(login));
 
 	}
@@ -169,10 +165,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void cancelarInscripcionUsuario(String login, String idEvento) {
 		// TODO Auto-generated method stub
-		if(!usuarios.containsKey(login)) {
+		if (!usuarios.containsKey(login)) {
 			throw new UsuarioNoRegistrado();
 		}
-		if(!eventos.containsKey(idEvento)) {
+		if (!eventos.containsKey(idEvento)) {
 			throw new EventoNoRegistrado();
 		}
 		eventos.get(idEvento).eliminarAsistente(usuarios.get(login));
