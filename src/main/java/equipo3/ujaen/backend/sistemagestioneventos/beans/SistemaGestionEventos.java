@@ -161,6 +161,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void cancelarInscripcionUsuario(String login, String idEvento) {
 		// TODO Auto-generated method stub
-
+		if(!usuarios.containsKey(login)) {
+			throw new UsuarioNoRegistrado();
+		}
+		if(!eventos.containsKey(idEvento)) {
+			throw new EventoNoRegistrado();
+		}
+		eventos.get(idEvento).eliminarAsistente(usuarios.get(login));
 	}
 }
