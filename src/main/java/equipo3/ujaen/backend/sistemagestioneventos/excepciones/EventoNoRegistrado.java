@@ -1,8 +1,8 @@
 package equipo3.ujaen.backend.sistemagestioneventos.excepciones;
 
-public class UsuarioNoRegistrado extends RuntimeException {
+public class EventoNoRegistrado extends RuntimeException {
 	
-	public UsuarioNoRegistrado() {
+	public EventoNoRegistrado() {
 		// TODO Auto-generated constructor stub
 	}
 
