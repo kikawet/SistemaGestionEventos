@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
@@ -84,6 +85,8 @@ public class SistemaGestionEventosIntegrationTest {
 		List<Evento> eventos = gestorEventos.listarEventos();
 		
 		assertEquals(1, eventos.size());
+		
+		
 	}
 
 	@Test
@@ -100,14 +103,34 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 
-		assertEquals(1, evento.getAsistentes().size());
-
+		// Usuario resgistrado e inscrito
 		gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento());
-		
-		assertEquals(0, evento.getAsistentes().size());
-		
+
 		// Usuario resgistrado y no inscrito
 		Assertions.assertThrows(UsuarioNoEstaEvento.class,
 				() -> gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento()));
+
+	}
+	
+	@Test
+	void inscribirseUsuarioTest() {
+		Evento evento = new Evento("Lugar Evento", new Date(), Evento.TipoEvento.NO_BENEFICO,
+				Evento.Categoria.REUNIONES, "Descripción evento", 20);
+
+		Usuario usuario = crearUsuarioRegistradoLogeado();
+
+		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+
+		gestorEventos.crearEventoPorUsuario(usuario1, evento);
+
+		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
+		
+		
+		
+		assertEquals(1, evento.getAsistentes().size()); 
+		
+		assertEquals(usuario, evento.getAsistentes().get(0));
+	
+		Assertions.assertThrows(EventoNoRegistrado.class, ()->gestorEventos.inscribirUsuario(usuario, (long) 8));
 	}
 }
