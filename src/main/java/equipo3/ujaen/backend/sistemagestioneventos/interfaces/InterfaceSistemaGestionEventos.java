@@ -16,7 +16,7 @@ public interface InterfaceSistemaGestionEventos {
 
 	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario);
 
-	public void crearEventoPorusuario(Usuario usuario, Evento evento);
+	public void crearEventoPorUsuario(Usuario usuario, Evento evento);
 
 	public void cancelarEventoPorUsuario(Usuario usuario, String idEvento);
 

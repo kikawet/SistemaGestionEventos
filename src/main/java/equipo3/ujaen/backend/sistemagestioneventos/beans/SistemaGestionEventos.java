@@ -24,7 +24,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	private Map<String, Usuario> usuarios;
-	private Map<String, Evento> eventos;
+	private Map<Long, Evento> eventos;
 
 	public SistemaGestionEventos() {
 		// TODO Auto-generated constructor stub
@@ -56,7 +56,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		// TODO Auto-generated method stub
 		Usuario usuario = usuarios.get(login);
 
-		if (usuario.equals(null)) {
+		if (usuario == null) {
 			throw new UsuarioNoRegistrado();
 		}
 
@@ -112,7 +112,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param Evento que recibe del cliente
 	 */
 	@Override
-	public void crearEventoPorusuario(Usuario usuario, Evento evento) {
+	public void crearEventoPorUsuario(Usuario usuario, Evento evento) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
