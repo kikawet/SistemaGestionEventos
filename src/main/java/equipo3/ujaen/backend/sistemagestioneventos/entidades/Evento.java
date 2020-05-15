@@ -53,12 +53,12 @@ public class Evento {
 		else
 			this.listaEspera.add(u);
 	}
-	
+
 	public void eliminarAsistente(Usuario u) {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			this.asistentes.remove(u);
 			this.anadirAsistente(this.listaEspera.remove(0));
-		}else {
+		} else {
 			this.listaEspera.remove(u);
 		}
 	}
@@ -107,11 +107,9 @@ public class Evento {
 		this.fecha = fecha;
 	}
 
-	
 	public EventoDTO toDTO(EstadoEvento estadoEvento) {
 		EventoDTO eventoDTO = new EventoDTO(this, estadoEvento);
 		return eventoDTO;
 	}
-	
-	
+
 }
