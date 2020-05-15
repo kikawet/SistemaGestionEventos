@@ -3,7 +3,9 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
 import org.junit.jupiter.api.Assertions;
@@ -13,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
@@ -95,7 +98,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		Usuario usuario1 = crearUsuarioRegistradoLogeado();
 
-		gestorEventos.crearEventoPorusuario(usuario1, evento);
+		gestorEventos.crearEventoPorUsuario(usuario1, evento);
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 
