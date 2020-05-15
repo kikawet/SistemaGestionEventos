@@ -110,4 +110,50 @@ public class SistemaGestionEventosIntegrationTest {
 				() -> gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento()));
 
 	}
+	
+	@Test
+	void inscribirseUsuarioTest() {
+		Evento evento = new Evento("Lugar Evento", new Date(), Evento.TipoEvento.NO_BENEFICO,
+				Evento.Categoria.REUNIONES, "Descripción evento", 20);
+
+		Usuario usuario = crearUsuarioRegistradoLogeado();
+
+		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+
+		gestorEventos.crearEventoPorUsuario(usuario1, evento);
+
+		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
+		
+		
+		
+		assertEquals(1, evento.getAsistentes().size()); 
+		
+		assertEquals(usuario, evento.getAsistentes().get(0));
+	
+		Assertions.assertThrows(EventoNoRegistrado.class, ()->gestorEventos.inscribirUsuario(usuario, (long) evento.getIdEvento()));
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//String loginUsuario = "21025923J";
+		//String passwordUsuario = "123456789a.";
+				
+		//Usuario u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+		
+		//Evento e = new Evento("MALAGA",new Date(),Evento.TipoEvento.NO_BENEFICO,Evento.Categoria.FESTIVAL_MUSICA,"3 dias completos",50000);
+		//gestorEventos.crearEventoPorUsuario(u, e);
+		//gestorEventos.inscribirUsuario(u, e.getIdEvento());
+		
+		
+		
+		
+	}
 }
