@@ -48,13 +48,13 @@ public class Evento {
 		this.listaEspera = new ArrayList<>();
 	}
 
-	public boolean anadirAsistente(Usuario u) {
+	public EstadoEvento anadirAsistente(Usuario u) {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			this.asistentes.add(u);
-			return true;
+			return EstadoEvento.ACEPTADO;
 		}else {
 			this.listaEspera.add(u);
-			return false;
+			return EstadoEvento.LISTA_DE_ESPERA;
 		}
 	}
 

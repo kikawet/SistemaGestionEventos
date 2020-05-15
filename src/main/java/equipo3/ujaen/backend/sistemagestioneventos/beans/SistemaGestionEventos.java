@@ -146,15 +146,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		eventos.remove(idEvento);
 	}
 
-	public enum Inscripcion {
-		INSCRITO, LISTA_ESPERA
-	}
 	
 	/**
 	 * @brief
 	 */
 	@Override
-	public Inscripcion inscribirUsuario(Usuario usuario, String idEvento) {
+	public EstadoEvento inscribirUsuario(Usuario usuario, String idEvento) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
@@ -162,12 +159,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (!eventos.containsKey(idEvento))
 			throw new EventoNoRegistrado();
 
-		boolean comprobacion=eventos.get(idEvento).anadirAsistente(usuarioValido);
-		if(comprobacion) {
-			return Inscripcion.INSCRITO;
-		}else {
-			return Inscripcion.LISTA_ESPERA;
-		}
+		return eventos.get(idEvento).anadirAsistente(usuarioValido);
+		
 	}
 
 	@Override
