@@ -131,8 +131,5 @@ public class SistemaGestionEventosIntegrationTest {
 		assertEquals(usuario, evento.getAsistentes().get(0));
 	
 		Assertions.assertThrows(EventoNoRegistrado.class, ()->gestorEventos.inscribirUsuario(usuario, (long) evento.getIdEvento()));
-		
-		
-		
 	}
 }
