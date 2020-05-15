@@ -3,6 +3,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
@@ -10,19 +11,24 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
 public class Evento {
 
 	public enum TipoEvento {
-		BENEFICO, NO_BENEFICO
+		BENEFICO, 
+		NO_BENEFICO
 	}
 	
-	
-	public enum Categoria{
-		FESTIVAL_MUSICA,DEPORTE,CULTURAL,EXCURSIONES,CHARLAS,REUNIONES
+	public enum Categoria {
+		FESTIVAL_MUSICA,
+		DEPORTE,
+		CULTURAL,
+		EXCURSIONES,
+		CHARLAS,
+		REUNIONES
 	}
 
 	private int aforoMaximo;
 	private List<Usuario> asistentes;
 	private String descripcion;
 	private Date fecha;
-	private String idEvento;
+	private Long idEvento;
 	private List<Usuario> listaEspera;
 
 	private String lugar;
@@ -33,8 +39,7 @@ public class Evento {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Evento(String lugar, Date fecha, TipoEvento tipoEvento,Categoria categoriaEvento, String descripcion, int aforoMaximo,
-			String idEvento) {
+	public Evento(String lugar, Date fecha, TipoEvento tipoEvento,Categoria categoriaEvento, String descripcion, int aforoMaximo) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
@@ -42,7 +47,7 @@ public class Evento {
 		this.categoria=categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
-		this.idEvento = idEvento;
+		this.idEvento = new Random().nextLong();
 
 		this.asistentes = new ArrayList<>();
 		this.listaEspera = new ArrayList<>();
@@ -83,7 +88,7 @@ public class Evento {
 		return fecha;
 	}
 
-	public String getIdEvento() {
+	public Long getIdEvento() {
 		return idEvento;
 	}
 
