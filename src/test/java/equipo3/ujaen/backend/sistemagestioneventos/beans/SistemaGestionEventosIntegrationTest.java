@@ -46,6 +46,31 @@ public class SistemaGestionEventosIntegrationTest {
 		assertEquals(loginUsuario, u.getLogin());
 		assertEquals(passwordUsuario, u.getPassword());
 	}
+	
+	@Test
+	void crearEventoPorUsuario() {
+		String loginUsuario = "11111111X";
+		String passwordUsuario = "123456789a.";
+		
+		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
+		
+		Usuario u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+
+		assertNotNull(u);
+		assertEquals(loginUsuario, u.getLogin());
+		assertEquals(passwordUsuario, u.getPassword());
+		
+		Evento e = new Evento("Jaén", Date.from(Instant.now()), TipoEvento.BENEFICO,
+							  Categoria.CHARLAS, "Hola caracola", 30);
+		
+		gestorEventos.crearEventoPorUsuario(u, e);
+		
+		assertNotNull(e);
+		
+		List<Evento> eventos = gestorEventos.listarEventos();
+		
+		assertEquals(1, eventos.size());
+	}
 
 	@Test
 	void cancelarInscripcionUsuario() {
