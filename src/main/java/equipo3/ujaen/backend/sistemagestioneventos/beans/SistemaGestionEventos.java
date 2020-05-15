@@ -20,6 +20,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistra
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 
+
 @Component
 public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
@@ -145,12 +146,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		eventos.remove(idEvento);
 	}
 
+	public enum Inscripcion {
+		INSCRITO, LISTA_ESPERA
+	}
 	
 	/**
 	 * @brief
 	 */
 	@Override
-	public void inscribirUsuario(Usuario usuario, String idEvento) {
+	public Inscripcion inscribirUsuario(Usuario usuario, String idEvento) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
@@ -158,8 +162,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (!eventos.containsKey(idEvento))
 			throw new EventoNoRegistrado();
 
-		eventos.get(idEvento).anadirAsistente(usuarioValido);
-
+		boolean comprobacion=eventos.get(idEvento).anadirAsistente(usuarioValido);
+		if(comprobacion) {
+			return Inscripcion.INSCRITO;
+		}else {
+			return Inscripcion.LISTA_ESPERA;
+		}
 	}
 
 	@Override

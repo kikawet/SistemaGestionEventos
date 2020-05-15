@@ -13,6 +13,7 @@ public class Evento {
 		BENEFICO, NO_BENEFICO
 	}
 	
+	
 	public enum Categoria{
 		FESTIVAL_MUSICA,DEPORTE,CULTURAL,EXCURSIONES,CHARLAS,REUNIONES
 	}
@@ -47,11 +48,14 @@ public class Evento {
 		this.listaEspera = new ArrayList<>();
 	}
 
-	public void anadirAsistente(Usuario u) {
-		if (this.asistentes.size() < this.aforoMaximo)
+	public boolean anadirAsistente(Usuario u) {
+		if (this.asistentes.size() < this.aforoMaximo) {
 			this.asistentes.add(u);
-		else
+			return true;
+		}else {
 			this.listaEspera.add(u);
+			return false;
+		}
 	}
 
 	public void eliminarAsistente(Usuario u) {
