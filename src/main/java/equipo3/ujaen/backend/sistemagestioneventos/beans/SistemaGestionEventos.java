@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Component;
 
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
@@ -16,7 +18,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrad
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
-import equipo3.ujaen.backend.sistemagestioneventos.utils.Pair;
+
 
 @Component
 public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
@@ -63,30 +65,34 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return eventos.values().stream().collect(Collectors.toList());
 	}
 
+	
+	
+	
 	@Override
-	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login) {
+	public List<EventoDTO> listarEventosDeUnUsuario(String login) {
 		// TODO Auto-generated method stub
-
-		if (!usuarios.containsKey(login))
+		if(!usuarios.containsKey(login)) {
 			throw new UsuarioNoRegistrado();
-		List<Pair<Boolean, Evento>> eventosUsuarios = new ArrayList<>();
-
-		for (Evento e : eventos.values()) {
-			for (Usuario u : e.getAsistentes()) {
-				if (u.getLogin().equals(login)) {
-					eventosUsuarios.add(new Pair(true, e));
+		}
+		
+		List<EventoDTO> eventosUsuario = new ArrayList<>();
+		for(Evento e : eventos.values()) {
+			for(Usuario u : e.getAsistentes()) {
+				if(u.getLogin().equals(login)) {
+					eventosUsuario.add(e.toDTO(EstadoEvento.ACEPTADO));
 				}
 			}
-
-			for (Usuario u : e.getListaEspera()) {
-				if (u.getLogin().equals(login)) {
-					eventosUsuarios.add(new Pair(false, e));
+			
+			for(Usuario u : e.getListaEspera()) {
+				if(u.getLogin().equals(login)) {
+					eventosUsuario.add(e.toDTO(EstadoEvento.LISTA_DE_ESPERA));
 				}
 			}
 		}
-
-		return eventosUsuarios;
+		
+		return eventosUsuario;
 	}
+	
 
 	@Override
 	public void crearEventoPorusuario(String login, Evento evento) {
@@ -149,4 +155,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		}
 		eventos.get(idEvento).eliminarAsistente(usuarios.get(login));
 	}
+
+	
 }

@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
+
 public class Evento {
 
 	public enum TipoEvento {
@@ -94,4 +97,11 @@ public class Evento {
 		this.fecha = fecha;
 	}
 
+	
+	public EventoDTO toDTO(EstadoEvento estadoEvento) {
+		EventoDTO eventoDTO = new EventoDTO(this, estadoEvento);
+		return eventoDTO;
+	}
+	
+	
 }

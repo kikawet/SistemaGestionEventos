@@ -12,5 +12,6 @@ public class ServidorSistemaGestionEventos {
 		SpringApplication app = new SpringApplication(ServidorSistemaGestionEventos.class);
 		ApplicationContext appContext = app.run(args);
 			
+		System.out.println("Saludos desde el servidor");
 	}
 }
