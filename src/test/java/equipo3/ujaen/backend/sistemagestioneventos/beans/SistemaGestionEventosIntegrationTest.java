@@ -110,4 +110,29 @@ public class SistemaGestionEventosIntegrationTest {
 				() -> gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento()));
 
 	}
+	
+	@Test
+	void inscribirseUsuarioTest() {
+		Evento evento = new Evento("Lugar Evento", new Date(), Evento.TipoEvento.NO_BENEFICO,
+				Evento.Categoria.REUNIONES, "Descripción evento", 20);
+
+		Usuario usuario = crearUsuarioRegistradoLogeado();
+
+		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+
+		gestorEventos.crearEventoPorUsuario(usuario1, evento);
+
+		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
+		
+		
+		
+		assertEquals(1, evento.getAsistentes().size()); 
+		
+		assertEquals(usuario, evento.getAsistentes().get(0));
+	
+		Assertions.assertThrows(EventoNoRegistrado.class, ()->gestorEventos.inscribirUsuario(usuario, (long) evento.getIdEvento()));
+		
+		
+		
+	}
 }
