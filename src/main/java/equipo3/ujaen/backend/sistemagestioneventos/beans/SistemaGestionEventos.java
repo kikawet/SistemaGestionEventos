@@ -132,7 +132,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Metodo para cancelar un evento de un usuario
 	 */
 	@Override
-	public void cancelarEventoPorUsuario(Usuario usuario, String idEvento) {
+	public void cancelarEventoPorUsuario(Usuario usuario, Long idEvento) {
 
 		Evento evento = this.eventos.get(idEvento);
 		Usuario usuarioValido = validarUsuario(usuario);
@@ -155,7 +155,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief
 	 */
 	@Override
-	public EstadoEvento inscribirUsuario(Usuario usuario, String idEvento) {
+	public EstadoEvento inscribirUsuario(Usuario usuario, Long idEvento) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
@@ -168,7 +168,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 
 	@Override
-	public void cancelarInscripcionUsuario(Usuario usuario, String idEvento) {
+	public void cancelarInscripcionUsuario(Usuario usuario, Long idEvento) {
 
 		// TODO Auto-generated method stub
 		Usuario usuarioValido = validarUsuario(usuario);

@@ -19,11 +19,11 @@ public interface InterfaceSistemaGestionEventos {
 
 	public void crearEventoPorUsuario(Usuario usuario, Evento evento);
 
-	public void cancelarEventoPorUsuario(Usuario usuario, String idEvento);
+	public void cancelarEventoPorUsuario(Usuario usuario, Long idEvento);
 
-	public EstadoEvento inscribirUsuario(Usuario usuario, String idEvento);
+	public EstadoEvento inscribirUsuario(Usuario usuario, Long idEvento);
 
-	public void cancelarInscripcionUsuario(Usuario usuario, String idEvento);
+	public void cancelarInscripcionUsuario(Usuario usuario, Long idEvento);
 
 	
 }
