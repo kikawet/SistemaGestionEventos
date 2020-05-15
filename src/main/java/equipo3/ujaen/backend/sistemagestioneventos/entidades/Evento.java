@@ -12,6 +12,10 @@ public class Evento {
 	public enum TipoEvento {
 		BENEFICO, NO_BENEFICO
 	}
+	
+	public enum Categoria{
+		FESTIVAL_MUSICA,DEPORTE,CULTURAL,EXCURSIONES,CHARLAS,REUNIONES
+	}
 
 	private int aforoMaximo;
 	private List<Usuario> asistentes;
@@ -22,17 +26,19 @@ public class Evento {
 
 	private String lugar;
 	private TipoEvento tipoEvento;
+	private Categoria categoria;
 
 	public Evento() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Evento(String lugar, Date fecha, TipoEvento tipoEvento, String descripcion, int aforoMaximo,
+	public Evento(String lugar, Date fecha, TipoEvento tipoEvento,Categoria categoriaEvento, String descripcion, int aforoMaximo,
 			String idEvento) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
 		this.tipoEvento = tipoEvento;
+		this.categoria=categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = idEvento;
@@ -87,6 +93,10 @@ public class Evento {
 
 	public TipoEvento getTipoEvento() {
 		return tipoEvento;
+	}
+	
+	public Categoria getCategoria() {
+		return this.categoria;
 	}
 
 	public void setDescripcion(String descripcion) {
