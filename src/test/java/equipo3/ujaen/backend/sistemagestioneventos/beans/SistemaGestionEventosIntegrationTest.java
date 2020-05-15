@@ -17,6 +17,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.Categoria;
@@ -106,7 +107,7 @@ public class SistemaGestionEventosIntegrationTest {
 		gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento());
 
 		// Usuario resgistrado y no inscrito
-		Assertions.assertThrows(EventoNoRegistrado.class,
+		Assertions.assertThrows(UsuarioNoEstaEvento.class,
 				() -> gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento()));
 
 	}
@@ -130,6 +131,6 @@ public class SistemaGestionEventosIntegrationTest {
 		
 		assertEquals(usuario, evento.getAsistentes().get(0));
 	
-		Assertions.assertThrows(EventoNoRegistrado.class, ()->gestorEventos.inscribirUsuario(usuario, (long) evento.getIdEvento()));
+		Assertions.assertThrows(EventoNoRegistrado.class, ()->gestorEventos.inscribirUsuario(usuario, (long) 8));
 	}
 }
