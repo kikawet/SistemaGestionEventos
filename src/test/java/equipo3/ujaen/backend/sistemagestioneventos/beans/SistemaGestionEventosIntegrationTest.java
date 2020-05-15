@@ -15,8 +15,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
-import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.Categoria;
@@ -84,8 +84,6 @@ public class SistemaGestionEventosIntegrationTest {
 		List<Evento> eventos = gestorEventos.listarEventos();
 		
 		assertEquals(1, eventos.size());
-		
-		
 	}
 
 	@Test
@@ -102,12 +100,14 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 
-		// Usuario resgistrado e inscrito
+		assertEquals(1, evento.getAsistentes().size());
+
 		gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento());
-
+		
+		assertEquals(0, evento.getAsistentes().size());
+		
 		// Usuario resgistrado y no inscrito
-		Assertions.assertThrows(EventoNoRegistrado.class,
+		Assertions.assertThrows(UsuarioNoEstaEvento.class,
 				() -> gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento()));
-
 	}
 }

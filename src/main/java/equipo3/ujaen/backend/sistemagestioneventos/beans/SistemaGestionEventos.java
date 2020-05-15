@@ -178,7 +178,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		}
 		
 		eventos.get(idEvento).eliminarAsistente(usuarioValido);
+		
+		 
 	}
+	
 
 	
 	
