@@ -7,6 +7,7 @@ import java.util.Random;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 
 public class Evento {
 
@@ -64,12 +65,19 @@ public class Evento {
 	}
 
 	public void eliminarAsistente(Usuario u) {
-		if (this.asistentes.size() < this.aforoMaximo) {
-			this.asistentes.remove(u);
-			this.anadirAsistente(this.listaEspera.remove(0));
-		} else {
-			this.listaEspera.remove(u);
-		}
+		
+		int posListaNormal = asistentes.indexOf(u);
+		
+		int posListaEspera = listaEspera.indexOf(u);
+		
+		if(posListaEspera == -1 && posListaNormal == -1)
+			throw new UsuarioNoEstaEvento();
+		
+		if(posListaNormal != -1)
+			asistentes.remove(posListaNormal);
+		
+		if(posListaEspera != -1)
+			asistentes.remove(posListaEspera);
 	}
 
 	public int getAforoMaximo() {
