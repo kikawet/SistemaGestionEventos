@@ -2,8 +2,8 @@ package equipo3.ujaen.backend.sistemagestioneventos.interfaces;
 
 import java.util.List;
 
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
-import equipo3.ujaen.backend.sistemagestioneventos.utils.Pair;
 
 public interface InterfaceSistemaGestionEventos {
 
@@ -16,7 +16,7 @@ public interface InterfaceSistemaGestionEventos {
 	// El booleano indica si está en lista de espera o no:
 	// True: no está en lista de espera
 	// False: está en lista de espera
-	public List<Pair<Boolean, Evento>> listarEventosDeUnUsuario(String login);
+	public List<EventoDTO> listarEventosDeUnUsuario(String login);
 
 	public void crearEventoPorusuario(String login, Evento evento);
 
