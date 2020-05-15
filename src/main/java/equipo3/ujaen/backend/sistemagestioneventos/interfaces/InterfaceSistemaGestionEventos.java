@@ -24,4 +24,5 @@ public interface InterfaceSistemaGestionEventos {
 
 	public void cancelarInscripcionUsuario(Usuario usuario, String idEvento);
 
+	
 }
