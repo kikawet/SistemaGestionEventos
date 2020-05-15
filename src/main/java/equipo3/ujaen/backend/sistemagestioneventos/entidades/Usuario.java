@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Usuario {
 	// ROL = null = ningún rol
@@ -13,6 +14,8 @@ public class Usuario {
 
 	private String login;
 	private String password;
+	
+	private long uId;
 
 	private List<Evento> eventosCreados;
 
@@ -27,6 +30,7 @@ public class Usuario {
 
 		this.eventosCreados = new ArrayList<>();
 		this.rol = null;
+		this.uId = new Random().nextLong();
 	}
 
 	public Evento nuevoEvento() {
@@ -60,5 +64,12 @@ public class Usuario {
 	public void setRol(RolUsuario rol) {
 		this.rol = rol;
 	}
+	
+	public long getuId() {
+		return uId;
+	}
 
+	public boolean mismoUID(Usuario u) {
+		return uId == u.uId;
+	}
 }

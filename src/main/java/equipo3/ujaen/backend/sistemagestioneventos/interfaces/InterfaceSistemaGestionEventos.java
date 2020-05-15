@@ -4,26 +4,24 @@ import java.util.List;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
+import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 
 public interface InterfaceSistemaGestionEventos {
 
 	public void registroUsuarios(String login, String password);
 
-	public String loginUsuario(String login, String password);
+	public Usuario loginUsuario(String login, String password);
 
 	public List<Evento> listarEventos();
 
-	// El booleano indica si está en lista de espera o no:
-	// True: no está en lista de espera
-	// False: está en lista de espera
-	public List<EventoDTO> listarEventosDeUnUsuario(String login);
+	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario);
 
-	public void crearEventoPorusuario(String login, Evento evento);
+	public void crearEventoPorusuario(Usuario usuario, Evento evento);
 
-	public void cancelarEventoPorUsuario(String login, String idEvento);
+	public void cancelarEventoPorUsuario(Usuario usuario, String idEvento);
 
-	public void inscribirUsuario(String login, String idEvento);
+	public void inscribirUsuario(Usuario usuario, String idEvento);
 
-	public void cancelarInscripcionUsuario(String login, String idEvento);
+	public void cancelarInscripcionUsuario(Usuario usuario, String idEvento);
 
 }

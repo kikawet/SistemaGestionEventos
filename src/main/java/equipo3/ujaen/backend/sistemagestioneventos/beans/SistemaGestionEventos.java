@@ -44,8 +44,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarios.put(login, usuario);
 	}
 
+	
+	/**
+	 * @brief Método que devuelve un usuario al cliente para que este pueda trabajar con el
+	 * @param login Es el id de usuario
+	 * @param password Es la contraseña del usuario
+	 * @return devuelve un usuario al cliente
+	 */
 	@Override
-	public String loginUsuario(String login, String password) {
+	public Usuario loginUsuario(String login, String password) {
 		// TODO Auto-generated method stub
 		Usuario usuario = usuarios.get(login);
 
@@ -57,34 +64,39 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			throw new AccesoDenegado();
 		}
 
-		return "LOGIN COMPLETADO";
+		return usuario;
 	}
 
+	
+	/**
+	 * @brief Método que lista los eventos que hay en el sistema
+	 */
 	@Override
 	public List<Evento> listarEventos() {
 		return eventos.values().stream().collect(Collectors.toList());
 	}
 
 	
-	
-	
+	/**
+	 * @brief Método para listar los eventos de un usuario, indicando
+	 * 		  si este está aceptado o en lista de espera  
+	 */
 	@Override
-	public List<EventoDTO> listarEventosDeUnUsuario(String login) {
-		// TODO Auto-generated method stub
-		if(!usuarios.containsKey(login)) {
-			throw new UsuarioNoRegistrado();
-		}
+	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario) {
+		
+		Usuario usuarioValido = validarUsuario(usuario);
 		
 		List<EventoDTO> eventosUsuario = new ArrayList<>();
+		
 		for(Evento e : eventos.values()) {
 			for(Usuario u : e.getAsistentes()) {
-				if(u.getLogin().equals(login)) {
+				if(u.getLogin().equals(usuarioValido.getLogin())) {
 					eventosUsuario.add(e.toDTO(EstadoEvento.ACEPTADO));
 				}
 			}
 			
 			for(Usuario u : e.getListaEspera()) {
-				if(u.getLogin().equals(login)) {
+				if(u.getLogin().equals(usuarioValido.getLogin())) {
 					eventosUsuario.add(e.toDTO(EstadoEvento.LISTA_DE_ESPERA));
 				}
 			}
@@ -94,67 +106,89 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 	
 
+	/**
+	 * @brief Método para crear un evento por usuaio
+	 * @param Usuario que recibe del cliente
+	 * @param Evento que recibe del cliente
+	 */
 	@Override
-	public void crearEventoPorusuario(String login, Evento evento) {
+	public void crearEventoPorusuario(Usuario usuario, Evento evento) {
 		// TODO Auto-generated method stub
 
-		Usuario usuario = usuarios.get(login);
+		Usuario usuarioValido = validarUsuario(usuario);
 
-		if (usuario == null) {
-			throw new UsuarioNoRegistrado();
-		}
-
-		usuario.crearEvento(evento);
+		usuarioValido.crearEvento(evento);
 
 		eventos.put(evento.getIdEvento(), evento);
 	}
 
+	
+	/**
+	 * @brief Metodo para cancelar un evento de un usuario
+	 */
 	@Override
-	public void cancelarEventoPorUsuario(String login, String idEvento) {
+	public void cancelarEventoPorUsuario(Usuario usuario, String idEvento) {
 
 		Evento evento = this.eventos.get(idEvento);
-		Usuario usuario = this.usuarios.get(login);
-
-		if (usuario == null)
-			throw new UsuarioNoRegistrado();
+		Usuario usuarioValido = validarUsuario(usuario);
 
 		if (evento == null)
 			throw new EventoNoExiste();
 
-		int pos = usuario.getEventosCreados().indexOf(evento);
+		int pos = usuarioValido.getEventosCreados().indexOf(evento);
 
-		if (!usuario.getRol().equals(Usuario.RolUsuario.ADMIN) && pos == -1)
+		if (!usuarioValido.getRol().equals(Usuario.RolUsuario.ADMIN) && pos == -1)
 			throw new AccesoDenegado();
 
-		usuario.getEventosCreados().remove(pos);
-
+		
+		usuarioValido.getEventosCreados().remove(pos);
+		eventos.remove(idEvento);
 	}
 
+	
+	/**
+	 * @brief
+	 */
 	@Override
-	public void inscribirUsuario(String login, String idEvento) {
+	public void inscribirUsuario(Usuario usuario, String idEvento) {
 		// TODO Auto-generated method stub
 
-		if (!usuarios.containsKey(login))
-			throw new UsuarioNoRegistrado();
-
+		Usuario usuarioValido = validarUsuario(usuario);
+		
 		if (!eventos.containsKey(idEvento))
 			throw new EventoNoRegistrado();
 
-		eventos.get(idEvento).anadirAsistente(usuarios.get(login));
+		eventos.get(idEvento).anadirAsistente(usuarioValido);
 
 	}
 
 	@Override
-	public void cancelarInscripcionUsuario(String login, String idEvento) {
+	public void cancelarInscripcionUsuario(Usuario usuario, String idEvento) {
+
 		// TODO Auto-generated method stub
-		if (!usuarios.containsKey(login)) {
-			throw new UsuarioNoRegistrado();
-		}
+		Usuario usuarioValido = validarUsuario(usuario);
+		
 		if (!eventos.containsKey(idEvento)) {
 			throw new EventoNoRegistrado();
 		}
-		eventos.get(idEvento).eliminarAsistente(usuarios.get(login));
+		
+		eventos.get(idEvento).eliminarAsistente(usuarioValido);
 	}
 
+	
+	
+	/**
+	 * @brief Metodo para validar un usuario internamente
+	 * @param usuario
+	 * @return
+	 */
+	private Usuario validarUsuario(Usuario usuario) {
+		Usuario usuarioInterno = usuarios.get(usuario.getLogin());
+		
+		if(usuarioInterno == null || !usuarioInterno.mismoUID(usuario))
+			throw new AccesoDenegado();
+		
+		return usuarioInterno;
+	}
 	
 }
