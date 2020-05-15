@@ -134,26 +134,5 @@ public class SistemaGestionEventosIntegrationTest {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//String loginUsuario = "21025923J";
-		//String passwordUsuario = "123456789a.";
-				
-		//Usuario u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
-		
-		//Evento e = new Evento("MALAGA",new Date(),Evento.TipoEvento.NO_BENEFICO,Evento.Categoria.FESTIVAL_MUSICA,"3 dias completos",50000);
-		//gestorEventos.crearEventoPorUsuario(u, e);
-		//gestorEventos.inscribirUsuario(u, e.getIdEvento());
-		
-		
-		
-		
 	}
 }
