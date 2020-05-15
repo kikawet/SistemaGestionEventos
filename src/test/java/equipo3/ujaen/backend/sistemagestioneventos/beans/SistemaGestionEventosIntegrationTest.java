@@ -9,6 +9,6 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 public class SistemaGestionEventosIntegrationTest {
 
 	@Autowired
-	static InterfaceSistemaGestionEventos gestorEventos;
+	InterfaceSistemaGestionEventos gestorEventos;
 
 }
