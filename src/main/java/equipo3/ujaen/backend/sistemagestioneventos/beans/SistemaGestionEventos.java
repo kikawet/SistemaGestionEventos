@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,12 +16,11 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoPrescrito;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
-
-
 
 @Component
 public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
@@ -46,10 +46,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarios.put(login, usuario);
 	}
 
-	
 	/**
-	 * @brief Método que devuelve un usuario al cliente para que este pueda trabajar con el
-	 * @param login Es el id de usuario
+	 * @brief Método que devuelve un usuario al cliente para que este pueda trabajar
+	 *        con el
+	 * @param login    Es el id de usuario
 	 * @param password Es la contraseña del usuario
 	 * @return devuelve un usuario al cliente
 	 */
@@ -69,7 +69,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return usuario;
 	}
 
-	
 	/**
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
@@ -78,48 +77,46 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return eventos.values().stream().collect(Collectors.toList());
 	}
 
-	
 	/**
-	 * @brief Método para listar los eventos de un usuario, indicando
-	 * 		  si este está aceptado o en lista de espera  
+	 * @brief Método para listar los eventos de un usuario, indicando si este está
+	 *        aceptado o en lista de espera
 	 */
 	@Override
 	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario) {
-		
+
 		Usuario usuarioValido = validarUsuario(usuario);
-		
+
 		List<EventoDTO> eventosUsuario = new ArrayList<>();
-		
-		for(Evento e : eventos.values()) {
-			for(Usuario u : e.getAsistentes()) {
-				if(u.getLogin().equals(usuarioValido.getLogin())) {
+
+		for (Evento e : eventos.values()) {
+			for (Usuario u : e.getAsistentes()) {
+				if (u.getLogin().equals(usuarioValido.getLogin())) {
 					eventosUsuario.add(e.toDTO(EstadoEvento.ACEPTADO));
 				}
 			}
-			
-			for(Usuario u : e.getListaEspera()) {
-				if(u.getLogin().equals(usuarioValido.getLogin())) {
+
+			for (Usuario u : e.getListaEspera()) {
+				if (u.getLogin().equals(usuarioValido.getLogin())) {
 					eventosUsuario.add(e.toDTO(EstadoEvento.LISTA_DE_ESPERA));
 				}
 			}
 		}
-		
+
 		return eventosUsuario;
 	}
-	
 
 	/**
 	 * @brief Método para crear un evento por usuaio
 	 * @param Usuario que recibe del cliente
-	 * @param Evento que recibe del cliente
+	 * @param Evento  que recibe del cliente
 	 */
 	@Override
 	public void crearEventoPorUsuario(Usuario usuario, Evento evento) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
-		
-		if(eventos.containsKey(evento.getIdEvento()))
+
+		if (eventos.containsKey(evento.getIdEvento()))
 			throw new EventoYaRegistrado();
 
 		usuarioValido.crearEvento(evento);
@@ -127,7 +124,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		eventos.put(evento.getIdEvento(), evento);
 	}
 
-	
 	/**
 	 * @brief Metodo para cancelar un evento de un usuario
 	 */
@@ -145,26 +141,30 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (!usuarioValido.getRol().equals(Usuario.RolUsuario.ADMIN) && pos == -1)
 			throw new AccesoDenegado();
 
-		
 		usuarioValido.getEventosCreados().remove(pos);
 		eventos.remove(idEvento);
 	}
 
-	
 	/**
 	 * @brief
 	 */
 	@Override
 	public EstadoEvento inscribirUsuario(Usuario usuario, Long idEvento) {
-		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
-		
-		if (!eventos.containsKey(idEvento))
+		Evento evento = eventos.get(idEvento);
+
+		if (evento == null)
 			throw new EventoNoRegistrado();
 
+		Date hoy = new Date();
+
+		// hoy > evento.getFecha
+		if (hoy.compareTo(evento.getFecha()) > 0)
+			throw new EventoPrescrito();
+
 		return eventos.get(idEvento).anadirAsistente(usuarioValido);
-		
+
 	}
 
 	@Override
@@ -172,19 +172,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		// TODO Auto-generated method stub
 		Usuario usuarioValido = validarUsuario(usuario);
-		
+
 		if (!eventos.containsKey(idEvento)) {
 			throw new EventoNoRegistrado();
 		}
-		
-		eventos.get(idEvento).eliminarAsistente(usuarioValido);
-		
-		 
-	}
-	
 
-	
-	
+		eventos.get(idEvento).eliminarAsistente(usuarioValido);
+
+	}
+
 	/**
 	 * @brief Metodo para validar un usuario internamente
 	 * @param usuario
@@ -192,11 +188,11 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 */
 	private Usuario validarUsuario(Usuario usuario) {
 		Usuario usuarioInterno = usuarios.get(usuario.getLogin());
-		
-		if(usuarioInterno == null || !usuarioInterno.mismoUID(usuario))
+
+		if (usuarioInterno == null || !usuarioInterno.mismoUID(usuario))
 			throw new AccesoDenegado();
-		
+
 		return usuarioInterno;
 	}
-	
+
 }
