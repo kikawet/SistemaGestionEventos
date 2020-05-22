@@ -1,6 +1,5 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,23 +85,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		Usuario usuarioValido = validarUsuario(usuario);
 
-		List<EventoDTO> eventosUsuario = new ArrayList<>();
-
-		for (Evento e : eventos.values()) {
-			for (Usuario u : e.getAsistentes()) {
-				if (u.getLogin().equals(usuarioValido.getLogin())) {
-					eventosUsuario.add(e.toDTO(EstadoEvento.ACEPTADO));
-				}
-			}
-
-			for (Usuario u : e.getListaEspera()) {
-				if (u.getLogin().equals(usuarioValido.getLogin())) {
-					eventosUsuario.add(e.toDTO(EstadoEvento.LISTA_DE_ESPERA));
-				}
-			}
-		}
-
-		return eventosUsuario;
+		return usuarioValido.getEventosInscritos().stream()
+				.map(evento -> new EventoDTO(evento, evento.getEstadoUsuario(usuarioValido)))
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -163,7 +148,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (hoy.compareTo(evento.getFecha()) > 0)
 			throw new EventoPrescrito();
 
-		return eventos.get(idEvento).anadirAsistente(usuarioValido);
+		usuarioValido.inscribir(evento);
+		return evento.anadirAsistente(usuarioValido);
 
 	}
 
@@ -172,13 +158,14 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		// TODO Auto-generated method stub
 		Usuario usuarioValido = validarUsuario(usuario);
+		Evento evento = eventos.get(idEvento);
 
-		if (!eventos.containsKey(idEvento)) {
+		if (evento == null) {
 			throw new EventoNoRegistrado();
 		}
 
-		eventos.get(idEvento).eliminarAsistente(usuarioValido);
-
+		usuario.cancelarInscripcion(evento);
+		evento.eliminarAsistente(usuarioValido);
 	}
 
 	/**
