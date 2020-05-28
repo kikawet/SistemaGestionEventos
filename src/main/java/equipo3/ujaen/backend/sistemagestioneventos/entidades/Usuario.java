@@ -14,14 +14,10 @@ public class Usuario {
 
 	private String login;
 	private String password;
-	
+
 	private long uId;
 
 	private List<Evento> eventosCreados;
-
-	public Usuario() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public Usuario(String login, String password) {
 		super();
@@ -64,7 +60,7 @@ public class Usuario {
 	public void setRol(RolUsuario rol) {
 		this.rol = rol;
 	}
-	
+
 	public long getuId() {
 		return uId;
 	}

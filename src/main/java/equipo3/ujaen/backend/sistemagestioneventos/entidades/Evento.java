@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,17 +13,11 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEven
 public class Evento {
 
 	public enum TipoEvento {
-		BENEFICO, 
-		NO_BENEFICO
+		BENEFICO, NO_BENEFICO
 	}
-	
+
 	public enum Categoria {
-		FESTIVAL_MUSICA,
-		DEPORTE,
-		CULTURAL,
-		EXCURSIONES,
-		CHARLAS,
-		REUNIONES
+		FESTIVAL_MUSICA, DEPORTE, CULTURAL, EXCURSIONES, CHARLAS, REUNIONES
 	}
 
 	private int aforoMaximo;
@@ -36,16 +31,13 @@ public class Evento {
 	private TipoEvento tipoEvento;
 	private Categoria categoria;
 
-	public Evento() {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Evento(String lugar, Date fecha, TipoEvento tipoEvento,Categoria categoriaEvento, String descripcion, int aforoMaximo) {
+	public Evento(String lugar, Date fecha, TipoEvento tipoEvento, Categoria categoriaEvento, String descripcion,
+			int aforoMaximo) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
 		this.tipoEvento = tipoEvento;
-		this.categoria=categoriaEvento;
+		this.categoria = categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = new Random().nextLong();
@@ -58,25 +50,25 @@ public class Evento {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			this.asistentes.add(u);
 			return EstadoEvento.ACEPTADO;
-		}else {
+		} else {
 			this.listaEspera.add(u);
 			return EstadoEvento.LISTA_DE_ESPERA;
 		}
 	}
 
 	public void eliminarAsistente(Usuario u) {
-		
+
 		int posListaNormal = asistentes.indexOf(u);
-		
+
 		int posListaEspera = listaEspera.indexOf(u);
-		
-		if(posListaEspera == -1 && posListaNormal == -1)
+
+		if (posListaEspera == -1 && posListaNormal == -1)
 			throw new UsuarioNoEstaEvento();
-		
-		if(posListaNormal != -1)
+
+		if (posListaNormal != -1)
 			asistentes.remove(posListaNormal);
-		
-		if(posListaEspera != -1)
+
+		if (posListaEspera != -1)
 			asistentes.remove(posListaEspera);
 	}
 
@@ -111,7 +103,7 @@ public class Evento {
 	public TipoEvento getTipoEvento() {
 		return tipoEvento;
 	}
-	
+
 	public Categoria getCategoria() {
 		return this.categoria;
 	}
@@ -127,6 +119,29 @@ public class Evento {
 	public EventoDTO toDTO(EstadoEvento estadoEvento) {
 		EventoDTO eventoDTO = new EventoDTO(this, estadoEvento);
 		return eventoDTO;
+	}
+
+	public void setAforoMaximo(int aforoMaximo) {
+		if (aforoMaximo < this.asistentes.size())
+			throw new InvalidParameterException("No se puede reducir el aforo si hay gente registrada");
+
+		this.aforoMaximo = aforoMaximo;
+	}
+
+	public void setIdEvento(Long idEvento) {
+		this.idEvento = idEvento;
+	}
+
+	public void setLugar(String lugar) {
+		this.lugar = lugar;
+	}
+
+	public void setTipoEvento(TipoEvento tipoEvento) {
+		this.tipoEvento = tipoEvento;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
 	}
 
 }
