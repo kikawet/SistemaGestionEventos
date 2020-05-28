@@ -73,8 +73,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
 	@Override
-	public List<Evento> listarEventos() {
-		return eventos.values().stream().collect(Collectors.toList());
+	public List<Evento> listarEventos(long desplazamiento, long cantidad) {
+		return eventos.values().parallelStream().skip(desplazamiento).limit(cantidad).collect(Collectors.toList());
 	}
 
 	/**
