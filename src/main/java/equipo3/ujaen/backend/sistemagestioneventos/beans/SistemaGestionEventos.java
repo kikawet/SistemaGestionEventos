@@ -123,7 +123,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		int pos = usuarioValido.getEventosCreados().indexOf(evento);
 
-		if (!usuarioValido.getRol().equals(Usuario.RolUsuario.ADMIN) && pos == -1)
+		if (usuarioValido.getRol() != Usuario.RolUsuario.ADMIN && pos == -1)
 			throw new AccesoDenegado();
 
 		usuarioValido.getEventosCreados().remove(pos);

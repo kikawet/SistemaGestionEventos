@@ -21,6 +21,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.Categoria;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
@@ -192,6 +193,43 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertTrue(eventosU1.size() == 1);
 		assertEquals(eventosU1.get(0).getEstadoEvento(), EstadoEvento.ACEPTADO);
+
+	}
+
+	@Test
+	void cancelarEventoPorUsuario() {
+		Usuario usuario = crearUsuarioRegistradoLogeado();
+		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+
+		Evento evento = crearEventoValido();
+
+		// TEST USUARIO NO LOGEADO //
+
+		{
+			Usuario usuario2 = new Usuario("PeterParker33", "🕷");
+			Assertions.assertThrows(AccesoDenegado.class,
+					() -> gestorEventos.cancelarEventoPorUsuario(usuario2, evento.getIdEvento()));
+		}
+
+		// TEST EVENTO NO EXISTE //
+
+		Assertions.assertThrows(EventoNoExiste.class,
+				() -> gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento()));
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento);
+		assertTrue(!usuario.getEventosCreados().isEmpty());
+
+		// TEST BORRAR SIN PERMISO //
+
+		Assertions.assertThrows(AccesoDenegado.class,
+				() -> gestorEventos.cancelarEventoPorUsuario(usuario1, evento.getIdEvento()));
+
+		// TEST BORRANDO //
+
+		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
+
+		assertTrue(!gestorEventos.listarEventos(0, 100).contains(evento));
+		assertTrue(usuario.getEventosCreados().isEmpty());
 
 	}
 
