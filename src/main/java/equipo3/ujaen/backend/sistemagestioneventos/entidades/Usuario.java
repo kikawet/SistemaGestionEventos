@@ -17,10 +17,20 @@ public class Usuario {
 	private String login;
 	private String password;
 
-	private long uId;
+	private Long uId;
 
 	private List<Evento> eventosCreados;
 	private Set<Evento> eventosInscritos;
+
+	public Usuario(UsuarioDTO usuarioDTO) {
+		this(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+
+		this.rol = usuarioDTO.getRol();
+
+		if (usuarioDTO.getuId() != null)
+			this.uId = usuarioDTO.getuId();
+
+	}
 
 	public Usuario(String login, String password) {
 		super();
@@ -82,7 +92,7 @@ public class Usuario {
 		this.rol = rol;
 	}
 
-	public long getuId() {
+	public Long getuId() {
 		return uId;
 	}
 
@@ -99,7 +109,7 @@ public class Usuario {
 	}
 
 	public UsuarioDTO toDTO() {
-		return new UsuarioDTO(this.rol, this.login, this.password, this.uId, this.eventosCreados.size(),
+		return new UsuarioDTO(this.login, this.password, this.uId, this.rol, this.eventosCreados.size(),
 				this.eventosInscritos.size());
 	}
 

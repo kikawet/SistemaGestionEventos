@@ -12,13 +12,17 @@ public class UsuarioDTO {
 	private String login;
 	private String password;
 
-	private long uId;
+	private Long uId;
 
 	private int numEventosCreados;
 
 	private int numEventosInscritos;
 
-	public UsuarioDTO(RolUsuario rol, String login, String password, long uId, int numEventosCreados,
+	public UsuarioDTO(String login, String password) {
+		this(login, password, null, null, -1, -1);
+	}
+
+	public UsuarioDTO(String login, String password, Long uId, RolUsuario rol, int numEventosCreados,
 			int numEventosInscritos) {
 		super();
 		this.rol = rol;
@@ -53,11 +57,11 @@ public class UsuarioDTO {
 		this.password = password;
 	}
 
-	public long getuId() {
+	public Long getuId() {
 		return uId;
 	}
 
-	public void setuId(long uId) {
+	public void setuId(Long uId) {
 		this.uId = uId;
 	}
 

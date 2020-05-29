@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -18,8 +17,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
@@ -35,7 +33,7 @@ public class SistemaGestionEventosIntegrationTest {
 	@Autowired
 	InterfaceSistemaGestionEventos gestorEventos;
 
-	Usuario crearUsuarioRegistradoLogeado() {
+	UsuarioDTO crearUsuarioRegistradoLogeado() {
 		Long login = new Random().nextLong();
 		String loginUsuario = login.toString();
 		String passwordUsuario = "123456789a.";
@@ -45,11 +43,22 @@ public class SistemaGestionEventosIntegrationTest {
 		return gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
 	}
 
-	Evento crearEventoValido() {
+	EventoDTO crearEventoValido() {
 		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
 
-		return new Evento("Lugar Evento", mañana, EventoDTO.TipoEvento.NO_BENEFICO, EventoDTO.CategoriaEvento.REUNIONES,
-				"Descripción evento", 20);
+		int aforoMaximo = 1500;
+		String descripcion = "El evento al que todo el mundo vendrá";
+		Date cuando = mañana;
+		Long idEvento = null;
+		String lugar = "Jaén";
+		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;
+		EventoDTO.CategoriaEvento categoriaEvento = CategoriaEvento.EXCURSIONES;
+		int numAsistentes = 603;
+		int numListaEspera = 0;
+		EventoDTO.EstadoUsuarioEvento estado = null;
+
+		return new EventoDTO(aforoMaximo, descripcion, cuando, idEvento, lugar, tipoEvento, categoriaEvento,
+				numAsistentes, numListaEspera, estado);
 	}
 
 	@Test
@@ -66,7 +75,7 @@ public class SistemaGestionEventosIntegrationTest {
 		Assertions.assertThrows(UsuarioYaRegistrado.class,
 				() -> gestorEventos.registroUsuarios(loginUsuario, passwordUsuario));
 
-		Usuario u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+		UsuarioDTO u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
 
 		assertNotNull(u);
 		assertEquals(loginUsuario, u.getLogin());
@@ -80,14 +89,13 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
 
-		Usuario u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+		UsuarioDTO u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
 
 		assertNotNull(u);
 		assertEquals(loginUsuario, u.getLogin());
 		assertEquals(passwordUsuario, u.getPassword());
 
-		Evento e = new Evento("Jaén", Date.from(Instant.now()), EventoDTO.TipoEvento.BENEFICO, EventoDTO.CategoriaEvento.CHARLAS, "Hola caracola",
-				30);
+		EventoDTO e = crearEventoValido();
 
 		gestorEventos.crearEventoPorUsuario(u, e);
 
@@ -95,7 +103,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertNotNull(e);
 
-		List<Evento> eventos = gestorEventos.listarEventos(0, 1);
+		List<EventoDTO> eventos = gestorEventos.listarEventos(0, 1);
 
 		assertEquals(1, eventos.size());
 
@@ -104,14 +112,11 @@ public class SistemaGestionEventosIntegrationTest {
 	@Test
 	void cancelarInscripcionUsuario() {
 
-		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+		EventoDTO evento = crearEventoValido();
 
-		Evento evento = new Evento("Lugar Evento", mañana, EventoDTO.TipoEvento.NO_BENEFICO, EventoDTO.CategoriaEvento.REUNIONES,
-				"Descripción evento", 20);
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
 
-		Usuario usuario = crearUsuarioRegistradoLogeado();
-
-		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
 		gestorEventos.crearEventoPorUsuario(usuario1, evento);
 
@@ -129,22 +134,21 @@ public class SistemaGestionEventosIntegrationTest {
 	@Test
 	void inscribirseUsuarioTest() {
 
-		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+		EventoDTO evento = crearEventoValido();
 
-		Evento evento = new Evento("Lugar Evento", mañana, EventoDTO.TipoEvento.NO_BENEFICO, EventoDTO.CategoriaEvento.REUNIONES,
-				"Descripción evento", 20);
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
 
-		Usuario usuario = crearUsuarioRegistradoLogeado();
-
-		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
 		gestorEventos.crearEventoPorUsuario(usuario1, evento);
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 
-		assertEquals(1, evento.getAsistentes().size());
+		// Se necesita función para obtener los asistentes a un evento
 
-		assertEquals(usuario, evento.getAsistentes().get(0));
+//		assertEquals(1, evento.getNumAsistentes());
+
+//		assertEquals(usuario, evento.getAsistentes().get(0));
 
 		Assertions.assertThrows(EventoNoRegistrado.class, () -> gestorEventos.inscribirUsuario(usuario, (long) 8));
 	}
@@ -152,16 +156,16 @@ public class SistemaGestionEventosIntegrationTest {
 	@Test
 	void listarEventosDeUnUsuario() {
 
-		Usuario usuario = crearUsuarioRegistradoLogeado();
-		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
-		Evento evento = crearEventoValido();
+		EventoDTO evento = crearEventoValido();
 
 		evento.setAforoMaximo(1);
 
 		// TEST USUARIO NO LOGEADO //
 		{
-			Usuario usuario2 = new Usuario("PeterParker33", "🕷");
+			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
 			Assertions.assertThrows(AccesoDenegado.class, () -> gestorEventos.listarEventosDeUnUsuario(usuario2));
 		}
 
@@ -198,15 +202,15 @@ public class SistemaGestionEventosIntegrationTest {
 
 	@Test
 	void cancelarEventoPorUsuario() {
-		Usuario usuario = crearUsuarioRegistradoLogeado();
-		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
-		Evento evento = crearEventoValido();
+		EventoDTO evento = crearEventoValido();
 
 		// TEST USUARIO NO LOGEADO //
 
 		{
-			Usuario usuario2 = new Usuario("PeterParker33", "🕷");
+			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
 			Assertions.assertThrows(AccesoDenegado.class,
 					() -> gestorEventos.cancelarEventoPorUsuario(usuario2, evento.getIdEvento()));
 		}
@@ -217,7 +221,7 @@ public class SistemaGestionEventosIntegrationTest {
 				() -> gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento()));
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento);
-		assertTrue(!usuario.getEventosCreados().isEmpty());
+		assertEquals(0, usuario.getNumEventosCreados());
 
 		// TEST BORRAR SIN PERMISO //
 
@@ -229,7 +233,7 @@ public class SistemaGestionEventosIntegrationTest {
 		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
 
 		assertTrue(!gestorEventos.listarEventos(0, 100).contains(evento));
-		assertTrue(usuario.getEventosCreados().isEmpty());
+		assertEquals(0, usuario.getNumEventosCreados());
 
 	}
 

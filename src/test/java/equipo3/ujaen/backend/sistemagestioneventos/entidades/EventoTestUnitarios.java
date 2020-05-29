@@ -11,20 +11,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 
 class EventoTestUnitarios {
 	private final static String lugar = "Jaén";
 	private final static Date fecha = new Date();
 	private final static EventoDTO.TipoEvento tipoEvento = EventoDTO.TipoEvento.BENEFICO;
-	private final static EventoDTO.CategoriaEvento categoriaEventoEvento = EventoDTO.CategoriaEvento.DEPORTE;
+	private final static EventoDTO.CategoriaEvento categoriaEvento = EventoDTO.CategoriaEvento.DEPORTE;
 	private final static String descripcion = "Evento al que todo el mundo asistirá";
 	private final static int aforoMaximo = 1500;
 
 	Evento crearEvento() {
-		return new Evento(lugar, fecha, tipoEvento, categoriaEventoEvento, descripcion, aforoMaximo);
+		return new Evento(aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento);
 	}
 
 	Usuario crearUsuario() {
@@ -45,12 +43,14 @@ class EventoTestUnitarios {
 		assertTrue(evento.getLugar().equals(lugar));
 		assertTrue(evento.getFecha().equals(fecha));
 		assertTrue(evento.getTipoEvento().equals(tipoEvento));
-		assertTrue(evento.getCategoriaEvento().equals(categoriaEventoEvento));
+		assertTrue(evento.getCategoriaEvento().equals(categoriaEvento));
 		assertTrue(evento.getDescripcion().equals(descripcion));
 		assertTrue(evento.getAforoMaximo() == aforoMaximo);
 
+		System.out.println(evento.getIdEvento());
+
 		// Datos creados internamente
-		assertTrue(evento.getIdEvento() != null && evento.getIdEvento() > 0);
+		assertTrue(evento.getIdEvento() != null && evento.getIdEvento() != 0);
 		assertTrue(evento.getAsistentes().isEmpty());
 		assertTrue(evento.getListaEspera().isEmpty());
 	}

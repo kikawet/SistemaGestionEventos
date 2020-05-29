@@ -28,20 +28,22 @@ public class Evento {
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
 	public Evento(EventoDTO eventoDTO) {
-		this(eventoDTO.getLugar(), eventoDTO.getFecha(), eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(),
-				eventoDTO.getDescripcion(), eventoDTO.getAforoMaximo());
+		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento());
 
 		if (eventoDTO.getIdEvento() != null)
 			this.idEvento = eventoDTO.getIdEvento();
+		else
+			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	public Evento(String lugar, Date fecha, EventoDTO.TipoEvento tipoEvento,
-			EventoDTO.CategoriaEvento categoriaEventoEvento, String descripcion, int aforoMaximo) {
+	public Evento(int aforoMaximo, String descripcion, Date fecha, String lugar, EventoDTO.TipoEvento tipoEvento,
+			EventoDTO.CategoriaEvento categoriaEvento) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
 		this.tipoEvento = tipoEvento;
-		this.categoriaEvento = categoriaEventoEvento;
+		this.categoriaEvento = categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = new Random().nextLong();
@@ -50,14 +52,23 @@ public class Evento {
 		this.listaEspera = new LinkedHashSet<>();
 	}
 
+	/**
+	 * @brief Añade un nuevo usuario a la lista de asistentes o de espera en función
+	 *        del aforo
+	 * @param u
+	 * @return null si no se ha añadido o la lista donde se insertó
+	 */
 	public EstadoUsuarioEvento anadirAsistente(Usuario u) {
+		EstadoUsuarioEvento estado = null;
+
 		if (this.asistentes.size() < this.aforoMaximo) {
-			this.asistentes.add(u);
-			return EstadoUsuarioEvento.ACEPTADO;
-		} else {
-			this.listaEspera.add(u);
-			return EstadoUsuarioEvento.LISTA_DE_ESPERA;
+			if (this.asistentes.add(u))
+				estado = EstadoUsuarioEvento.ACEPTADO;
+		} else if (!this.asistentes.contains(u) && this.listaEspera.add(u)) {
+			estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
 		}
+
+		return estado;
 	}
 
 	public void eliminarAsistente(Usuario u) {
