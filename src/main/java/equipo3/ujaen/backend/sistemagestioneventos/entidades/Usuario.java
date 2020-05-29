@@ -8,6 +8,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 
 public class Usuario {
@@ -85,10 +86,6 @@ public class Usuario {
 		return uId;
 	}
 
-	public boolean mismoUID(Usuario u) {
-		return uId == u.uId;
-	}
-
 	public List<Evento> getEventosInscritos() {
 		return eventosInscritos.stream().collect(Collectors.toList());
 	}
@@ -99,6 +96,11 @@ public class Usuario {
 
 	public boolean cancelarInscripcion(Evento e) {
 		return this.eventosInscritos.remove(e);
+	}
+
+	public UsuarioDTO toDTO() {
+		return new UsuarioDTO(this.rol, this.login, this.password, this.uId, this.eventosCreados.size(),
+				this.eventosInscritos.size());
 	}
 
 }

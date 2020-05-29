@@ -54,7 +54,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @return devuelve un usuario al cliente
 	 */
 	@Override
-	public Usuario loginUsuario(String login, String password) {
+	public UsuarioDTO loginUsuario(String login, String password) {
 		// TODO Auto-generated method stub
 		Usuario usuario = usuarios.get(login);
 
@@ -66,7 +66,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			throw new AccesoDenegado();
 		}
 
-		return usuario;
+		return usuario.toDTO();
 	}
 
 	/**
@@ -83,9 +83,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 *        aceptado o en lista de espera
 	 */
 	@Override
-	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario) {
+	public List<EventoDTO> listarEventosDeUnUsuario(UsuarioDTO usuarioDTO) {
 
-		Usuario usuarioValido = validarUsuario(usuario);
+		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		return usuarioValido.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
 				.collect(Collectors.toList());
@@ -97,10 +97,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param Evento  que recibe del cliente
 	 */
 	@Override
-	public void crearEventoPorUsuario(Usuario usuario, EventoDTO eventoDTO) {
+	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO) {
 		// TODO Auto-generated method stub
 
-		Usuario usuarioValido = validarUsuario(usuario);
+		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		if (eventos.containsKey(eventoDTO.getIdEvento()))
 			throw new EventoYaRegistrado();
@@ -116,10 +116,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Metodo para cancelar un evento de un usuario
 	 */
 	@Override
-	public void cancelarEventoPorUsuario(Usuario usuario, Long idEvento) {
+	public void cancelarEventoPorUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 
 		Evento evento = this.eventos.get(idEvento);
-		Usuario usuarioValido = validarUsuario(usuario);
+		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		if (evento == null)
 			throw new EventoNoExiste();
@@ -137,9 +137,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief
 	 */
 	@Override
-	public EstadoUsuarioEvento inscribirUsuario(Usuario usuario, Long idEvento) {
+	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 
-		Usuario usuarioValido = validarUsuario(usuario);
+		Usuario usuarioValido = validarUsuario(usuarioDTO);
 		Evento evento = eventos.get(idEvento);
 
 		if (evento == null)
@@ -157,17 +157,17 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 
 	@Override
-	public void cancelarInscripcionUsuario(Usuario usuario, Long idEvento) {
+	public void cancelarInscripcionUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 
 		// TODO Auto-generated method stub
-		Usuario usuarioValido = validarUsuario(usuario);
+		Usuario usuarioValido = validarUsuario(usuarioDTO);
 		Evento evento = eventos.get(idEvento);
 
 		if (evento == null) {
 			throw new EventoNoRegistrado();
 		}
 
-		usuario.cancelarInscripcion(evento);
+		usuarioValido.cancelarInscripcion(evento);
 		evento.eliminarAsistente(usuarioValido);
 	}
 
@@ -176,10 +176,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param usuario
 	 * @return
 	 */
-	private Usuario validarUsuario(Usuario usuario) {
-		Usuario usuarioInterno = usuarios.get(usuario.getLogin());
+	private Usuario validarUsuario(UsuarioDTO usuarioDTO) {
+		Usuario usuarioInterno = usuarios.get(usuarioDTO.getLogin());
 
-		if (usuarioInterno == null || !usuarioInterno.mismoUID(usuario))
+		if (usuarioInterno == null || usuarioInterno.getuId() != usuarioDTO.getuId())
 			throw new AccesoDenegado();
 
 		return usuarioInterno;
