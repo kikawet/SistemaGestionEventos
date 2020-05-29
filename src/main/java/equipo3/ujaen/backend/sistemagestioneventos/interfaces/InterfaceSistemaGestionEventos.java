@@ -13,7 +13,7 @@ public interface InterfaceSistemaGestionEventos {
 
 	public Usuario loginUsuario(String login, String password);
 
-	public List<Evento> listarEventos();
+	public List<Evento> listarEventos(long desplazamiento, long cantidad);
 
 	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario);
 
@@ -25,5 +25,4 @@ public interface InterfaceSistemaGestionEventos {
 
 	public void cancelarInscripcionUsuario(Usuario usuario, Long idEvento);
 
-	
 }
