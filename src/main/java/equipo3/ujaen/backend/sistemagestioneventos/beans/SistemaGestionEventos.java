@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
@@ -85,8 +85,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		Usuario usuarioValido = validarUsuario(usuario);
 
-		return usuarioValido.getEventosInscritos().stream()
-				.map(evento -> new EventoDTO(evento, evento.getEstadoUsuario(usuarioValido)))
+		return usuarioValido.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
 				.collect(Collectors.toList());
 	}
 
@@ -134,7 +133,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief
 	 */
 	@Override
-	public EstadoEvento inscribirUsuario(Usuario usuario, Long idEvento) {
+	public EstadoUsuarioEvento inscribirUsuario(Usuario usuario, Long idEvento) {
 
 		Usuario usuarioValido = validarUsuario(usuario);
 		Evento evento = eventos.get(idEvento);

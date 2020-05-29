@@ -15,10 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.Categoria;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
@@ -48,7 +48,7 @@ public class SistemaGestionEventosIntegrationTest {
 	Evento crearEventoValido() {
 		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
 
-		return new Evento("Lugar Evento", mañana, Evento.TipoEvento.NO_BENEFICO, Evento.Categoria.REUNIONES,
+		return new Evento("Lugar Evento", mañana, EventoDTO.TipoEvento.NO_BENEFICO, EventoDTO.CategoriaEvento.REUNIONES,
 				"Descripción evento", 20);
 	}
 
@@ -86,7 +86,7 @@ public class SistemaGestionEventosIntegrationTest {
 		assertEquals(loginUsuario, u.getLogin());
 		assertEquals(passwordUsuario, u.getPassword());
 
-		Evento e = new Evento("Jaén", Date.from(Instant.now()), TipoEvento.BENEFICO, Categoria.CHARLAS, "Hola caracola",
+		Evento e = new Evento("Jaén", Date.from(Instant.now()), EventoDTO.TipoEvento.BENEFICO, EventoDTO.CategoriaEvento.CHARLAS, "Hola caracola",
 				30);
 
 		gestorEventos.crearEventoPorUsuario(u, e);
@@ -106,7 +106,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
 
-		Evento evento = new Evento("Lugar Evento", mañana, Evento.TipoEvento.NO_BENEFICO, Evento.Categoria.REUNIONES,
+		Evento evento = new Evento("Lugar Evento", mañana, EventoDTO.TipoEvento.NO_BENEFICO, EventoDTO.CategoriaEvento.REUNIONES,
 				"Descripción evento", 20);
 
 		Usuario usuario = crearUsuarioRegistradoLogeado();
@@ -131,7 +131,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
 
-		Evento evento = new Evento("Lugar Evento", mañana, Evento.TipoEvento.NO_BENEFICO, Evento.Categoria.REUNIONES,
+		Evento evento = new Evento("Lugar Evento", mañana, EventoDTO.TipoEvento.NO_BENEFICO, EventoDTO.CategoriaEvento.REUNIONES,
 				"Descripción evento", 20);
 
 		Usuario usuario = crearUsuarioRegistradoLogeado();
@@ -180,10 +180,10 @@ public class SistemaGestionEventosIntegrationTest {
 		List<EventoDTO> eventosU1 = gestorEventos.listarEventosDeUnUsuario(usuario1);
 
 		assertTrue(eventosU.size() == 1);
-		assertEquals(eventosU.get(0).getEstadoEvento(), EstadoEvento.ACEPTADO);
+		assertEquals(eventosU.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
 
 		assertTrue(eventosU1.size() == 1);
-		assertEquals(eventosU1.get(0).getEstadoEvento(), EstadoEvento.LISTA_DE_ESPERA);
+		assertEquals(eventosU1.get(0).getEstado(), EstadoUsuarioEvento.LISTA_DE_ESPERA);
 
 		// TEST LIBERANDO AFORO //
 
@@ -192,7 +192,7 @@ public class SistemaGestionEventosIntegrationTest {
 		eventosU1 = gestorEventos.listarEventosDeUnUsuario(usuario1);
 
 		assertTrue(eventosU1.size() == 1);
-		assertEquals(eventosU1.get(0).getEstadoEvento(), EstadoEvento.ACEPTADO);
+		assertEquals(eventosU1.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
 
 	}
 
