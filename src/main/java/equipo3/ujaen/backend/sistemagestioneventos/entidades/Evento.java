@@ -1,5 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,10 +35,6 @@ public class Evento {
 	private String lugar;
 	private TipoEvento tipoEvento;
 	private Categoria categoria;
-
-	public Evento() {
-		// TODO Auto-generated constructor stub
-	}
 
 	public Evento(String lugar, Date fecha, TipoEvento tipoEvento, Categoria categoriaEvento, String descripcion,
 			int aforoMaximo) {
@@ -126,9 +124,33 @@ public class Evento {
 		return eventoDTO;
 	}
 
+
+	public void setAforoMaximo(int aforoMaximo) {
+		if (aforoMaximo < this.asistentes.size())
+			throw new InvalidParameterException("No se puede reducir el aforo si hay gente registrada");
+
+		this.aforoMaximo = aforoMaximo;
+	}
+
+	public void setIdEvento(Long idEvento) {
+		this.idEvento = idEvento;
+	}
+
+	public void setLugar(String lugar) {
+		this.lugar = lugar;
+	}
+
+	public void setTipoEvento(TipoEvento tipoEvento) {
+		this.tipoEvento = tipoEvento;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+
 	public EstadoEvento getEstadoUsuario(Usuario u) {
 		return this.asistentes.contains(u) ? EstadoEvento.ACEPTADO
 				: this.listaEspera.contains(u) ? EstadoEvento.LISTA_DE_ESPERA : null;
+
 	}
 
 }

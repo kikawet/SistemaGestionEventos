@@ -24,10 +24,6 @@ public class Usuario {
 	private List<Evento> eventosCreados;
 	private Set<Evento> eventosInscritos;
 
-	public Usuario() {
-		// TODO Auto-generated constructor stub
-	}
-
 	public Usuario(String login, String password) {
 		super();
 		this.login = login;

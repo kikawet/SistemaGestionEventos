@@ -92,8 +92,10 @@ public class SistemaGestionEventosIntegrationTest {
 	@Test
 	void cancelarInscripcionUsuario() {
 
-		Evento evento = new Evento("Lugar Evento", new Date(), Evento.TipoEvento.NO_BENEFICO,
-				Evento.Categoria.REUNIONES, "Descripción evento", 20);
+		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+
+		Evento evento = new Evento("Lugar Evento", mañana, Evento.TipoEvento.NO_BENEFICO, Evento.Categoria.REUNIONES,
+				"Descripción evento", 20);
 
 		Usuario usuario = crearUsuarioRegistradoLogeado();
 
@@ -114,8 +116,11 @@ public class SistemaGestionEventosIntegrationTest {
 
 	@Test
 	void inscribirseUsuarioTest() {
-		Evento evento = new Evento("Lugar Evento", new Date(), Evento.TipoEvento.NO_BENEFICO,
-				Evento.Categoria.REUNIONES, "Descripción evento", 20);
+
+		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+
+		Evento evento = new Evento("Lugar Evento", mañana, Evento.TipoEvento.NO_BENEFICO, Evento.Categoria.REUNIONES,
+				"Descripción evento", 20);
 
 		Usuario usuario = crearUsuarioRegistradoLogeado();
 
