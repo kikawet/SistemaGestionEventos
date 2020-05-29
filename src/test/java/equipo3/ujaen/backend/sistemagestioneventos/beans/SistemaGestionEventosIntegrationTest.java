@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.time.Instant;
 import java.util.Date;
@@ -13,10 +14,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.Categoria;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
@@ -38,6 +42,13 @@ public class SistemaGestionEventosIntegrationTest {
 		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
 
 		return gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+	}
+
+	Evento crearEventoValido() {
+		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+
+		return new Evento("Lugar Evento", mañana, Evento.TipoEvento.NO_BENEFICO, Evento.Categoria.REUNIONES,
+				"Descripción evento", 20);
 	}
 
 	@Test
@@ -136,4 +147,52 @@ public class SistemaGestionEventosIntegrationTest {
 
 		Assertions.assertThrows(EventoNoRegistrado.class, () -> gestorEventos.inscribirUsuario(usuario, (long) 8));
 	}
+
+	@Test
+	void listarEventosDeUnUsuario() {
+
+		Usuario usuario = crearUsuarioRegistradoLogeado();
+		Usuario usuario1 = crearUsuarioRegistradoLogeado();
+
+		Evento evento = crearEventoValido();
+
+		evento.setAforoMaximo(1);
+
+		// TEST USUARIO NO LOGEADO //
+		{
+			Usuario usuario2 = new Usuario("PeterParker33", "🕷");
+			Assertions.assertThrows(AccesoDenegado.class, () -> gestorEventos.listarEventosDeUnUsuario(usuario2));
+		}
+
+		// TEST USUARIO NO INSCRITO //
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento);
+
+		assertTrue(gestorEventos.listarEventosDeUnUsuario(usuario).isEmpty());
+
+		// TEST SUPERANDO AFORO //
+
+		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
+		gestorEventos.inscribirUsuario(usuario1, evento.getIdEvento());
+
+		List<EventoDTO> eventosU = gestorEventos.listarEventosDeUnUsuario(usuario);
+		List<EventoDTO> eventosU1 = gestorEventos.listarEventosDeUnUsuario(usuario1);
+
+		assertTrue(eventosU.size() == 1);
+		assertEquals(eventosU.get(0).getEstadoEvento(), EstadoEvento.ACEPTADO);
+
+		assertTrue(eventosU1.size() == 1);
+		assertEquals(eventosU1.get(0).getEstadoEvento(), EstadoEvento.LISTA_DE_ESPERA);
+
+		// TEST LIBERANDO AFORO //
+
+		gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento());
+
+		eventosU1 = gestorEventos.listarEventosDeUnUsuario(usuario1);
+
+		assertTrue(eventosU1.size() == 1);
+		assertEquals(eventosU1.get(0).getEstadoEvento(), EstadoEvento.ACEPTADO);
+
+	}
+
 }
