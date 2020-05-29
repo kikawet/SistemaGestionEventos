@@ -1,8 +1,12 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Usuario {
 	// ROL = null = ningún rol
@@ -18,6 +22,7 @@ public class Usuario {
 	private long uId;
 
 	private List<Evento> eventosCreados;
+	private Set<Evento> eventosInscritos;
 
 	public Usuario(String login, String password) {
 		super();
@@ -25,6 +30,7 @@ public class Usuario {
 		this.password = password;
 
 		this.eventosCreados = new ArrayList<>();
+		this.eventosInscritos = new HashSet<>();
 		this.rol = null;
 		this.uId = new Random().nextLong();
 	}
@@ -35,6 +41,23 @@ public class Usuario {
 
 	public String getPassword() {
 		return password;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(uId);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		return uId == other.uId;
 	}
 
 	public void setPassword(String password) {
@@ -68,4 +91,17 @@ public class Usuario {
 	public boolean mismoUID(Usuario u) {
 		return uId == u.uId;
 	}
+
+	public List<Evento> getEventosInscritos() {
+		return eventosInscritos.stream().collect(Collectors.toList());
+	}
+
+	public boolean inscribir(Evento e) {
+		return this.eventosInscritos.add(e);
+	}
+
+	public boolean cancelarInscripcion(Evento e) {
+		return this.eventosInscritos.remove(e);
+	}
+
 }

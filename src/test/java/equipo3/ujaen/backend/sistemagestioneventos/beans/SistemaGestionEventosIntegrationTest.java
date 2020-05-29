@@ -83,7 +83,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertNotNull(e);
 
-		List<Evento> eventos = gestorEventos.listarEventos();
+		List<Evento> eventos = gestorEventos.listarEventos(0, 1);
 
 		assertEquals(1, eventos.size());
 
