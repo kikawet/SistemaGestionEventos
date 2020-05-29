@@ -1,9 +1,13 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
@@ -12,25 +16,19 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEven
 public class Evento {
 
 	public enum TipoEvento {
-		BENEFICO, 
-		NO_BENEFICO
+		BENEFICO, NO_BENEFICO
 	}
-	
+
 	public enum Categoria {
-		FESTIVAL_MUSICA,
-		DEPORTE,
-		CULTURAL,
-		EXCURSIONES,
-		CHARLAS,
-		REUNIONES
+		FESTIVAL_MUSICA, DEPORTE, CULTURAL, EXCURSIONES, CHARLAS, REUNIONES
 	}
 
 	private int aforoMaximo;
-	private List<Usuario> asistentes;
+	private Set<Usuario> asistentes;
 	private String descripcion;
 	private Date fecha;
 	private Long idEvento;
-	private List<Usuario> listaEspera;
+	private Set<Usuario> listaEspera;
 
 	private String lugar;
 	private TipoEvento tipoEvento;
@@ -40,44 +38,43 @@ public class Evento {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Evento(String lugar, Date fecha, TipoEvento tipoEvento,Categoria categoriaEvento, String descripcion, int aforoMaximo) {
+	public Evento(String lugar, Date fecha, TipoEvento tipoEvento, Categoria categoriaEvento, String descripcion,
+			int aforoMaximo) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
 		this.tipoEvento = tipoEvento;
-		this.categoria=categoriaEvento;
+		this.categoria = categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = new Random().nextLong();
 
-		this.asistentes = new ArrayList<>();
-		this.listaEspera = new ArrayList<>();
+		this.asistentes = new HashSet<>();
+		this.listaEspera = new LinkedHashSet<>();
 	}
 
 	public EstadoEvento anadirAsistente(Usuario u) {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			this.asistentes.add(u);
 			return EstadoEvento.ACEPTADO;
-		}else {
+		} else {
 			this.listaEspera.add(u);
 			return EstadoEvento.LISTA_DE_ESPERA;
 		}
 	}
 
 	public void eliminarAsistente(Usuario u) {
-		
-		int posListaNormal = asistentes.indexOf(u);
-		
-		int posListaEspera = listaEspera.indexOf(u);
-		
-		if(posListaEspera == -1 && posListaNormal == -1)
-			throw new UsuarioNoEstaEvento();
-		
-		if(posListaNormal != -1)
-			asistentes.remove(posListaNormal);
-		
-		if(posListaEspera != -1)
-			asistentes.remove(posListaEspera);
+		if (!this.asistentes.remove(u)) {
+			if (!this.listaEspera.remove(u))
+				throw new UsuarioNoEstaEvento();
+		} else if (!this.listaEspera.isEmpty()) {
+			Iterator<Usuario> primero = this.listaEspera.iterator();
+
+			// Insertamos el primer elemento de la lista
+			this.asistentes.add(primero.next());
+			// Lo borramos de la lista de espera
+			primero.remove();
+		}
 	}
 
 	public int getAforoMaximo() {
@@ -85,7 +82,7 @@ public class Evento {
 	}
 
 	public List<Usuario> getAsistentes() {
-		return asistentes;
+		return asistentes.stream().collect(Collectors.toList());
 	}
 
 	public String getDescripcion() {
@@ -101,7 +98,7 @@ public class Evento {
 	}
 
 	public List<Usuario> getListaEspera() {
-		return listaEspera;
+		return listaEspera.stream().collect(Collectors.toList());
 	}
 
 	public String getLugar() {
@@ -111,7 +108,7 @@ public class Evento {
 	public TipoEvento getTipoEvento() {
 		return tipoEvento;
 	}
-	
+
 	public Categoria getCategoria() {
 		return this.categoria;
 	}
@@ -127,6 +124,11 @@ public class Evento {
 	public EventoDTO toDTO(EstadoEvento estadoEvento) {
 		EventoDTO eventoDTO = new EventoDTO(this, estadoEvento);
 		return eventoDTO;
+	}
+
+	public EstadoEvento getEstadoUsuario(Usuario u) {
+		return this.asistentes.contains(u) ? EstadoEvento.ACEPTADO
+				: this.listaEspera.contains(u) ? EstadoEvento.LISTA_DE_ESPERA : null;
 	}
 
 }
