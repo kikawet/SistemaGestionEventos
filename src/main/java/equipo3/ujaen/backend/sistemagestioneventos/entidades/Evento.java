@@ -146,6 +146,7 @@ public class Evento {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
 
 	public EstadoEvento getEstadoUsuario(Usuario u) {
 		return this.asistentes.contains(u) ? EstadoEvento.ACEPTADO
