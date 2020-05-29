@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
@@ -125,7 +126,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		int pos = usuarioValido.getEventosCreados().indexOf(evento);
 
-		if (usuarioValido.getRol() != Usuario.RolUsuario.ADMIN && pos == -1)
+		if (usuarioValido.getRol() != UsuarioDTO.RolUsuario.ADMIN && pos == -1)
 			throw new AccesoDenegado();
 
 		usuarioValido.getEventosCreados().remove(pos);

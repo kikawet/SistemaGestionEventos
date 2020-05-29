@@ -8,12 +8,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Usuario {
-	// ROL = null = ningún rol
-	public static enum RolUsuario {
-		ADMIN
-	}
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 
+public class Usuario {
 	private RolUsuario rol;
 
 	private String login;
