@@ -27,8 +27,16 @@ public class Evento {
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
-	public Evento(String lugar, Date fecha, EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEventoEvento, String descripcion,
-			int aforoMaximo) {
+	public Evento(EventoDTO eventoDTO) {
+		this(eventoDTO.getLugar(), eventoDTO.getFecha(), eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(),
+				eventoDTO.getDescripcion(), eventoDTO.getAforoMaximo());
+
+		if (eventoDTO.getIdEvento() != null)
+			this.idEvento = eventoDTO.getIdEvento();
+	}
+
+	public Evento(String lugar, Date fecha, EventoDTO.TipoEvento tipoEvento,
+			EventoDTO.CategoriaEvento categoriaEventoEvento, String descripcion, int aforoMaximo) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
@@ -112,7 +120,8 @@ public class Evento {
 
 	public EventoDTO toDTO(Usuario u) {
 		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
-				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(), getEstadoUsuario(u));
+				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
+				getEstadoUsuario(u));
 		return eventoDTO;
 	}
 

@@ -4,7 +4,6 @@ import java.util.List;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 
 public interface InterfaceSistemaGestionEventos {
@@ -13,11 +12,11 @@ public interface InterfaceSistemaGestionEventos {
 
 	public Usuario loginUsuario(String login, String password);
 
-	public List<Evento> listarEventos(long desplazamiento, long cantidad);
+	public List<EventoDTO> listarEventos(long desplazamiento, long cantidad);
 
 	public List<EventoDTO> listarEventosDeUnUsuario(Usuario usuario);
 
-	public void crearEventoPorUsuario(Usuario usuario, Evento evento);
+	public void crearEventoPorUsuario(Usuario usuario, EventoDTO eventoDTO);
 
 	public void cancelarEventoPorUsuario(Usuario usuario, Long idEvento);
 

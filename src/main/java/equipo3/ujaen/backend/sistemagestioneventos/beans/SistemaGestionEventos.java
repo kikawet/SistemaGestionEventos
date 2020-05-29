@@ -72,8 +72,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
 	@Override
-	public List<Evento> listarEventos(long desplazamiento, long cantidad) {
-		return eventos.values().parallelStream().skip(desplazamiento).limit(cantidad).collect(Collectors.toList());
+	public List<EventoDTO> listarEventos(long desplazamiento, long cantidad) {
+		return eventos.values().parallelStream().skip(desplazamiento).limit(cantidad).map(evento -> evento.toDTO())
+				.collect(Collectors.toList());
 	}
 
 	/**
@@ -95,13 +96,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param Evento  que recibe del cliente
 	 */
 	@Override
-	public void crearEventoPorUsuario(Usuario usuario, Evento evento) {
+	public void crearEventoPorUsuario(Usuario usuario, EventoDTO eventoDTO) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuario);
 
-		if (eventos.containsKey(evento.getIdEvento()))
+		if (eventos.containsKey(eventoDTO.getIdEvento()))
 			throw new EventoYaRegistrado();
+
+		Evento evento = new Evento(eventoDTO);
 
 		usuarioValido.crearEvento(evento);
 
