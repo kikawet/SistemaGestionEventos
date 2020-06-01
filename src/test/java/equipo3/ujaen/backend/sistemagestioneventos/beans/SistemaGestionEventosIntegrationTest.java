@@ -44,11 +44,11 @@ public class SistemaGestionEventosIntegrationTest {
 	}
 
 	EventoDTO crearEventoValido() {
-		Date mañana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+		Date manana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
 
 		int aforoMaximo = 1500;
 		String descripcion = "El evento al que todo el mundo vendrá";
-		Date cuando = mañana;
+		Date cuando = manana;
 		Long idEvento = null;
 		String lugar = "Jaén";
 		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;
