@@ -8,21 +8,29 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Usuario {
-	// ROL = null = ningún rol
-	public static enum RolUsuario {
-		ADMIN
-	}
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 
+public class Usuario {
 	private RolUsuario rol;
 
 	private String login;
 	private String password;
 
-	private long uId;
+	private Long uId;
 
 	private List<Evento> eventosCreados;
 	private Set<Evento> eventosInscritos;
+
+	public Usuario(UsuarioDTO usuarioDTO) {
+		this(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+
+		this.rol = usuarioDTO.getRol();
+
+		if (usuarioDTO.getuId() != null)
+			this.uId = usuarioDTO.getuId();
+
+	}
 
 	public Usuario(String login, String password) {
 		super();
@@ -84,12 +92,8 @@ public class Usuario {
 		this.rol = rol;
 	}
 
-	public long getuId() {
+	public Long getuId() {
 		return uId;
-	}
-
-	public boolean mismoUID(Usuario u) {
-		return uId == u.uId;
 	}
 
 	public List<Evento> getEventosInscritos() {
@@ -102,6 +106,11 @@ public class Usuario {
 
 	public boolean cancelarInscripcion(Evento e) {
 		return this.eventosInscritos.remove(e);
+	}
+
+	public UsuarioDTO toDTO() {
+		return new UsuarioDTO(this.login, this.password, this.uId, this.rol, this.eventosCreados.size(),
+				this.eventosInscritos.size());
 	}
 
 }

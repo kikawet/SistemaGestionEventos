@@ -1,7 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -12,18 +11,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 
 public class Evento {
-
-	public enum TipoEvento {
-		BENEFICO, NO_BENEFICO
-	}
-
-	public enum Categoria {
-		FESTIVAL_MUSICA, DEPORTE, CULTURAL, EXCURSIONES, CHARLAS, REUNIONES
-	}
 
 	private int aforoMaximo;
 	private Set<Usuario> asistentes;
@@ -33,16 +24,26 @@ public class Evento {
 	private Set<Usuario> listaEspera;
 
 	private String lugar;
-	private TipoEvento tipoEvento;
-	private Categoria categoria;
+	private EventoDTO.TipoEvento tipoEvento;
+	private EventoDTO.CategoriaEvento categoriaEvento;
 
-	public Evento(String lugar, Date fecha, TipoEvento tipoEvento, Categoria categoriaEvento, String descripcion,
-			int aforoMaximo) {
+	public Evento(EventoDTO eventoDTO) {
+		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento());
+
+		if (eventoDTO.getIdEvento() != null)
+			this.idEvento = eventoDTO.getIdEvento();
+		else
+			eventoDTO.setIdEvento(this.idEvento);
+	}
+
+	public Evento(int aforoMaximo, String descripcion, Date fecha, String lugar, EventoDTO.TipoEvento tipoEvento,
+			EventoDTO.CategoriaEvento categoriaEvento) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
 		this.tipoEvento = tipoEvento;
-		this.categoria = categoriaEvento;
+		this.categoriaEvento = categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = new Random().nextLong();
@@ -51,14 +52,23 @@ public class Evento {
 		this.listaEspera = new LinkedHashSet<>();
 	}
 
-	public EstadoEvento anadirAsistente(Usuario u) {
+	/**
+	 * @brief Añade un nuevo usuario a la lista de asistentes o de espera en función
+	 *        del aforo
+	 * @param u
+	 * @return null si no se ha añadido o la lista donde se insertó
+	 */
+	public EstadoUsuarioEvento anadirAsistente(Usuario u) {
+		EstadoUsuarioEvento estado = null;
+
 		if (this.asistentes.size() < this.aforoMaximo) {
-			this.asistentes.add(u);
-			return EstadoEvento.ACEPTADO;
-		} else {
-			this.listaEspera.add(u);
-			return EstadoEvento.LISTA_DE_ESPERA;
+			if (this.asistentes.add(u))
+				estado = EstadoUsuarioEvento.ACEPTADO;
+		} else if (!this.asistentes.contains(u) && this.listaEspera.add(u)) {
+			estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
 		}
+
+		return estado;
 	}
 
 	public void eliminarAsistente(Usuario u) {
@@ -103,12 +113,12 @@ public class Evento {
 		return lugar;
 	}
 
-	public TipoEvento getTipoEvento() {
+	public EventoDTO.TipoEvento getTipoEvento() {
 		return tipoEvento;
 	}
 
-	public Categoria getCategoria() {
-		return this.categoria;
+	public EventoDTO.CategoriaEvento getCategoriaEvento() {
+		return this.categoriaEvento;
 	}
 
 	public void setDescripcion(String descripcion) {
@@ -119,11 +129,16 @@ public class Evento {
 		this.fecha = fecha;
 	}
 
-	public EventoDTO toDTO(EstadoEvento estadoEvento) {
-		EventoDTO eventoDTO = new EventoDTO(this, estadoEvento);
+	public EventoDTO toDTO(Usuario u) {
+		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
+				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
+				getEstadoUsuario(u));
 		return eventoDTO;
 	}
 
+	public EventoDTO toDTO() {
+		return toDTO(null);
+	}
 
 	public void setAforoMaximo(int aforoMaximo) {
 		if (aforoMaximo < this.asistentes.size())
@@ -140,17 +155,17 @@ public class Evento {
 		this.lugar = lugar;
 	}
 
-	public void setTipoEvento(TipoEvento tipoEvento) {
+	public void setTipoEvento(EventoDTO.TipoEvento tipoEvento) {
 		this.tipoEvento = tipoEvento;
 	}
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
+	public void setCategoriaEvento(EventoDTO.CategoriaEvento categoriaEvento) {
+		this.categoriaEvento = categoriaEvento;
 	}
 
-	public EstadoEvento getEstadoUsuario(Usuario u) {
-		return this.asistentes.contains(u) ? EstadoEvento.ACEPTADO
-				: this.listaEspera.contains(u) ? EstadoEvento.LISTA_DE_ESPERA : null;
+	public EstadoUsuarioEvento getEstadoUsuario(Usuario u) {
+		return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
+				: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
 
 	}
 

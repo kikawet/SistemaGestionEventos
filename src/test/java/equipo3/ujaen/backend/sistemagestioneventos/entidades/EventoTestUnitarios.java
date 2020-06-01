@@ -10,20 +10,19 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.Categoria;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento.TipoEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 
 class EventoTestUnitarios {
 	private final static String lugar = "Jaén";
 	private final static Date fecha = new Date();
-	private final static TipoEvento tipoEvento = TipoEvento.BENEFICO;
-	private final static Categoria categoriaEvento = Categoria.DEPORTE;
+	private final static EventoDTO.TipoEvento tipoEvento = EventoDTO.TipoEvento.BENEFICO;
+	private final static EventoDTO.CategoriaEvento categoriaEvento = EventoDTO.CategoriaEvento.DEPORTE;
 	private final static String descripcion = "Evento al que todo el mundo asistirá";
 	private final static int aforoMaximo = 1500;
 
 	Evento crearEvento() {
-		return new Evento(lugar, fecha, tipoEvento, categoriaEvento, descripcion, aforoMaximo);
+		return new Evento(aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento);
 	}
 
 	Usuario crearUsuario() {
@@ -44,12 +43,14 @@ class EventoTestUnitarios {
 		assertTrue(evento.getLugar().equals(lugar));
 		assertTrue(evento.getFecha().equals(fecha));
 		assertTrue(evento.getTipoEvento().equals(tipoEvento));
-		assertTrue(evento.getCategoria().equals(categoriaEvento));
+		assertTrue(evento.getCategoriaEvento().equals(categoriaEvento));
 		assertTrue(evento.getDescripcion().equals(descripcion));
 		assertTrue(evento.getAforoMaximo() == aforoMaximo);
 
+		System.out.println(evento.getIdEvento());
+
 		// Datos creados internamente
-		assertTrue(evento.getIdEvento() != null && evento.getIdEvento() > 0);
+		assertTrue(evento.getIdEvento() != null && evento.getIdEvento() != 0);
 		assertTrue(evento.getAsistentes().isEmpty());
 		assertTrue(evento.getListaEspera().isEmpty());
 	}
@@ -62,22 +63,22 @@ class EventoTestUnitarios {
 		String nuevoLugar = "Sevilla";
 		TimeUnit.SECONDS.sleep(1);
 		Date nuevaFecha = new Date();
-		TipoEvento nuevoTipoEvento = TipoEvento.NO_BENEFICO;
-		Categoria nuevaCategoriaEvento = Categoria.CULTURAL;
+		EventoDTO.TipoEvento nuevoTipoEvento = EventoDTO.TipoEvento.NO_BENEFICO;
+		EventoDTO.CategoriaEvento nuevaCategoriaEventoEvento = EventoDTO.CategoriaEvento.CULTURAL;
 		String nuevaDescripcion = "Evento al que nadie en el mundo asistirá";
 		int nuevoAforoMaximo = 30;
 
 		evento.setLugar(nuevoLugar);
 		evento.setFecha(nuevaFecha);
 		evento.setTipoEvento(nuevoTipoEvento);
-		evento.setCategoria(nuevaCategoriaEvento);
+		evento.setCategoriaEvento(nuevaCategoriaEventoEvento);
 		evento.setDescripcion(nuevaDescripcion);
 		evento.setAforoMaximo(nuevoAforoMaximo);
 
 		assertTrue(evento.getLugar().equals(nuevoLugar));
 		assertTrue(evento.getFecha().equals(nuevaFecha));
 		assertTrue(evento.getTipoEvento().equals(nuevoTipoEvento));
-		assertTrue(evento.getCategoria().equals(nuevaCategoriaEvento));
+		assertTrue(evento.getCategoriaEvento().equals(nuevaCategoriaEventoEvento));
 		assertTrue(evento.getDescripcion().equals(nuevaDescripcion));
 		assertTrue(evento.getAforoMaximo() == nuevoAforoMaximo);
 
@@ -101,14 +102,14 @@ class EventoTestUnitarios {
 
 		evento.setAforoMaximo(1);
 
-		EstadoEvento estado = evento.anadirAsistente(usuario);
+		EstadoUsuarioEvento estado = evento.anadirAsistente(usuario);
 
-		assertTrue(estado.equals(EstadoEvento.ACEPTADO));
+		assertTrue(estado.equals(EstadoUsuarioEvento.ACEPTADO));
 		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().isEmpty());
 
 		estado = evento.anadirAsistente(usuario2);
 
-		assertTrue(estado.equals(EstadoEvento.LISTA_DE_ESPERA));
+		assertTrue(estado.equals(EstadoUsuarioEvento.LISTA_DE_ESPERA));
 		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().size() == 1);
 
 		// Si el usuario ya existe devuelve null
