@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
@@ -73,9 +74,19 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
 	@Override
-	public List<EventoDTO> listarEventos(long desplazamiento, long cantidad) {
-		return eventos.values().parallelStream().skip(desplazamiento).limit(cantidad).map(evento -> evento.toDTO())
-				.collect(Collectors.toList());
+	public List<EventoDTO> listarEventos(TipoEvento tipo, String descripcionParcial, long cantidadMaxima) {
+		if (cantidadMaxima < 0)
+			throw new IllegalArgumentException("La cantidad máxima no puede ser negativa");
+
+		if (tipo != null)
+			return eventos.values().parallelStream().filter(evento -> evento.getTipoEvento().equals(tipo))
+					.filter(evento -> evento.getDescripcion().toLowerCase().contains(descripcionParcial))
+					.limit(cantidadMaxima).map(evento -> evento.toDTO()).collect(Collectors.toList());
+		else
+			return eventos.values().parallelStream()
+					.filter(evento -> evento.getDescripcion().toLowerCase().contains(descripcionParcial))
+					.limit(cantidadMaxima).map(evento -> evento.toDTO()).collect(Collectors.toList());
+
 	}
 
 	/**
@@ -83,11 +94,20 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 *        aceptado o en lista de espera
 	 */
 	@Override
-	public List<EventoDTO> listarEventosDeUnUsuario(UsuarioDTO usuarioDTO) {
+	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO) {
 
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		return usuarioValido.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
+				.collect(Collectors.toList());
+	}
+
+	@Override
+	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO) {
+
+		Usuario usuarioValido = validarUsuario(usuarioDTO);
+
+		return usuarioValido.getEventosCreados().stream().map(evento -> evento.toDTO(usuarioValido))
 				.collect(Collectors.toList());
 	}
 
