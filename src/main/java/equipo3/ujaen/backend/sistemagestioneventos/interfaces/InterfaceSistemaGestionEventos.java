@@ -3,6 +3,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.interfaces;
 import java.util.List;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 
@@ -12,9 +13,11 @@ public interface InterfaceSistemaGestionEventos {
 
 	public UsuarioDTO loginUsuario(String login, String password);
 
-	public List<EventoDTO> listarEventos(long desplazamiento, long cantidad);
+	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, long cantidadMaxima);
 
-	public List<EventoDTO> listarEventosDeUnUsuario(UsuarioDTO usuarioDTO);
+	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO);
+
+	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO);
 
 	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO);
 
