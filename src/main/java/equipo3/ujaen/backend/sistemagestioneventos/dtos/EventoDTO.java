@@ -125,4 +125,17 @@ public class EventoDTO {
 		this.estado = estado;
 	}
 
+	public void clone(EventoDTO e) {
+		this.aforoMaximo = e.aforoMaximo;
+		this.descripcion = e.descripcion;
+		this.fecha = e.fecha;
+		this.idEvento = e.idEvento;
+		this.lugar = e.lugar;
+		this.tipoEvento = e.tipoEvento;
+		this.categoriaEvento = e.categoriaEvento;
+		this.numAsistentes = e.numAsistentes;
+		this.numListaEspera = e.numListaEspera;
+		this.estado = e.estado;
+	}
+
 }

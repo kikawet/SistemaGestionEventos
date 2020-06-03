@@ -47,8 +47,6 @@ class EventoTestUnitarios {
 		assertTrue(evento.getDescripcion().equals(descripcion));
 		assertTrue(evento.getAforoMaximo() == aforoMaximo);
 
-		System.out.println(evento.getIdEvento());
-
 		// Datos creados internamente
 		assertTrue(evento.getIdEvento() != null && evento.getIdEvento() != 0);
 		assertTrue(evento.getAsistentes().isEmpty());

@@ -81,4 +81,13 @@ public class UsuarioDTO {
 		this.numEventosInscritos = numEventosInscritos;
 	}
 
+	public void clone(UsuarioDTO u) {
+		this.rol = u.rol;
+		this.login = u.login;
+		this.password = u.password;
+		this.uId = u.uId;
+		this.numEventosCreados = u.numEventosCreados;
+		this.numEventosInscritos = u.numEventosInscritos;
+	}
+
 }
