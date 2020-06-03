@@ -136,18 +136,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		usuarioValido.crearEvento(evento);
 
-		if (inscribirCreador) {
-			Date hoy = new Date();
-			if (hoy.compareTo(evento.getFecha()) > 0) {
-				throw new EventoPrescrito();
-			} else {
-				usuarioValido.setRol(RolUsuario.ADMIN);
-				usuarioValido.toDTO().setNumEventosCreados(usuarioValido.toDTO().getNumEventosCreados() + 1);
-				usuarioValido.toDTO().setNumEventosInscritos(usuarioValido.toDTO().getNumEventosInscritos() + 1);
-				evento.anadirAsistente(usuarioValido);
-			}
-		}
-
+		
 		if (inscribirCreador) {
 			Date hoy = new Date();
 
