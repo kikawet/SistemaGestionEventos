@@ -130,6 +130,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		Evento evento = new Evento(eventoDTO);
 
+		eventoDTO.setIdEvento(evento.getIdEvento());
+
 		usuarioValido.crearEvento(evento);
 
 		eventos.put(evento.getIdEvento(), evento);
@@ -202,7 +204,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	private Usuario validarUsuario(UsuarioDTO usuarioDTO) {
 		Usuario usuarioInterno = usuarios.get(usuarioDTO.getLogin());
 
-		if (usuarioInterno == null || usuarioInterno.getuId() != usuarioDTO.getuId())
+		if (usuarioInterno == null)
+			throw new UsuarioNoRegistrado();
+
+		if (!usuarioInterno.getuId().equals(usuarioDTO.getuId()))
 			throw new AccesoDenegado();
 
 		return usuarioInterno;

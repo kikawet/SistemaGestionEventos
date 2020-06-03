@@ -99,7 +99,11 @@ public class SistemaGestionEventosIntegrationTest {
 
 		EventoDTO e = crearEventoValido();
 
+		assertNull(e.getIdEvento());
+
 		gestorEventos.crearEventoPorUsuario(u, e);
+
+		assertNotNull(e.getIdEvento());
 
 		Assertions.assertThrows(EventoYaRegistrado.class, () -> gestorEventos.crearEventoPorUsuario(u, e));
 
@@ -113,7 +117,6 @@ public class SistemaGestionEventosIntegrationTest {
 
 	}
 
-	@Test
 	void cancelarInscripcionUsuario() {
 
 		EventoDTO evento = crearEventoValido();
@@ -174,10 +177,8 @@ public class SistemaGestionEventosIntegrationTest {
 		// TEST USUARIO NO LOGEADO //
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-			Assertions.assertThrows(AccesoDenegado.class,
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
 					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2));
-			Assertions.assertThrows(AccesoDenegado.class,
-					() -> gestorEventos.listarEventosCreadosPorUnUsuario(usuario2));
 		}
 
 		// TEST USUARIO NO INSCRITO //
@@ -238,6 +239,7 @@ public class SistemaGestionEventosIntegrationTest {
 		assertTrue(eventosU1.isEmpty());
 
 		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
+
 	}
 
 	@Test
@@ -250,7 +252,7 @@ public class SistemaGestionEventosIntegrationTest {
 		// TEST USUARIO NO LOGEADO //
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-			Assertions.assertThrows(AccesoDenegado.class,
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
 					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2));
 		}
 
@@ -326,7 +328,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-			Assertions.assertThrows(AccesoDenegado.class,
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
 					() -> gestorEventos.cancelarEventoPorUsuario(usuario2, evento.getIdEvento()));
 		}
 
