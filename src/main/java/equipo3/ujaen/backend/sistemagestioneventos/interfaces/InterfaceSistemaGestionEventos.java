@@ -19,7 +19,7 @@ public interface InterfaceSistemaGestionEventos {
 
 	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO);
 
-	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO);
+	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO,boolean inscribirCreador);
 
 	public void cancelarEventoPorUsuario(UsuarioDTO usuarioDTO, Long idEvento);
 
