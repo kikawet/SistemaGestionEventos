@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
@@ -97,7 +98,11 @@ public class SistemaGestionEventosIntegrationTest {
 
 		EventoDTO e = crearEventoValido();
 
+		assertNull(e.getIdEvento());
+
 		gestorEventos.crearEventoPorUsuario(u, e);
+
+		assertNotNull(e.getIdEvento());
 
 		Assertions.assertThrows(EventoYaRegistrado.class, () -> gestorEventos.crearEventoPorUsuario(u, e));
 
@@ -166,7 +171,7 @@ public class SistemaGestionEventosIntegrationTest {
 		// TEST USUARIO NO LOGEADO //
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-			Assertions.assertThrows(AccesoDenegado.class, () -> gestorEventos.listarEventosDeUnUsuario(usuario2));
+			Assertions.assertThrows(UsuarioNoRegistrado.class, () -> gestorEventos.listarEventosDeUnUsuario(usuario2));
 		}
 
 		// TEST USUARIO NO INSCRITO //
@@ -211,7 +216,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-			Assertions.assertThrows(AccesoDenegado.class,
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
 					() -> gestorEventos.cancelarEventoPorUsuario(usuario2, evento.getIdEvento()));
 		}
 
