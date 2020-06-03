@@ -101,11 +101,14 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertNull(e.getIdEvento());
 
-		gestorEventos.crearEventoPorUsuario(u, e);
+		boolean inscribirCreador = true;
+
+		gestorEventos.crearEventoPorUsuario(u, e, inscribirCreador);
 
 		assertNotNull(e.getIdEvento());
 
-		Assertions.assertThrows(EventoYaRegistrado.class, () -> gestorEventos.crearEventoPorUsuario(u, e));
+		Assertions.assertThrows(EventoYaRegistrado.class,
+				() -> gestorEventos.crearEventoPorUsuario(u, e, inscribirCreador));
 
 		assertNotNull(e);
 
@@ -125,7 +128,9 @@ public class SistemaGestionEventosIntegrationTest {
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
-		gestorEventos.crearEventoPorUsuario(usuario1, evento);
+		boolean inscribirCreador = false;
+
+		gestorEventos.crearEventoPorUsuario(usuario1, evento, inscribirCreador);
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 
@@ -149,7 +154,9 @@ public class SistemaGestionEventosIntegrationTest {
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
-		gestorEventos.crearEventoPorUsuario(usuario1, evento);
+		boolean inscribirCreador = false;
+
+		gestorEventos.crearEventoPorUsuario(usuario1, evento, inscribirCreador);
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 
@@ -183,7 +190,9 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// TEST USUARIO NO INSCRITO //
 
-		gestorEventos.crearEventoPorUsuario(usuario, evento);
+		boolean inscribirCreador = false;
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
 
 		assertTrue(gestorEventos.listarEventosInscritosDeUnUsuario(usuario).isEmpty());
 		assertEquals(1, gestorEventos.listarEventosCreadosPorUnUsuario(usuario).size());
@@ -270,7 +279,9 @@ public class SistemaGestionEventosIntegrationTest {
 		evento1.setCategoriaEvento(CategoriaEvento.CHARLAS);
 		evento1.setDescripcion("Evento de pruebas");
 
-		gestorEventos.crearEventoPorUsuario(usuario, evento1);
+		boolean inscribirCreador = false;
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento1, inscribirCreador);
 
 		eventos = gestorEventos.listarEventos(CategoriaEvento.CHARLAS, "", 100);
 		assertEquals(1, eventos.size());
@@ -283,7 +294,7 @@ public class SistemaGestionEventosIntegrationTest {
 		evento2.setCategoriaEvento(CategoriaEvento.DEPORTE);
 		evento2.setDescripcion("Evento de pruebas de integracion");
 
-		gestorEventos.crearEventoPorUsuario(usuario, evento2);
+		gestorEventos.crearEventoPorUsuario(usuario, evento2, inscribirCreador);
 
 		eventos = gestorEventos.listarEventos(CategoriaEvento.DEPORTE, "integracion", 100);
 		assertEquals(1, eventos.size());
@@ -295,7 +306,7 @@ public class SistemaGestionEventosIntegrationTest {
 		evento.setCategoriaEvento(null);
 		evento.setDescripcion("Evento de pruebas");
 
-		gestorEventos.crearEventoPorUsuario(usuario, evento);
+		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
 
 		eventos = gestorEventos.listarEventos(null, "", 100);
 		assertEquals(borrar.size(), eventos.size());
@@ -337,7 +348,9 @@ public class SistemaGestionEventosIntegrationTest {
 		Assertions.assertThrows(EventoNoExiste.class,
 				() -> gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento()));
 
-		gestorEventos.crearEventoPorUsuario(usuario, evento);
+		boolean inscribirCreador = false;
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
 		assertEquals(0, usuario.getNumEventosCreados());
 
 		// TEST BORRAR SIN PERMISO //

@@ -120,7 +120,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param Evento  que recibe del cliente
 	 */
 	@Override
-	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO) {
+	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO, boolean inscribirCreador) {
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
@@ -134,7 +134,22 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		usuarioValido.crearEvento(evento);
 
+		if (inscribirCreador) {
+			Date hoy = new Date();
+
+			// hoy > evento.getFecha
+			if (hoy.compareTo(evento.getFecha()) > 0)
+				throw new EventoPrescrito();
+
+			usuarioValido.inscribir(evento);
+			evento.anadirAsistente(usuarioValido);
+		}
+
 		eventos.put(evento.getIdEvento(), evento);
+
+		usuarioDTO = usuarioValido.toDTO();
+		usuarioDTO.setPassword(null);
+		eventoDTO = evento.toDTO();
 	}
 
 	/**
