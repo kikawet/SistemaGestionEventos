@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
@@ -135,7 +136,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioValido.crearEvento(evento);
 		
 		if(inscribirCreador) {
-			evento.anadirAsistente(usuarioValido);
+			Date hoy = new Date();
+			if(hoy.compareTo(evento.getFecha())>0) {
+				throw new EventoPrescrito();
+			}else {
+				usuarioValido.setRol(RolUsuario.ADMIN);
+				usuarioValido.toDTO().setNumEventosCreados(usuarioValido.toDTO().getNumEventosCreados()+1);
+				usuarioValido.toDTO().setNumEventosInscritos(usuarioValido.toDTO().getNumEventosInscritos()+1);
+				evento.anadirAsistente(usuarioValido);
+			}
 		}
 
 		eventos.put(evento.getIdEvento(), evento);
