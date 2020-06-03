@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
@@ -121,7 +121,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param Evento  que recibe del cliente
 	 */
 	@Override
-	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO,boolean inscribirCreador) {
+	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO, boolean inscribirCreador) {
+
 		// TODO Auto-generated method stub
 
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
@@ -134,20 +135,35 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		eventoDTO.setIdEvento(evento.getIdEvento());
 
 		usuarioValido.crearEvento(evento);
-		
-		if(inscribirCreador) {
+
+		if (inscribirCreador) {
 			Date hoy = new Date();
-			if(hoy.compareTo(evento.getFecha())>0) {
+			if (hoy.compareTo(evento.getFecha()) > 0) {
 				throw new EventoPrescrito();
-			}else {
+			} else {
 				usuarioValido.setRol(RolUsuario.ADMIN);
-				usuarioValido.toDTO().setNumEventosCreados(usuarioValido.toDTO().getNumEventosCreados()+1);
-				usuarioValido.toDTO().setNumEventosInscritos(usuarioValido.toDTO().getNumEventosInscritos()+1);
+				usuarioValido.toDTO().setNumEventosCreados(usuarioValido.toDTO().getNumEventosCreados() + 1);
+				usuarioValido.toDTO().setNumEventosInscritos(usuarioValido.toDTO().getNumEventosInscritos() + 1);
 				evento.anadirAsistente(usuarioValido);
 			}
 		}
 
+		if (inscribirCreador) {
+			Date hoy = new Date();
+
+			// hoy > evento.getFecha
+			if (hoy.compareTo(evento.getFecha()) > 0)
+				throw new EventoPrescrito();
+
+			usuarioValido.inscribir(evento);
+			evento.anadirAsistente(usuarioValido);
+		}
+
 		eventos.put(evento.getIdEvento(), evento);
+
+		usuarioDTO = usuarioValido.toDTO();
+		usuarioDTO.setPassword(null);
+		eventoDTO = evento.toDTO();
 	}
 
 	/**
