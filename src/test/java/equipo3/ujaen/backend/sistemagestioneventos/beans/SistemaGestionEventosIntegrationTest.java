@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -108,13 +109,14 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertNotNull(e);
 
-		List<EventoDTO> eventos = gestorEventos.listarEventos(0, 1);
+		List<EventoDTO> eventos = gestorEventos.listarEventos(null, "", 1);
 
 		assertEquals(1, eventos.size());
 
+		gestorEventos.cancelarEventoPorUsuario(u, e.getIdEvento());
+
 	}
 
-	@Test
 	void cancelarInscripcionUsuario() {
 
 		EventoDTO evento = crearEventoValido();
@@ -133,6 +135,8 @@ public class SistemaGestionEventosIntegrationTest {
 		// Usuario resgistrado y no inscrito
 		Assertions.assertThrows(UsuarioNoEstaEvento.class,
 				() -> gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento()));
+
+		gestorEventos.cancelarEventoPorUsuario(usuario1, evento.getIdEvento());
 
 	}
 
@@ -156,6 +160,8 @@ public class SistemaGestionEventosIntegrationTest {
 //		assertEquals(usuario, evento.getAsistentes().get(0));
 
 		Assertions.assertThrows(EventoNoRegistrado.class, () -> gestorEventos.inscribirUsuario(usuario, (long) 8));
+
+		gestorEventos.cancelarEventoPorUsuario(usuario1, evento.getIdEvento());
 	}
 
 	@Test
@@ -171,22 +177,26 @@ public class SistemaGestionEventosIntegrationTest {
 		// TEST USUARIO NO LOGEADO //
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-			Assertions.assertThrows(UsuarioNoRegistrado.class, () -> gestorEventos.listarEventosDeUnUsuario(usuario2));
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
+					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2));
 		}
 
 		// TEST USUARIO NO INSCRITO //
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento);
 
-		assertTrue(gestorEventos.listarEventosDeUnUsuario(usuario).isEmpty());
+		assertTrue(gestorEventos.listarEventosInscritosDeUnUsuario(usuario).isEmpty());
+		assertEquals(1, gestorEventos.listarEventosCreadosPorUnUsuario(usuario).size());
 
 		// TEST SUPERANDO AFORO //
 
 		gestorEventos.inscribirUsuario(usuario, evento.getIdEvento());
 		gestorEventos.inscribirUsuario(usuario1, evento.getIdEvento());
 
-		List<EventoDTO> eventosU = gestorEventos.listarEventosDeUnUsuario(usuario);
-		List<EventoDTO> eventosU1 = gestorEventos.listarEventosDeUnUsuario(usuario1);
+		// Eventos inscritos
+
+		List<EventoDTO> eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario);
+		List<EventoDTO> eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1);
 
 		assertTrue(eventosU.size() == 1);
 		assertEquals(eventosU.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
@@ -194,14 +204,116 @@ public class SistemaGestionEventosIntegrationTest {
 		assertTrue(eventosU1.size() == 1);
 		assertEquals(eventosU1.get(0).getEstado(), EstadoUsuarioEvento.LISTA_DE_ESPERA);
 
+		// Eventos creados
+
+		eventosU = gestorEventos.listarEventosCreadosPorUnUsuario(usuario);
+		eventosU1 = gestorEventos.listarEventosCreadosPorUnUsuario(usuario1);
+
+		assertTrue(eventosU.size() == 1);
+		assertEquals(eventosU.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
+
+		assertTrue(eventosU1.isEmpty());
+
 		// TEST LIBERANDO AFORO //
 
 		gestorEventos.cancelarInscripcionUsuario(usuario, evento.getIdEvento());
 
-		eventosU1 = gestorEventos.listarEventosDeUnUsuario(usuario1);
+		// Eventos inscritos
+
+		eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario);
+		eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1);
+
+		assertTrue(eventosU.isEmpty());
 
 		assertTrue(eventosU1.size() == 1);
 		assertEquals(eventosU1.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
+
+		// Eventos creados
+
+		eventosU = gestorEventos.listarEventosCreadosPorUnUsuario(usuario);
+		eventosU1 = gestorEventos.listarEventosCreadosPorUnUsuario(usuario1);
+
+		assertTrue(eventosU.size() == 1);
+		assertNull(eventosU.get(0).getEstado());
+
+		assertTrue(eventosU1.isEmpty());
+
+		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
+
+	}
+
+	@Test
+	void listarEventos() {
+
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+
+		List<EventoDTO> borrar = new ArrayList<>();
+
+		// TEST USUARIO NO LOGEADO //
+		{
+			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
+					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2));
+		}
+
+		// TEST SIN EVENTOS
+
+		List<EventoDTO> eventos = gestorEventos.listarEventos(null, "", 100);
+
+		assertTrue(eventos.isEmpty());
+
+		// TEST CON TIPO SIN DESCRIPCION
+
+		EventoDTO evento1 = crearEventoValido();
+		borrar.add(evento1);
+
+		evento1.setCategoriaEvento(CategoriaEvento.CHARLAS);
+		evento1.setDescripcion("Evento de pruebas");
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento1);
+
+		eventos = gestorEventos.listarEventos(CategoriaEvento.CHARLAS, "", 100);
+		assertEquals(1, eventos.size());
+
+		// TEST CON TIPO CON DESCRIPCION
+
+		EventoDTO evento2 = crearEventoValido();
+		borrar.add(evento2);
+
+		evento2.setCategoriaEvento(CategoriaEvento.DEPORTE);
+		evento2.setDescripcion("Evento de pruebas de integracion");
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento2);
+
+		eventos = gestorEventos.listarEventos(CategoriaEvento.DEPORTE, "integracion", 100);
+		assertEquals(1, eventos.size());
+
+		// TEST SIN TIPO SIN DESCRIPCION
+		EventoDTO evento = crearEventoValido();
+		borrar.add(evento);
+
+		evento.setCategoriaEvento(null);
+		evento.setDescripcion("Evento de pruebas");
+
+		gestorEventos.crearEventoPorUsuario(usuario, evento);
+
+		eventos = gestorEventos.listarEventos(null, "", 100);
+		assertEquals(borrar.size(), eventos.size());
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> gestorEventos.listarEventos(null, null, 100));
+
+		// TEST CANTIDAD
+
+		eventos = gestorEventos.listarEventos(null, "", 100);
+		assertEquals(borrar.size(), eventos.size());
+
+		eventos = gestorEventos.listarEventos(null, "", 1);
+		assertEquals(1, eventos.size());
+
+		eventos = gestorEventos.listarEventos(null, "", 0);
+		assertEquals(0, eventos.size());
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> gestorEventos.listarEventos(null, "", -1));
 
 	}
 
@@ -237,7 +349,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
 
-		assertTrue(!gestorEventos.listarEventos(0, 100).contains(evento));
+		assertTrue(!gestorEventos.listarEventos(null, "", 100).contains(evento));
 		assertEquals(0, usuario.getNumEventosCreados());
 
 	}
