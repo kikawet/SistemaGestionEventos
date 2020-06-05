@@ -353,7 +353,7 @@ public class SistemaGestionEventosIntegrationTest {
 		boolean inscribirCreador = false;
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
-		assertEquals(0, usuario.getNumEventosCreados());
+		assertEquals(1, usuario.getNumEventosCreados());
 
 		// TEST BORRAR SIN PERMISO //
 

@@ -12,7 +12,6 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
@@ -136,7 +135,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		usuarioValido.crearEvento(evento);
 
-		
 		if (inscribirCreador) {
 			Date hoy = new Date();
 
@@ -150,9 +148,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		eventos.put(evento.getIdEvento(), evento);
 
-		usuarioDTO = usuarioValido.toDTO();
+		usuarioDTO.clone(usuarioValido.toDTO());
 		usuarioDTO.setPassword(null);
-		eventoDTO = evento.toDTO();
+
+		eventoDTO.clone(evento.toDTO());
 	}
 
 	/**
@@ -173,7 +172,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			throw new AccesoDenegado();
 
 		usuarioValido.getEventosCreados().remove(pos);
+
 		eventos.remove(idEvento);
+
+		usuarioDTO.clone(usuarioValido.toDTO());
 	}
 
 	/**
