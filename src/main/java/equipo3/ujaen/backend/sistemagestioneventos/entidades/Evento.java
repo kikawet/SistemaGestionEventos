@@ -10,17 +10,24 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
-
+@Entity
 public class Evento {
 
 	private int aforoMaximo;
+	@OneToMany
 	private Set<Usuario> asistentes;
 	private String descripcion;
 	private Date fecha;
+	@Id
 	private Long idEvento;
+	@OneToMany
 	private Set<Usuario> listaEspera;
 
 	private String lugar;
