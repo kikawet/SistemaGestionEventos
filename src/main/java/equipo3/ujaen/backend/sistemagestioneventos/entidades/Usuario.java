@@ -9,7 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
@@ -22,9 +24,10 @@ public class Usuario {
 	private String password;
 
 	@Id
+	@GeneratedValue
 	private Long uId;
 
-	@OneToMany
+	@ManyToOne
 	private List<Evento> eventosCreados;
 	@OneToMany
 	private Set<Evento> eventosInscritos;
@@ -47,7 +50,11 @@ public class Usuario {
 		this.eventosCreados = new ArrayList<>();
 		this.eventosInscritos = new HashSet<>();
 		this.rol = null;
-		this.uId = new Random().nextLong();
+		this.uId = null;
+	}
+
+	public void setuId(Long uId) {
+		this.uId = uId;
 	}
 
 	public Evento nuevoEvento() {
