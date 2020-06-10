@@ -1,6 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 public class EventoDTO {
 
@@ -19,19 +19,20 @@ public class EventoDTO {
 	// Atributos de evento
 	private int aforoMaximo;
 	private String descripcion;
-	private Date fecha;
+	private LocalDateTime fecha;
 	private Long idEvento;
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;
+	private Long idCreador;;
 	private int numAsistentes;
 	private int numListaEspera;
 
 	private EventoDTO.EstadoUsuarioEvento estado;
 
-	public EventoDTO(int aforoMaximo, String descripcion, Date fecha, Long idEvento, String lugar,
+	public EventoDTO(int aforoMaximo, String descripcion, LocalDateTime fecha, Long idEvento, String lugar,
 			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, int numAsistentes,
-			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado) {
+			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado, Long idCreador) {
 		super();
 		this.aforoMaximo = aforoMaximo;
 		this.descripcion = descripcion;
@@ -43,6 +44,7 @@ public class EventoDTO {
 		this.numAsistentes = numAsistentes;
 		this.numListaEspera = numListaEspera;
 		this.estado = estado;
+		this.idCreador = idCreador;
 	}
 
 	public int getAforoMaximo() {
@@ -61,11 +63,11 @@ public class EventoDTO {
 		this.descripcion = descripcion;
 	}
 
-	public Date getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
-	public void setFecha(Date fecha) {
+	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
 	}
 
@@ -103,6 +105,14 @@ public class EventoDTO {
 
 	public int getNumAsistentes() {
 		return numAsistentes;
+	}
+
+	public Long getIdCreador() {
+		return idCreador;
+	}
+
+	public void setIdCreador(Long idCreador) {
+		this.idCreador = idCreador;
 	}
 
 	public void setNumAsistentes(int numAsistentes) {

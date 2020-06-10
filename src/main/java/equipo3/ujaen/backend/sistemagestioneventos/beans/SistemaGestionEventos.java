@@ -1,6 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +136,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioValido.crearEvento(evento);
 
 		if (inscribirCreador) {
-			Date hoy = new Date();
+			LocalDateTime hoy = LocalDateTime.now();
 
 			// hoy > evento.getFecha
 			if (hoy.compareTo(evento.getFecha()) > 0)
@@ -190,7 +190,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (evento == null)
 			throw new EventoNoRegistrado();
 
-		Date hoy = new Date();
+		LocalDateTime hoy = LocalDateTime.now();
 
 		// hoy > evento.getFecha
 		if (hoy.compareTo(evento.getFecha()) > 0)
@@ -227,7 +227,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();
 
-		if (!usuarioInterno.getuId().equals(usuarioDTO.getuId()))
+		if (usuarioInterno.getuId() != (usuarioDTO.getuId()))
 			throw new AccesoDenegado();
 
 		return usuarioInterno;

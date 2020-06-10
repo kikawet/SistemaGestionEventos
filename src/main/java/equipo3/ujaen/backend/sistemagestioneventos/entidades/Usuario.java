@@ -1,13 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.util.ArrayList;
-
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +8,11 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 
@@ -24,10 +22,12 @@ public class Usuario {
 
 	private String login;
 	private String password;
-	
+
 	@Id
+	@GeneratedValue
 	private Long uId;
-	@OneToMany
+
+	@ManyToOne
 	private List<Evento> eventosCreados;
 	@OneToMany
 	private Set<Evento> eventosInscritos;
@@ -50,7 +50,11 @@ public class Usuario {
 		this.eventosCreados = new ArrayList<>();
 		this.eventosInscritos = new HashSet<>();
 		this.rol = null;
-		this.uId = new Random().nextLong();
+		this.uId = null;
+	}
+
+	public void setuId(Long uId) {
+		this.uId = uId;
 	}
 
 	public Evento nuevoEvento() {

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,11 +47,11 @@ public class SistemaGestionEventosIntegrationTest {
 	}
 
 	EventoDTO crearEventoValido() {
-		Date manana = new Date((new Date()).getTime() + (1000 * 60 * 60 * 24));
+		LocalDateTime manana = LocalDateTime.now().plusDays(1);
 
 		int aforoMaximo = 1500;
 		String descripcion = "El evento al que todo el mundo vendrá";
-		Date cuando = manana;
+		LocalDateTime cuando = manana;
 		Long idEvento = null;
 		String lugar = "Jaén";
 		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;
@@ -60,7 +61,7 @@ public class SistemaGestionEventosIntegrationTest {
 		EventoDTO.EstadoUsuarioEvento estado = null;
 
 		return new EventoDTO(aforoMaximo, descripcion, cuando, idEvento, lugar, tipoEvento, categoriaEvento,
-				numAsistentes, numListaEspera, estado);
+				numAsistentes, numListaEspera, estado,null);
 	}
 
 	@Test
@@ -123,10 +124,12 @@ public class SistemaGestionEventosIntegrationTest {
 	}
 
 	void cancelarInscripcionUsuario() {
+		
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
 
 		EventoDTO evento = crearEventoValido();
 
-		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+		
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
@@ -149,10 +152,12 @@ public class SistemaGestionEventosIntegrationTest {
 
 	@Test
 	void inscribirseUsuarioTest() {
-
+		
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+		
 		EventoDTO evento = crearEventoValido();
 
-		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+		
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
