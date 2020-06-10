@@ -7,6 +7,7 @@ import org.springframework.context.ApplicationContext;
 
 @EntityScan(basePackages = "equipo3.ujaen.backend.sistemagestioneventos.entidades")
 @SpringBootApplication(scanBasePackages = "equipo3.ujaen.backend.sistemagestioneventos.beans")
+@EntityScan(basePackages = "equipo3.ujaen.backend.sistemagestioneventos.entidades")
 public class ServidorSistemaGestionEventos {
 
 	public static void main(String[] args) {
