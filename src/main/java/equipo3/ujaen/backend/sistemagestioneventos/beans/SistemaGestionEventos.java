@@ -1,13 +1,15 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 
+import equipo3.ujaen.backend.sistemagestioneventos.dao.EventoDao;
+import equipo3.ujaen.backend.sistemagestioneventos.dao.UsuarioDao;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
@@ -26,25 +28,25 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 @Component
 public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
-	private Map<String, Usuario> usuarios;
-	private Map<Long, Evento> eventos;
+	@Autowired
+	private UsuarioDao usuarioDAO;
+
+	@Autowired
+	private EventoDao eventoDAO;
 
 	public SistemaGestionEventos() {
-		// TODO Auto-generated constructor stub
-		usuarios = new HashMap<>();
-		eventos = new HashMap<>();
 	}
 
 	@Override
 	public void registroUsuarios(String login, String password) {
 
-		if (usuarios.containsKey(login)) {
+		if (usuarioDAO.existsByLogin(login)) {
 			throw new UsuarioYaRegistrado();
 		}
 
 		Usuario usuario = new Usuario(login, password);
 
-		usuarios.put(login, usuario);
+		usuarioDAO.save(usuario);
 	}
 
 	/**
@@ -56,8 +58,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 */
 	@Override
 	public UsuarioDTO loginUsuario(String login, String password) {
-		// TODO Auto-generated method stub
-		Usuario usuario = usuarios.get(login);
+		Usuario usuario = usuarioDAO.findByLogin(login);
 
 		if (usuario == null) {
 			throw new UsuarioNoRegistrado();
@@ -74,21 +75,17 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
 	@Override
-	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, long cantidadMaxima) {
+	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima) {
 		if (cantidadMaxima < 0)
 			throw new IllegalArgumentException("La cantidad máxima no puede ser negativa");
 
 		if (descripcionParcial == null)
 			throw new IllegalArgumentException("La descripcion no puede ser null");
 
-		if (categoria != null)
-			return eventos.values().parallelStream().filter(evento -> evento.getCategoriaEvento() == categoria)
-					.filter(evento -> evento.getDescripcion().toLowerCase().contains(descripcionParcial))
-					.limit(cantidadMaxima).map(evento -> evento.toDTO()).collect(Collectors.toList());
-		else
-			return eventos.values().parallelStream()
-					.filter(evento -> evento.getDescripcion().toLowerCase().contains(descripcionParcial))
-					.limit(cantidadMaxima).map(evento -> evento.toDTO()).collect(Collectors.toList());
+		return eventoDAO
+				.findByCategoriaEventoAndDescripcionContainsIgnoreCase(categoria, descripcionParcial,
+						PageRequest.of(0, cantidadMaxima))
+				.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
 
 	}
 
@@ -101,8 +98,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
-		return usuarioValido.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
-				.collect(Collectors.toList());
+		return usuarioDAO.findAllEventosInscritosByLogin(usuarioValido.getLogin()).stream()
+				.map(evento -> evento.toDTO(usuarioValido)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -110,8 +107,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
-		return usuarioValido.getEventosCreados().stream().map(evento -> evento.toDTO(usuarioValido))
-				.collect(Collectors.toList());
+		return usuarioDAO.findAllEventosCreadosByLogin(usuarioValido.getLogin()).stream()
+				.map(evento -> evento.toDTO(usuarioValido)).collect(Collectors.toList());
 	}
 
 	/**
@@ -121,17 +118,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 */
 	@Override
 	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO, boolean inscribirCreador) {
-
-		// TODO Auto-generated method stub
-
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
-		if (eventos.containsKey(eventoDTO.getIdEvento()))
+		if (eventoDAO.existsById(eventoDTO.getIdEvento()))
 			throw new EventoYaRegistrado();
 
 		Evento evento = new Evento(eventoDTO);
-
-		eventoDTO.setIdEvento(evento.getIdEvento());
 
 		usuarioValido.crearEvento(evento);
 
@@ -146,7 +138,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			evento.anadirAsistente(usuarioValido);
 		}
 
-		eventos.put(evento.getIdEvento(), evento);
+		evento = eventoDAO.save(evento);
+		usuarioValido = usuarioDAO.save(usuarioValido);
 
 		usuarioDTO.clone(usuarioValido.toDTO());
 		usuarioDTO.setPassword(null);
@@ -160,7 +153,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void cancelarEventoPorUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 
-		Evento evento = this.eventos.get(idEvento);
+		Evento evento = eventoDAO.findById(idEvento).get();
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		if (evento == null)
@@ -173,7 +166,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		usuarioValido.getEventosCreados().remove(pos);
 
-		eventos.remove(idEvento);
+		eventoDAO.deleteById(idEvento);
+		usuarioValido = usuarioDAO.save(usuarioValido);
 
 		usuarioDTO.clone(usuarioValido.toDTO());
 	}
@@ -185,7 +179,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
-		Evento evento = eventos.get(idEvento);
+		Evento evento = eventoDAO.findById(idEvento).get();
 
 		if (evento == null)
 			throw new EventoNoRegistrado();
@@ -197,16 +191,20 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			throw new EventoPrescrito();
 
 		usuarioValido.inscribir(evento);
-		return evento.anadirAsistente(usuarioValido);
+		EstadoUsuarioEvento estado = evento.anadirAsistente(usuarioValido);
+
+		usuarioDAO.save(usuarioValido);
+		eventoDAO.save(evento);
+
+		return estado;
 
 	}
 
 	@Override
 	public void cancelarInscripcionUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 
-		// TODO Auto-generated method stub
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
-		Evento evento = eventos.get(idEvento);
+		Evento evento = eventoDAO.findById(idEvento).get();
 
 		if (evento == null) {
 			throw new EventoNoRegistrado();
@@ -214,6 +212,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		usuarioValido.cancelarInscripcion(evento);
 		evento.eliminarAsistente(usuarioValido);
+
+		usuarioDAO.save(usuarioValido);
+		eventoDAO.save(evento);
 	}
 
 	/**
@@ -222,7 +223,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @return
 	 */
 	private Usuario validarUsuario(UsuarioDTO usuarioDTO) {
-		Usuario usuarioInterno = usuarios.get(usuarioDTO.getLogin());
+		Usuario usuarioInterno = usuarioDAO.findByLogin(usuarioDTO.getLogin());
 
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();

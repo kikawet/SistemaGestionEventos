@@ -7,9 +7,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
+
+import javax.sql.DataSource;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,9 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 
 @SpringBootTest(classes = { SistemaGestionEventos.class })
 public class SistemaGestionEventosIntegrationTest {
+
+	@Autowired
+	DataSource dataSource;
 
 	@Autowired
 	InterfaceSistemaGestionEventos gestorEventos;
@@ -61,7 +65,7 @@ public class SistemaGestionEventosIntegrationTest {
 		EventoDTO.EstadoUsuarioEvento estado = null;
 
 		return new EventoDTO(aforoMaximo, descripcion, cuando, idEvento, lugar, tipoEvento, categoriaEvento,
-				numAsistentes, numListaEspera, estado,null);
+				numAsistentes, numListaEspera, estado, null);
 	}
 
 	@Test
@@ -124,12 +128,10 @@ public class SistemaGestionEventosIntegrationTest {
 	}
 
 	void cancelarInscripcionUsuario() {
-		
+
 		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
 
 		EventoDTO evento = crearEventoValido();
-
-		
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
@@ -152,12 +154,10 @@ public class SistemaGestionEventosIntegrationTest {
 
 	@Test
 	void inscribirseUsuarioTest() {
-		
-		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
-		
-		EventoDTO evento = crearEventoValido();
 
-		
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+
+		EventoDTO evento = crearEventoValido();
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 

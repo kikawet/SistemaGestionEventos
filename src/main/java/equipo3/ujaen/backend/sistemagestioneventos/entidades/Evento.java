@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,12 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.ManyToOne;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 
 @Entity
@@ -35,7 +32,10 @@ public class Evento {
 
 	private String descripcion;
 	private LocalDateTime fecha;
-	@OneToMany(mappedBy = "uId")
+
+	@ManyToOne
+	private Usuario creador;
+
 	private Long idCreador;
 
 	@Id
@@ -56,8 +56,8 @@ public class Evento {
 			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar, EventoDTO.TipoEvento tipoEvento,
-			EventoDTO.CategoriaEvento categoriaEvento, Long idCreador) {
+	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
+			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Long idCreador) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
