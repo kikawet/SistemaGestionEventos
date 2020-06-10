@@ -8,18 +8,25 @@ import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 
+@Entity
 public class Usuario {
 	private RolUsuario rol;
 
 	private String login;
 	private String password;
 
+	@Id
 	private Long uId;
 
+	@OneToMany
 	private List<Evento> eventosCreados;
+	@OneToMany
 	private Set<Evento> eventosInscritos;
 
 	public Usuario(UsuarioDTO usuarioDTO) {
