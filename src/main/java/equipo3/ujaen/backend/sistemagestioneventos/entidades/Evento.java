@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
@@ -24,19 +26,18 @@ public class Evento {
 
 	private int aforoMaximo;
 
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }) // Al borrar el evento no
+																							// borrar usuarios
 	private Set<Usuario> asistentes;
 
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
 	private Set<Usuario> listaEspera;
 
 	private String descripcion;
 	private LocalDateTime fecha;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Usuario creador;
-
-	private Long idCreador;
 
 	@Id
 	@GeneratedValue
@@ -47,8 +48,10 @@ public class Evento {
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
 	public Evento(EventoDTO eventoDTO) {
+
 		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
-				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), eventoDTO.getIdCreador());
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(),
+				eventoDTO.getCreador() != null ? new Usuario(eventoDTO.getCreador()) : null);
 
 		if (eventoDTO.getIdEvento() != null)
 			this.idEvento = eventoDTO.getIdEvento();
@@ -56,8 +59,22 @@ public class Evento {
 			eventoDTO.setIdEvento(this.idEvento);
 	}
 
+	public Evento() {
+		super();
+		this.lugar = null;
+		this.fecha = null;
+		this.tipoEvento = null;
+		this.categoriaEvento = null;
+		this.descripcion = null;
+		this.aforoMaximo = 0;
+		this.idEvento = null;
+		this.creador = null;
+		this.asistentes = new HashSet<>();
+		this.listaEspera = new LinkedHashSet<>();
+	}
+
 	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
-			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Long idCreador) {
+			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
@@ -66,7 +83,7 @@ public class Evento {
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = null;
-		this.idCreador = idCreador;
+		this.creador = creador;
 		this.asistentes = new HashSet<>();
 		this.listaEspera = new LinkedHashSet<>();
 	}
@@ -151,7 +168,7 @@ public class Evento {
 	public EventoDTO toDTO(Usuario u) {
 		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
 				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
-				getEstadoUsuario(u), this.idCreador);
+				getEstadoUsuario(u), this.creador.toDTO());
 		return eventoDTO;
 	}
 
@@ -186,6 +203,14 @@ public class Evento {
 		return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
 				: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
 
+	}
+
+	public Usuario getCreador() {
+		return creador;
+	}
+
+	public void setCreador(Usuario creador) {
+		this.creador = creador;
 	}
 
 }

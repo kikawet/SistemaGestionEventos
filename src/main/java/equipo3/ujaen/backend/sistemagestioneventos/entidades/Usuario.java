@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,11 +28,23 @@ public class Usuario {
 	@GeneratedValue
 	private Long uId;
 
-	@OneToMany(mappedBy = "creador")
+	@OneToMany(mappedBy = "creador", cascade = CascadeType.ALL)
 	private List<Evento> eventosCreados;
 
 	@ManyToMany
 	private Set<Evento> eventosInscritos;
+
+	public Usuario() {
+		super();
+
+		this.login = null;
+		this.password = null;
+
+		this.eventosCreados = new ArrayList<>();
+		this.eventosInscritos = new HashSet<>();
+		this.rol = null;
+		this.uId = null;
+	}
 
 	public Usuario(UsuarioDTO usuarioDTO) {
 		this(usuarioDTO.getLogin(), usuarioDTO.getPassword());
@@ -96,6 +109,7 @@ public class Usuario {
 	}
 
 	public void crearEvento(Evento e) {
+		e.setCreador(this);
 		eventosCreados.add(e);
 	}
 

@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +28,10 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEven
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
+import equipo3.ujaen.backend.sistemagestioneventos.servidor.ServidorSistemaGestionEventos;
 
-@SpringBootTest(classes = { SistemaGestionEventos.class })
+@SpringBootTest(classes = { ServidorSistemaGestionEventos.class })
 public class SistemaGestionEventosIntegrationTest {
-
-	@Autowired
-	DataSource dataSource;
 
 	@Autowired
 	InterfaceSistemaGestionEventos gestorEventos;
@@ -63,9 +59,10 @@ public class SistemaGestionEventosIntegrationTest {
 		int numAsistentes = 603;
 		int numListaEspera = 0;
 		EventoDTO.EstadoUsuarioEvento estado = null;
+		UsuarioDTO creador = null;
 
 		return new EventoDTO(aforoMaximo, descripcion, cuando, idEvento, lugar, tipoEvento, categoriaEvento,
-				numAsistentes, numListaEspera, estado, null);
+				numAsistentes, numListaEspera, estado, creador);
 	}
 
 	@Test
@@ -127,6 +124,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 	}
 
+	@Test
 	void cancelarInscripcionUsuario() {
 
 		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
@@ -353,7 +351,7 @@ public class SistemaGestionEventosIntegrationTest {
 		// TEST EVENTO NO EXISTE //
 
 		Assertions.assertThrows(EventoNoExiste.class,
-				() -> gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento()));
+				() -> gestorEventos.cancelarEventoPorUsuario(usuario, new Random().nextLong()));
 
 		boolean inscribirCreador = false;
 

@@ -11,8 +11,12 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
 
 @Repository
 public interface EventoDao extends JpaRepository<Evento, Long> {
+	// https://jira.spring.io/browse/DATAJPA-209
+	// Hay que crear dos veces el mismo método o crear un @Query
 	List<Evento> findByCategoriaEventoAndDescripcionContainsIgnoreCase(CategoriaEvento categoria,
 			String descripcionParcial, Pageable cantidad);
+
+	List<Evento> findByDescripcionContainsIgnoreCase(String descripcionParcial, Pageable cantidad);
 
 	@Override
 	boolean existsById(Long idEvento);

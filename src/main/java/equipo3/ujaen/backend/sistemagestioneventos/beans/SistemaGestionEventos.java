@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dao.EventoDao;
 import equipo3.ujaen.backend.sistemagestioneventos.dao.UsuarioDao;
@@ -25,7 +27,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistra
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
-@Component
+@Repository
 public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Autowired
@@ -39,6 +41,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Override
 	public void registroUsuarios(String login, String password) {
+		if (login == null || password == null)
+			throw new IllegalArgumentException("Ni el login ni la contraseña pueden ser null");
 
 		if (usuarioDAO.existsByLogin(login)) {
 			throw new UsuarioYaRegistrado();
@@ -57,7 +61,11 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @return devuelve un usuario al cliente
 	 */
 	@Override
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public UsuarioDTO loginUsuario(String login, String password) {
+		if (login == null || password == null)
+			throw new IllegalArgumentException("Ni el login ni la contraseña pueden ser null");
+
 		Usuario usuario = usuarioDAO.findByLogin(login);
 
 		if (usuario == null) {
@@ -75,6 +83,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
 	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima) {
 		if (cantidadMaxima < 0)
 			throw new IllegalArgumentException("La cantidad máxima no puede ser negativa");
@@ -82,11 +91,14 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (descripcionParcial == null)
 			throw new IllegalArgumentException("La descripcion no puede ser null");
 
-		return eventoDAO
-				.findByCategoriaEventoAndDescripcionContainsIgnoreCase(categoria, descripcionParcial,
-						PageRequest.of(0, cantidadMaxima))
-				.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
-
+		if (categoria != null)
+			return eventoDAO
+					.findByCategoriaEventoAndDescripcionContainsIgnoreCase(categoria, descripcionParcial,
+							PageRequest.of(0, cantidadMaxima))
+					.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
+		else
+			return eventoDAO.findByDescripcionContainsIgnoreCase(descripcionParcial, PageRequest.of(0, cantidadMaxima))
+					.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
 	}
 
 	/**
@@ -94,8 +106,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 *        aceptado o en lista de espera
 	 */
 	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO) {
-
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		return usuarioDAO.findAllEventosInscritosByLogin(usuarioValido.getLogin()).stream()
@@ -103,8 +115,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO) {
-
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		return usuarioDAO.findAllEventosCreadosByLogin(usuarioValido.getLogin()).stream()
@@ -117,10 +129,11 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @param Evento  que recibe del cliente
 	 */
 	@Override
+	@Transactional
 	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO, boolean inscribirCreador) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
-		if (eventoDAO.existsById(eventoDTO.getIdEvento()))
+		if (eventoDTO.getIdEvento() != null && eventoDAO.existsById(eventoDTO.getIdEvento()))
 			throw new EventoYaRegistrado();
 
 		Evento evento = new Evento(eventoDTO);
@@ -151,10 +164,14 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Metodo para cancelar un evento de un usuario
 	 */
 	@Override
+	@Transactional
 	public void cancelarEventoPorUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
-
-		Evento evento = eventoDAO.findById(idEvento).get();
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
+
+		if (idEvento == null)
+			throw new IllegalArgumentException("idEvento no puede ser null");
+
+		Evento evento = eventoDAO.findById(idEvento).orElse(null);
 
 		if (evento == null)
 			throw new EventoNoExiste();
@@ -177,7 +194,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 */
 	@Override
 	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
-
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 		Evento evento = eventoDAO.findById(idEvento).get();
 
@@ -202,7 +218,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Override
 	public void cancelarInscripcionUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
-
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 		Evento evento = eventoDAO.findById(idEvento).get();
 
@@ -228,7 +243,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();
 
-		if (usuarioInterno.getuId() != (usuarioDTO.getuId()))
+		if (usuarioInterno.getuId() != usuarioDTO.getuId())
 			throw new AccesoDenegado();
 
 		return usuarioInterno;
