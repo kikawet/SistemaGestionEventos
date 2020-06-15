@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
+import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 
 @Repository
 public interface EventoDao extends JpaRepository<Evento, Long> {
@@ -17,6 +18,10 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 			String descripcionParcial, Pageable cantidad);
 
 	List<Evento> findByDescripcionContainsIgnoreCase(String descripcionParcial, Pageable cantidad);
+
+	List<Usuario> findAllAsistentesById(Long idEvento);
+
+	List<Usuario> findAllListaEsperaById(Long idEvento);
 
 	@Override
 	boolean existsById(Long idEvento);

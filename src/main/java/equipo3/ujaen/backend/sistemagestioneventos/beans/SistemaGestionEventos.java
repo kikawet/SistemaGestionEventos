@@ -176,12 +176,19 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (evento == null)
 			throw new EventoNoExiste();
 
-		int pos = usuarioValido.getEventosCreados().indexOf(evento);
+		boolean contiene = usuarioValido.getEventosCreados().contains(evento);
 
-		if (usuarioValido.getRol() != UsuarioDTO.RolUsuario.ADMIN && pos == -1)
+		if (usuarioValido.getRol() != UsuarioDTO.RolUsuario.ADMIN && !contiene)
 			throw new AccesoDenegado();
 
-		usuarioValido.getEventosCreados().remove(pos);
+		List<Usuario> asistentes = eventoDAO.findAllAsistentesById(evento.getIdEvento());
+
+		for (Usuario asistente : asistentes) {
+			asistente.cancelarInscripcion(evento);
+		}
+
+		eventoDAO.findAllListaEsperaById(evento.getIdEvento()).stream()
+				.forEach(usuario -> usuario.cancelarInscripcion(evento));
 
 		eventoDAO.deleteById(idEvento);
 		usuarioValido = usuarioDAO.save(usuarioValido);
