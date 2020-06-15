@@ -158,13 +158,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			evento.anadirAsistente(usuarioValido);
 		}
 
-		evento = eventoDAO.save(evento);
+		evento = eventoDAO.saveAndFlush(evento);
 		usuarioValido = usuarioDAO.save(usuarioValido);
 
 		usuarioDTO.clone(usuarioValido.toDTO());
 		usuarioDTO.setPassword(null);
 
 		eventoDTO.clone(evento.toDTO());
+		
+		
 	}
 
 	/**
@@ -197,6 +199,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			cancelarEvento.getListaEspera().stream().forEach(usuario -> usuario.cancelarInscripcion(evento));
 
 		eventoDAO.deleteById(evento.getIdEvento());
+		eventoDAO.flush();
 		usuarioValido = usuarioDAO.save(usuarioValido);
 
 		usuarioDTO.clone(usuarioValido.toDTO());
