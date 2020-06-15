@@ -167,11 +167,12 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// Se necesita función para obtener los asistentes a un evento
 
-//		assertEquals(1, evento.getNumAsistentes());
+//		assertEquals(1, evento.getNumAsistentes()); // Al llamar inscribir no se actualiza
 
-//		assertEquals(usuario, evento.getAsistentes().get(0));
+//		assertTrue(usuario, evento.getAsistentes().get(0));
 
-		Assertions.assertThrows(EventoNoRegistrado.class, () -> gestorEventos.inscribirUsuario(usuario, (long) 8));
+		Assertions.assertThrows(EventoNoRegistrado.class,
+				() -> gestorEventos.inscribirUsuario(usuario, new Random().nextLong()));
 
 		gestorEventos.cancelarEventoPorUsuario(usuario1, evento.getIdEvento());
 	}

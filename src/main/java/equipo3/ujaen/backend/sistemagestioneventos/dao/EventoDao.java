@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 
 @Repository
 public interface EventoDao extends JpaRepository<Evento, Long> {
@@ -19,9 +19,11 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 
 	List<Evento> findByDescripcionContainsIgnoreCase(String descripcionParcial, Pageable cantidad);
 
-	List<Usuario> findAllAsistentesById(Long idEvento);
+	@Query("select e from Evento e join fetch e.asistentes where e.idEvento=?1")
+	Evento findByIdEventoFetchingAsistentes(Long idEvento);
 
-	List<Usuario> findAllListaEsperaById(Long idEvento);
+	@Query("select e from Evento e join fetch e.listaEspera where e.idEvento=?1")
+	Evento findByIdEventoFetchingListaEspera(Long idEvento);
 
 	@Override
 	boolean existsById(Long idEvento);
