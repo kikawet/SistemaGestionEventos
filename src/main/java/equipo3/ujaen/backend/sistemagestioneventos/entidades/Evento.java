@@ -2,20 +2,19 @@ package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OrderColumn;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
@@ -26,12 +25,12 @@ public class Evento {
 
 	private int aforoMaximo;
 
-	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH }) // Al borrar el evento no
-																							// borrar usuarios
+	@ManyToMany
 	private Set<Usuario> asistentes;
 
-	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH })
-	private Set<Usuario> listaEspera;
+	@ManyToMany
+	@OrderColumn
+	private List<Usuario> listaEspera;
 
 	private String descripcion;
 	private LocalDateTime fecha;
@@ -61,6 +60,7 @@ public class Evento {
 
 	public Evento() {
 		super();
+		// TODO llamar al constuctor parametrizado
 		this.lugar = null;
 		this.fecha = null;
 		this.tipoEvento = null;
@@ -70,7 +70,7 @@ public class Evento {
 		this.idEvento = null;
 		this.creador = null;
 		this.asistentes = new HashSet<>();
-		this.listaEspera = new LinkedHashSet<>();
+		this.listaEspera = new ArrayList<>();
 	}
 
 	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
@@ -85,7 +85,7 @@ public class Evento {
 		this.idEvento = null;
 		this.creador = creador;
 		this.asistentes = new HashSet<>();
-		this.listaEspera = new LinkedHashSet<>();
+		this.listaEspera = new ArrayList<>();
 	}
 
 	/**
@@ -112,12 +112,8 @@ public class Evento {
 			if (!this.listaEspera.remove(u))
 				throw new UsuarioNoEstaEvento();
 		} else if (!this.listaEspera.isEmpty()) {
-			Iterator<Usuario> primero = this.listaEspera.iterator();
-
-			// Insertamos el primer elemento de la lista
-			this.asistentes.add(primero.next());
-			// Lo borramos de la lista de espera
-			primero.remove();
+			Usuario primero = this.listaEspera.remove(0);
+			this.asistentes.add(primero);
 		}
 	}
 
