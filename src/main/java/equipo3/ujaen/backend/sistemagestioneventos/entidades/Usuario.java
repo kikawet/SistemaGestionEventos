@@ -7,7 +7,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -28,7 +27,8 @@ public class Usuario {
 	@GeneratedValue
 	private Long uId;
 
-	@OneToMany(mappedBy = "creador", cascade = CascadeType.ALL)
+	// Al modificar creador se actualiza la lista
+	@OneToMany(mappedBy = "creador")
 	private List<Evento> eventosCreados;
 
 	@ManyToMany
@@ -106,11 +106,6 @@ public class Usuario {
 
 	public List<Evento> getEventosCreados() {
 		return eventosCreados;
-	}
-
-	public void crearEvento(Evento e) {
-		e.setCreador(this);
-		eventosCreados.add(e);
 	}
 
 	public RolUsuario getRol() {

@@ -138,7 +138,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		Evento evento = new Evento(eventoDTO);
 
-		usuarioValido.crearEvento(evento);
+		evento.setCreador(usuarioValido);
 
 		if (inscribirCreador) {
 			LocalDateTime hoy = LocalDateTime.now();
