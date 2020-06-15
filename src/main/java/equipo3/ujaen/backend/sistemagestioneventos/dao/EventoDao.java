@@ -25,6 +25,7 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 	@Query("select e from Evento e join fetch e.listaEspera where e.idEvento=?1")
 	Evento findByIdEventoFetchingListaEspera(Long idEvento);
 
+	
 	@Override
 	boolean existsById(Long idEvento);
 

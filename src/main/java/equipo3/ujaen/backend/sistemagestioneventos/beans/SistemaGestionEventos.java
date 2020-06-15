@@ -24,6 +24,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoPrescrito;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.ParametrosInvalidos;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
@@ -86,20 +87,26 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima) {
-		if (cantidadMaxima < 0)
-			throw new IllegalArgumentException("La cantidad máxima no puede ser negativa");
+		if (cantidadMaxima <= 0)
+			throw new ParametrosInvalidos();// ("La cantidad máxima no puede ser negativa");
 
 		if (descripcionParcial == null)
-			throw new IllegalArgumentException("La descripcion no puede ser null");
+			// throw new IllegalArgumentException("La descripcion no puede ser null");
+			throw new ParametrosInvalidos();
+
+		List<Evento> resultado = null;
 
 		if (categoria != null)
-			return eventoDAO
-					.findByCategoriaEventoAndDescripcionContainsIgnoreCase(categoria, descripcionParcial,
-							PageRequest.of(0, cantidadMaxima))
-					.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
+			resultado = eventoDAO.findByCategoriaEventoAndDescripcionContainsIgnoreCase(categoria, descripcionParcial,
+					PageRequest.of(0, cantidadMaxima));
 		else
-			return eventoDAO.findByDescripcionContainsIgnoreCase(descripcionParcial, PageRequest.of(0, cantidadMaxima))
-					.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
+			resultado = eventoDAO.findByDescripcionContainsIgnoreCase(descripcionParcial,
+					PageRequest.of(0, cantidadMaxima));
+
+		if (resultado == null)
+			return new ArrayList<>();
+		else
+			return resultado.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
 	}
 
 	/**
@@ -165,8 +172,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDTO.setPassword(null);
 
 		eventoDTO.clone(evento.toDTO());
-		
-		
+
 	}
 
 	/**
@@ -199,7 +205,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			cancelarEvento.getListaEspera().stream().forEach(usuario -> usuario.cancelarInscripcion(evento));
 
 		eventoDAO.deleteById(evento.getIdEvento());
-		eventoDAO.flush();
+		// eventoDAO.flush();
 		usuarioValido = usuarioDAO.save(usuarioValido);
 
 		usuarioDTO.clone(usuarioValido.toDTO());

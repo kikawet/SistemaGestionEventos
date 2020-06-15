@@ -100,7 +100,7 @@ public class Evento {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			if (this.asistentes.add(u))
 				estado = EstadoUsuarioEvento.ACEPTADO;
-		} else if (!this.asistentes.contains(u) && this.listaEspera.add(u)) {
+		} else if (!this.asistentes.contains(u) && !this.listaEspera.contains(u) && this.listaEspera.add(u)) {
 			estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
 		}
 

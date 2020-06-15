@@ -24,6 +24,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.ParametrosInvalidos;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
@@ -104,7 +105,7 @@ public class SistemaGestionEventosIntegrationTest {
 		assertNull(e.getIdEvento());
 
 		boolean inscribirCreador = true;
-
+		
 		gestorEventos.crearEventoPorUsuario(u, e, inscribirCreador);
 
 		assertEquals(1, e.getNumAsistentes());
@@ -317,7 +318,7 @@ public class SistemaGestionEventosIntegrationTest {
 		eventos = gestorEventos.listarEventos(null, "", 100);
 		assertEquals(borrar.size(), eventos.size());
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> gestorEventos.listarEventos(null, null, 100));
+		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, null, -100));
 
 		// TEST CANTIDAD
 
@@ -327,10 +328,8 @@ public class SistemaGestionEventosIntegrationTest {
 		eventos = gestorEventos.listarEventos(null, "", 1);
 		assertEquals(1, eventos.size());
 
-		eventos = gestorEventos.listarEventos(null, "", 0);
-		assertEquals(0, eventos.size());
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> gestorEventos.listarEventos(null, "", -1));
+		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0));
 
 	}
 
