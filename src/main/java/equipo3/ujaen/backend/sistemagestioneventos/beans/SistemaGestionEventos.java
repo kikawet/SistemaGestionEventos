@@ -44,7 +44,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Override
 	public void registroUsuarios(String login, String password) {
 		if (login == null || password == null)
-			throw new IllegalArgumentException("Ni el login ni la contraseña pueden ser null");
+			throw new ParametrosInvalidos("Ni el login ni la contraseña pueden ser null");
 
 		if (usuarioDAO.existsByLogin(login)) {
 			throw new UsuarioYaRegistrado();
@@ -55,18 +55,11 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDAO.save(usuario);
 	}
 
-	/**
-	 * @brief Método que devuelve un usuario al cliente para que este pueda trabajar
-	 *        con el
-	 * @param login    Es el id de usuario
-	 * @param password Es la contraseña del usuario
-	 * @return devuelve un usuario al cliente
-	 */
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
 	public UsuarioDTO loginUsuario(String login, String password) {
 		if (login == null || password == null)
-			throw new IllegalArgumentException("Ni el login ni la contraseña pueden ser null");
+			throw new ParametrosInvalidos("Ni el login ni la contraseña pueden ser null");
 
 		Usuario usuario = usuarioDAO.findByLogin(login);
 
@@ -81,9 +74,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return usuario.toDTO();
 	}
 
-	/**
-	 * @brief Método que lista los eventos que hay en el sistema
-	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima) {
@@ -108,10 +98,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			return resultado.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
 	}
 
-	/**
-	 * @brief Método para listar los eventos de un usuario, indicando si este está
-	 *        aceptado o en lista de espera
-	 */
 	@Override
 	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO) {
@@ -136,11 +122,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 						.collect(Collectors.toList());
 	}
 
-	/**
-	 * @brief Método para crear un evento por usuaio
-	 * @param Usuario que recibe del cliente
-	 * @param Evento  que recibe del cliente
-	 */
 	@Override
 	@Transactional
 	public void crearEventoPorUsuario(UsuarioDTO usuarioDTO, EventoDTO eventoDTO, boolean inscribirCreador) {
@@ -171,19 +152,15 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDTO.setPassword(null);
 
 		eventoDTO.clone(evento.toDTO());
-
 	}
 
-	/**
-	 * @brief Metodo para cancelar un evento de un usuario
-	 */
 	@Override
 	@Transactional
 	public void cancelarEventoPorUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
 		if (idEvento == null)
-			throw new IllegalArgumentException("idEvento no puede ser null");
+			throw new ParametrosInvalidos("idEvento no puede ser null");
 
 		Evento evento = eventoDAO.findById(idEvento).orElse(null);
 
@@ -210,9 +187,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDTO.clone(usuarioValido.toDTO());
 	}
 
-	/**
-	 * @brief
-	 */
 	@Override
 	@Transactional
 	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
@@ -260,7 +234,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	/**
 	 * @brief Metodo para validar un usuario internamente
 	 * @param usuario
-	 * @return
+	 * @return usuario enlazado de la base de datos
 	 */
 	private Usuario validarUsuario(UsuarioDTO usuarioDTO) {
 		Usuario usuarioInterno = usuarioDAO.findByLogin(usuarioDTO.getLogin());
