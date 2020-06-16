@@ -18,6 +18,7 @@ import javax.persistence.OrderColumn;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 
 @Entity
@@ -162,9 +163,12 @@ public class Evento {
 	}
 
 	public EventoDTO toDTO(Usuario u) {
+		UsuarioDTO creador = this.creador == null ? null : this.creador.toDTO();
+
 		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
 				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
-				getEstadoUsuario(u), this.creador.toDTO());
+				getEstadoUsuario(u), creador);
+
 		return eventoDTO;
 	}
 

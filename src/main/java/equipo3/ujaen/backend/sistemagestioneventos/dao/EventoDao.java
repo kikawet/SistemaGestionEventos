@@ -31,11 +31,22 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 	Evento findByIdEventoFetchingListaEspera(Long idEvento);
 
 	@Override
-	@Caching(evict = { @CacheEvict("existeEvento"), @CacheEvict(value = "buscaEvento"/* ,allEntries = true */) })
+	@Caching(evict = { @CacheEvict("existeEvento"),
+			@CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true) })
 	void deleteById(Long idEvento);
 
 	@Override
 	@Cacheable({ "existeEvento" })
 	boolean existsById(Long idEvento);
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
+	Evento save(Evento evento);
+
+	@SuppressWarnings("unchecked")
+	@Override
+	@CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
+	Evento saveAndFlush(Evento evento);
 
 }
