@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -105,7 +106,7 @@ public class SistemaGestionEventosIntegrationTest {
 		assertNull(e.getIdEvento());
 
 		boolean inscribirCreador = true;
-		
+
 		gestorEventos.crearEventoPorUsuario(u, e, inscribirCreador);
 
 		assertEquals(1, e.getNumAsistentes());
@@ -328,7 +329,6 @@ public class SistemaGestionEventosIntegrationTest {
 		eventos = gestorEventos.listarEventos(null, "", 1);
 		assertEquals(1, eventos.size());
 
-
 		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0));
 
 	}
@@ -367,8 +367,9 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
 
-		assertTrue(!gestorEventos.listarEventos(null, "", 100).contains(evento));
-		assertEquals(0, usuario.getNumEventosCreados());
+		gestorEventos.listarEventos(null, "", 100).forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
+		gestorEventos.listarEventosCreadosPorUnUsuario(usuario)
+				.forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
 
 	}
 
