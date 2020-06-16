@@ -85,14 +85,13 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 * @brief Método que lista los eventos que hay en el sistema
 	 */
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima) {
 		if (cantidadMaxima <= 0)
-			throw new ParametrosInvalidos();// ("La cantidad máxima no puede ser negativa");
+			throw new ParametrosInvalidos("La cantidad máxima no puede ser negativa");
 
 		if (descripcionParcial == null)
-			// throw new IllegalArgumentException("La descripcion no puede ser null");
-			throw new ParametrosInvalidos();
+			throw new ParametrosInvalidos("La descripcion no puede ser null");
 
 		List<Evento> resultado = null;
 
@@ -114,7 +113,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	 *        aceptado o en lista de espera
 	 */
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
@@ -126,7 +125,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
