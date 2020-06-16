@@ -2,20 +2,19 @@ package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.Transient;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderColumn;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
@@ -31,12 +30,14 @@ public class Evento {
 	private Set<Usuario> asistentes;
 
 	@ManyToMany
-	private Set<Usuario> listaEspera;
+	@OrderColumn
+	private List<Usuario> listaEspera;
 
 	private String descripcion;
 	private LocalDateTime fecha;
-	@OneToMany(mappedBy = "uId")
-	private Long idCreador;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private Usuario creador;
 
 	@Id
 	@GeneratedValue
@@ -47,8 +48,10 @@ public class Evento {
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
 	public Evento(EventoDTO eventoDTO) {
+
 		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
-				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), eventoDTO.getIdCreador());
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(),
+				eventoDTO.getCreador() != null ? new Usuario(eventoDTO.getCreador()) : null);
 
 		if (eventoDTO.getIdEvento() != null)
 			this.idEvento = eventoDTO.getIdEvento();
@@ -56,8 +59,23 @@ public class Evento {
 			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar, EventoDTO.TipoEvento tipoEvento,
-			EventoDTO.CategoriaEvento categoriaEvento, Long idCreador) {
+	public Evento() {
+		super();
+		// TODO llamar al constuctor parametrizado
+		this.lugar = null;
+		this.fecha = null;
+		this.tipoEvento = null;
+		this.categoriaEvento = null;
+		this.descripcion = null;
+		this.aforoMaximo = 0;
+		this.idEvento = null;
+		this.creador = null;
+		this.asistentes = new HashSet<>();
+		this.listaEspera = new ArrayList<>();
+	}
+
+	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
+			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
@@ -66,9 +84,9 @@ public class Evento {
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
 		this.idEvento = null;
-		this.idCreador = idCreador;
+		this.creador = creador;
 		this.asistentes = new HashSet<>();
-		this.listaEspera = new LinkedHashSet<>();
+		this.listaEspera = new ArrayList<>();
 	}
 
 	/**
@@ -83,7 +101,7 @@ public class Evento {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			if (this.asistentes.add(u))
 				estado = EstadoUsuarioEvento.ACEPTADO;
-		} else if (!this.asistentes.contains(u) && this.listaEspera.add(u)) {
+		} else if (!this.asistentes.contains(u) && !this.listaEspera.contains(u) && this.listaEspera.add(u)) {
 			estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
 		}
 
@@ -95,12 +113,8 @@ public class Evento {
 			if (!this.listaEspera.remove(u))
 				throw new UsuarioNoEstaEvento();
 		} else if (!this.listaEspera.isEmpty()) {
-			Iterator<Usuario> primero = this.listaEspera.iterator();
-
-			// Insertamos el primer elemento de la lista
-			this.asistentes.add(primero.next());
-			// Lo borramos de la lista de espera
-			primero.remove();
+			Usuario primero = this.listaEspera.remove(0);
+			this.asistentes.add(primero);
 		}
 	}
 
@@ -149,9 +163,12 @@ public class Evento {
 	}
 
 	public EventoDTO toDTO(Usuario u) {
+		UsuarioDTO creador = this.creador == null ? null : this.creador.toDTO();
+
 		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
 				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
-				getEstadoUsuario(u), this.idCreador);
+				getEstadoUsuario(u), creador);
+
 		return eventoDTO;
 	}
 
@@ -186,6 +203,14 @@ public class Evento {
 		return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
 				: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
 
+	}
+
+	public Usuario getCreador() {
+		return creador;
+	}
+
+	public void setCreador(Usuario creador) {
+		this.creador = creador;
 	}
 
 }

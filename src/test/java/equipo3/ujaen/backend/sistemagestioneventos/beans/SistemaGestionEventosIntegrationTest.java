@@ -2,12 +2,12 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -25,12 +25,14 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoExiste;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.EventoYaRegistrado;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.ParametrosInvalidos;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
+import equipo3.ujaen.backend.sistemagestioneventos.servidor.ServidorSistemaGestionEventos;
 
-@SpringBootTest(classes = { SistemaGestionEventos.class })
+@SpringBootTest(classes = { ServidorSistemaGestionEventos.class })
 public class SistemaGestionEventosIntegrationTest {
 
 	@Autowired
@@ -59,9 +61,10 @@ public class SistemaGestionEventosIntegrationTest {
 		int numAsistentes = 603;
 		int numListaEspera = 0;
 		EventoDTO.EstadoUsuarioEvento estado = null;
+		UsuarioDTO creador = null;
 
 		return new EventoDTO(aforoMaximo, descripcion, cuando, idEvento, lugar, tipoEvento, categoriaEvento,
-				numAsistentes, numListaEspera, estado,null);
+				numAsistentes, numListaEspera, estado, creador);
 	}
 
 	@Test
@@ -123,13 +126,12 @@ public class SistemaGestionEventosIntegrationTest {
 
 	}
 
+	@Test
 	void cancelarInscripcionUsuario() {
-		
+
 		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
 
 		EventoDTO evento = crearEventoValido();
-
-		
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
@@ -152,12 +154,10 @@ public class SistemaGestionEventosIntegrationTest {
 
 	@Test
 	void inscribirseUsuarioTest() {
-		
-		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
-		
-		EventoDTO evento = crearEventoValido();
 
-		
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+
+		EventoDTO evento = crearEventoValido();
 
 		UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
 
@@ -169,11 +169,12 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// Se necesita función para obtener los asistentes a un evento
 
-//		assertEquals(1, evento.getNumAsistentes());
+//		assertEquals(1, evento.getNumAsistentes()); // Al llamar inscribir no se actualiza
 
-//		assertEquals(usuario, evento.getAsistentes().get(0));
+//		assertTrue(usuario, evento.getAsistentes().get(0));
 
-		Assertions.assertThrows(EventoNoRegistrado.class, () -> gestorEventos.inscribirUsuario(usuario, (long) 8));
+		Assertions.assertThrows(EventoNoRegistrado.class,
+				() -> gestorEventos.inscribirUsuario(usuario, new Random().nextLong()));
 
 		gestorEventos.cancelarEventoPorUsuario(usuario1, evento.getIdEvento());
 	}
@@ -318,7 +319,7 @@ public class SistemaGestionEventosIntegrationTest {
 		eventos = gestorEventos.listarEventos(null, "", 100);
 		assertEquals(borrar.size(), eventos.size());
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> gestorEventos.listarEventos(null, null, 100));
+		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, null, -100));
 
 		// TEST CANTIDAD
 
@@ -328,10 +329,7 @@ public class SistemaGestionEventosIntegrationTest {
 		eventos = gestorEventos.listarEventos(null, "", 1);
 		assertEquals(1, eventos.size());
 
-		eventos = gestorEventos.listarEventos(null, "", 0);
-		assertEquals(0, eventos.size());
-
-		Assertions.assertThrows(IllegalArgumentException.class, () -> gestorEventos.listarEventos(null, "", -1));
+		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0));
 
 	}
 
@@ -353,7 +351,7 @@ public class SistemaGestionEventosIntegrationTest {
 		// TEST EVENTO NO EXISTE //
 
 		Assertions.assertThrows(EventoNoExiste.class,
-				() -> gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento()));
+				() -> gestorEventos.cancelarEventoPorUsuario(usuario, new Random().nextLong()));
 
 		boolean inscribirCreador = false;
 
@@ -369,8 +367,9 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
 
-		assertTrue(!gestorEventos.listarEventos(null, "", 100).contains(evento));
-		assertEquals(0, usuario.getNumEventosCreados());
+		gestorEventos.listarEventos(null, "", 100).forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
+		gestorEventos.listarEventosCreadosPorUnUsuario(usuario)
+				.forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
 
 	}
 

@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 
@@ -27,10 +27,24 @@ public class Usuario {
 	@GeneratedValue
 	private Long uId;
 
-	@ManyToOne
+	// Al modificar creador se actualiza la lista
+	@OneToMany(mappedBy = "creador")
 	private List<Evento> eventosCreados;
-	@OneToMany
+
+	@ManyToMany
 	private Set<Evento> eventosInscritos;
+
+	public Usuario() {
+		super();
+
+		this.login = null;
+		this.password = null;
+
+		this.eventosCreados = new ArrayList<>();
+		this.eventosInscritos = new HashSet<>();
+		this.rol = null;
+		this.uId = null;
+	}
 
 	public Usuario(UsuarioDTO usuarioDTO) {
 		this(usuarioDTO.getLogin(), usuarioDTO.getPassword());
@@ -92,10 +106,6 @@ public class Usuario {
 
 	public List<Evento> getEventosCreados() {
 		return eventosCreados;
-	}
-
-	public void crearEvento(Evento e) {
-		eventosCreados.add(e);
 	}
 
 	public RolUsuario getRol() {

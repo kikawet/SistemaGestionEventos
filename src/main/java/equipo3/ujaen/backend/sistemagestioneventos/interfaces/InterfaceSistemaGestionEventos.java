@@ -13,7 +13,7 @@ public interface InterfaceSistemaGestionEventos {
 
 	public UsuarioDTO loginUsuario(String login, String password);
 
-	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, long cantidadMaxima);
+	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima);
 
 	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO);
 

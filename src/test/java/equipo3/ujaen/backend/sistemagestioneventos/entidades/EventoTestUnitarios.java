@@ -1,14 +1,11 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -55,10 +52,10 @@ class EventoTestUnitarios {
 		assertTrue(evento.getAforoMaximo() == aforoMaximo);
 
 		// Datos creados internamente
-		
-		//REPASAR!!!!!!!!
-		//assertNotNull(evento.getIdEvento());
-		//assertTrue(evento.getIdEvento() != 0);
+
+		// REPASAR!!!!!!!!
+		// assertNotNull(evento.getIdEvento());
+		// assertTrue(evento.getIdEvento() != 0);
 
 		assertTrue(evento.getAsistentes().isEmpty());
 		assertTrue(evento.getListaEspera().isEmpty());

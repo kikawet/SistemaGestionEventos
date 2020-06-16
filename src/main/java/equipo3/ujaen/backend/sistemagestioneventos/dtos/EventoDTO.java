@@ -24,7 +24,7 @@ public class EventoDTO {
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;
-	private Long idCreador;;
+	private UsuarioDTO creador;;
 	private int numAsistentes;
 	private int numListaEspera;
 
@@ -32,7 +32,7 @@ public class EventoDTO {
 
 	public EventoDTO(int aforoMaximo, String descripcion, LocalDateTime fecha, Long idEvento, String lugar,
 			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, int numAsistentes,
-			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado, Long idCreador) {
+			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado, UsuarioDTO creador) {
 		super();
 		this.aforoMaximo = aforoMaximo;
 		this.descripcion = descripcion;
@@ -44,7 +44,7 @@ public class EventoDTO {
 		this.numAsistentes = numAsistentes;
 		this.numListaEspera = numListaEspera;
 		this.estado = estado;
-		this.idCreador = idCreador;
+		this.creador = creador;
 	}
 
 	public int getAforoMaximo() {
@@ -107,14 +107,6 @@ public class EventoDTO {
 		return numAsistentes;
 	}
 
-	public Long getIdCreador() {
-		return idCreador;
-	}
-
-	public void setIdCreador(Long idCreador) {
-		this.idCreador = idCreador;
-	}
-
 	public void setNumAsistentes(int numAsistentes) {
 		this.numAsistentes = numAsistentes;
 	}
@@ -146,6 +138,15 @@ public class EventoDTO {
 		this.numAsistentes = e.numAsistentes;
 		this.numListaEspera = e.numListaEspera;
 		this.estado = e.estado;
+		this.creador = e.creador;
+	}
+
+	public UsuarioDTO getCreador() {
+		return creador;
+	}
+
+	public void setCreador(UsuarioDTO creador) {
+		this.creador = creador;
 	}
 
 }
