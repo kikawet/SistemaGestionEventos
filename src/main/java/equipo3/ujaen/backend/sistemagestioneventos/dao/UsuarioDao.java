@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dao;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -23,10 +24,10 @@ public interface UsuarioDao extends JpaRepository<Usuario, Long> {
 	Usuario findByLogin(String login);
 
 	@Query("select u from Usuario u join fetch u.eventosInscritos where u.login=?1")
-	Usuario findByLoginFetchingInscritos(String login);
+	Usuario findByLoginFetchingInscritos(String login, Pageable pageable);
 
 	@Query("select u from Usuario u join fetch u.eventosCreados where u.login=?1")
-	Usuario findByLoginFetchingCreados(String login);
+	Usuario findByLoginFetchingCreados(String login, Pageable pageable);
 
 	@SuppressWarnings("unchecked")
 	@Override

@@ -46,28 +46,34 @@ public interface InterfaceSistemaGestionEventos {
 	 * @param categoria          categoría del evento. Null para nuscar de cualquier
 	 *                           categoría
 	 * @param descripcionParcial descripción parcial del evento
-	 * @param cantidadMaxima     cantidad máxima de resultados devueltos
+	 * @param pagina             página desde la que leer los elementos
+	 * @param cantidad           cantidad máxima de resultados devueltos
 	 * @return lista de DTO que cumplen las restricicones
 	 *
 	 * @throws ParametrosInvalidos cantidad <= 0
 	 * @throws ParametrosInvalidos descripcionParcial == null
 	 */
-	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima);
+	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int pagina,
+			int cantidad);
 
 	/**
 	 * @brief Método para listar los eventos de un usuario, indicando si este está
 	 *        aceptado o en lista de espera
 	 *
-	 * @param usuario usuario del que devolver la lista de eventos inscritos
+	 * @param usuario  usuario del que devolver la lista de eventos inscritos
+	 * @param pagina   página desde la que leer los elementos
+	 * @param cantidad cantidad máxima de resultados devueltos
 	 */
-	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuario);
+	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuario, int pagina, int cantidad);
 
 	/**
 	 * @brief Método para listar los eventos que ha creado un usuario
 	 *
-	 * @param usuario usuario del que devolver la lista de eventos que ha creado
+	 * @param usuario  usuario del que devolver la lista de eventos que ha creado
+	 * @param pagina   página desde la que leer los elementos
+	 * @param cantidad cantidad máxima de resultados devueltos
 	 */
-	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuario);
+	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuario, int pagina, int cantidad);
 
 	/**
 	 * @brief Método para crear un evento por usuario

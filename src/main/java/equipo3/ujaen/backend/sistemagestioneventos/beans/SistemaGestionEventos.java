@@ -76,9 +76,13 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima) {
-		if (cantidadMaxima <= 0)
-			throw new ParametrosInvalidos("La cantidad máxima no puede ser negativa");
+	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int pagina,
+			int cantidad) {
+		if (pagina < 0)
+			throw new ParametrosInvalidos("La pagina no puede ser negativa");
+
+		if (cantidad <= 0)
+			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
 		if (descripcionParcial == null)
 			throw new ParametrosInvalidos("La descripcion no puede ser null");
@@ -87,10 +91,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 		if (categoria != null)
 			resultado = eventoDAO.findByCategoriaEventoAndDescripcionContainsIgnoreCase(categoria, descripcionParcial,
-					PageRequest.of(0, cantidadMaxima));
+					PageRequest.of(pagina, cantidad));
 		else
 			resultado = eventoDAO.findByDescripcionContainsIgnoreCase(descripcionParcial,
-					PageRequest.of(0, cantidadMaxima));
+					PageRequest.of(pagina, cantidad));
 
 		if (resultado == null)
 			return new ArrayList<>();
@@ -100,10 +104,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO) {
+	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO, int pagina, int cantidad) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
-		Usuario u = usuarioDAO.findByLoginFetchingInscritos(usuarioValido.getLogin());
+		Usuario u = usuarioDAO.findByLoginFetchingInscritos(usuarioValido.getLogin(), PageRequest.of(pagina, cantidad));
 
 		return u == null ? new ArrayList<>()
 				: u.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
@@ -112,10 +116,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO) {
+	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO, int pagina, int cantidad) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 
-		Usuario u = usuarioDAO.findByLoginFetchingCreados(usuarioValido.getLogin());
+		Usuario u = usuarioDAO.findByLoginFetchingCreados(usuarioValido.getLogin(), PageRequest.of(pagina, cantidad));
 
 		return u == null ? new ArrayList<EventoDTO>()
 				: u.getEventosCreados().stream().map(evento -> evento.toDTO(usuarioValido))
