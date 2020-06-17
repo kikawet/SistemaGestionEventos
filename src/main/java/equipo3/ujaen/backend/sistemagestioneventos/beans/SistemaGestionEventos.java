@@ -233,7 +233,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();
 
-		if (usuarioInterno.getuId() != usuarioDTO.getuId())
+		if (usuarioInterno.getuId() != usuarioDTO.getUId())
 			throw new AccesoDenegado();
 
 		return usuarioInterno;

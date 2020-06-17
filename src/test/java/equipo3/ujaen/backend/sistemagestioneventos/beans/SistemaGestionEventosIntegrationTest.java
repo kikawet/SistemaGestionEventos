@@ -63,8 +63,8 @@ public class SistemaGestionEventosIntegrationTest {
 		EventoDTO.EstadoUsuarioEvento estado = null;
 		UsuarioDTO creador = null;
 
-		return new EventoDTO(aforoMaximo, descripcion, cuando, idEvento, lugar, tipoEvento, categoriaEvento,
-				numAsistentes, numListaEspera, estado, creador);
+		return new EventoDTO(aforoMaximo, descripcion, manana, idEvento, lugar, tipoEvento, categoriaEvento, creador,
+				numAsistentes, numListaEspera, estado);
 	}
 
 	@Test

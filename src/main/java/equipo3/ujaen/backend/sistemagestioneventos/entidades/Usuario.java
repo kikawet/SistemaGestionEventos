@@ -51,8 +51,8 @@ public class Usuario {
 
 		this.rol = usuarioDTO.getRol();
 
-		if (usuarioDTO.getuId() != null)
-			this.uId = usuarioDTO.getuId();
+		if (usuarioDTO.getUId() != null)
+			this.uId = usuarioDTO.getUId();
 
 	}
 

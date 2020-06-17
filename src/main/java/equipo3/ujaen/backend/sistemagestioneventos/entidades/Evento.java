@@ -166,8 +166,8 @@ public class Evento {
 		UsuarioDTO creador = this.creador == null ? null : this.creador.toDTO();
 
 		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
-				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
-				getEstadoUsuario(u), creador);
+				this.tipoEvento, this.categoriaEvento, creador, this.asistentes.size(), this.listaEspera.size(),
+				this.getEstadoUsuario(u));
 
 		return eventoDTO;
 	}
