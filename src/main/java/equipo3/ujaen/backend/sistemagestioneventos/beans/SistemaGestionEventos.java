@@ -106,6 +106,11 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuarioDTO, int pagina, int cantidad) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
+		if (pagina < 0)
+			throw new ParametrosInvalidos("La pagina no puede ser negativa");
+
+		if (cantidad <= 0)
+			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
 		Usuario u = usuarioDAO.findByLoginFetchingInscritos(usuarioValido.getLogin(), PageRequest.of(pagina, cantidad));
 
@@ -118,6 +123,11 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuarioDTO, int pagina, int cantidad) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
+		if (pagina < 0)
+			throw new ParametrosInvalidos("La pagina no puede ser negativa");
+
+		if (cantidad <= 0)
+			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
 		Usuario u = usuarioDAO.findByLoginFetchingCreados(usuarioValido.getLogin(), PageRequest.of(pagina, cantidad));
 
