@@ -112,7 +112,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (cantidad <= 0)
 			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
-		Usuario u = usuarioDAO.findByLoginFetchingInscritos(usuarioValido.getLogin(), PageRequest.of(pagina, cantidad));
+		Usuario u = usuarioDAO.findByLoginFetchingInscritos(usuarioValido.getLogin());
 
 		return u == null ? new ArrayList<>()
 				: u.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
@@ -129,7 +129,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (cantidad <= 0)
 			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
-		Usuario u = usuarioDAO.findByLoginFetchingCreados(usuarioValido.getLogin(), PageRequest.of(pagina, cantidad));
+		Usuario u = usuarioDAO.findByLoginFetchingCreados(usuarioValido.getLogin());
 
 		return u == null ? new ArrayList<EventoDTO>()
 				: u.getEventosCreados().stream().map(evento -> evento.toDTO(usuarioValido))
