@@ -1,15 +1,23 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class EventoDTO {
+@NoArgsConstructor
+public class EventoDTO implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = -8509749646502520670L;
 
 	public enum EstadoUsuarioEvento {
 		ACEPTADO, LISTA_DE_ESPERA

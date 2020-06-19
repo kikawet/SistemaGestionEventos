@@ -1,13 +1,22 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class UsuarioDTO {
+@NoArgsConstructor
+public class UsuarioDTO implements Serializable {
+
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 413336268119887503L;
 
 	// ROL = null = ningún rol
 	public static enum RolUsuario {
@@ -23,7 +32,8 @@ public class UsuarioDTO {
 	private int numEventosInscritos;
 
 	public UsuarioDTO(String login, String password) {
-//		this(login, password, null, null, -1, -1);
+		this.login = login;
+		this.password = password;
 	}
 
 	public void clone(UsuarioDTO u) {

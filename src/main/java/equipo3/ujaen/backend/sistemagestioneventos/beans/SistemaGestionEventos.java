@@ -68,7 +68,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		}
 
 		if (!usuario.getPassword().equals(password)) {
-			throw new AccesoDenegado();
+			throw new AccesoDenegado("Contraseña incorrecta");
 		}
 
 		return usuario.toDTO();
@@ -169,7 +169,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		boolean contiene = usuarioValido.getEventosCreados().contains(evento);
 
 		if (usuarioValido.getRol() != UsuarioDTO.RolUsuario.ADMIN && !contiene)
-			throw new AccesoDenegado();
+			throw new AccesoDenegado("No es administrador ni el creador");
 
 		Evento cancelarEvento = eventoDAO.findByIdEventoFetchingAsistentes(evento.getIdEvento());
 		if (cancelarEvento != null)
@@ -234,7 +234,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			throw new UsuarioNoRegistrado();
 
 		if (usuarioInterno.getuId() != usuarioDTO.getUId())
-			throw new AccesoDenegado();
+			throw new AccesoDenegado("id de usuario incorrecto");
 
 		return usuarioInterno;
 	}
