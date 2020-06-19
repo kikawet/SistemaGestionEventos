@@ -222,6 +222,16 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		evento.eliminarAsistente(usuarioValido);
 	}
 
+	@Override
+	public UsuarioDTO getUsuario(Long idUsuario) {
+		Usuario u = usuarioDAO.findById(idUsuario).orElse(null);
+
+		if (u == null)
+			throw new AccesoDenegado("id de usuario inexistente");
+
+		return u.toDTO();
+	}
+
 	/**
 	 * @brief Metodo para validar un usuario internamente
 	 * @param usuario

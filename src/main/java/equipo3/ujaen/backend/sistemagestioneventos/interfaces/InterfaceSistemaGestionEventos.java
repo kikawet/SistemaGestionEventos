@@ -32,7 +32,7 @@ public interface InterfaceSistemaGestionEventos {
 	 *        con el. Una vez logeado nunca se cierra sesión
 	 * @param login    Es el id de usuario
 	 * @param password Es la contraseña del usuario
-	 * @return devuelve un usuario al cliente
+	 * @return UsuarioDTO devuelve un usuario al cliente
 	 *
 	 * @throws ParametrosInvalidos login o password son null
 	 * @throws UsuarioNoRegistrado no existe ningún usuario con ese login
@@ -119,5 +119,7 @@ public interface InterfaceSistemaGestionEventos {
 	 * @throws EventoNoRegistrado no existe ningún evento con ese id
 	 */
 	public void cancelarInscripcionUsuario(UsuarioDTO usuario, Long idEvento);
+
+	public UsuarioDTO getUsuario(Long idUsuario);
 
 }
