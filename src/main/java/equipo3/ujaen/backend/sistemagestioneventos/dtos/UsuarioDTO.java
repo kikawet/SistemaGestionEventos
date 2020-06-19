@@ -2,6 +2,8 @@ package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
 import java.io.Serializable;
 
+import org.springframework.hateoas.RepresentationModel;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +13,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioDTO implements Serializable {
+public class UsuarioDTO extends RepresentationModel<UsuarioDTO> implements Serializable {
 
 	/**
 	 *

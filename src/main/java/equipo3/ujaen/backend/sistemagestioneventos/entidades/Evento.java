@@ -15,10 +15,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OrderColumn;
+import javax.validation.constraints.NotNull;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
 
 @Entity
@@ -36,6 +36,7 @@ public class Evento {
 	private String descripcion;
 	private LocalDateTime fecha;
 
+	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Usuario creador;
 
@@ -45,13 +46,13 @@ public class Evento {
 
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
+	@NotNull
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
-	public Evento(EventoDTO eventoDTO) {
+	public Evento(EventoDTO eventoDTO, Usuario creador) {
 
 		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
-				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(),
-				eventoDTO.getCreador() != null ? new Usuario(eventoDTO.getCreador()) : null);
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), creador);
 
 		if (eventoDTO.getIdEvento() != null)
 			this.idEvento = eventoDTO.getIdEvento();
@@ -163,11 +164,9 @@ public class Evento {
 	}
 
 	public EventoDTO toDTO(Usuario u) {
-		UsuarioDTO creador = this.creador == null ? null : this.creador.toDTO();
-
-		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
-				this.tipoEvento, this.categoriaEvento, creador, this.asistentes.size(), this.listaEspera.size(),
-				this.getEstadoUsuario(u));
+		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
+				this.tipoEvento, this.categoriaEvento, this.creador.getuId(), this.asistentes.size(),
+				this.listaEspera.size(), this.getEstadoUsuario(u));
 
 		return eventoDTO;
 	}

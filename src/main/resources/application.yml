@@ -2,7 +2,7 @@ spring.datasource.url: jdbc:mysql://localhost:3306/sge
 spring.datasource.username: sge_user
 spring.datasource.password: javaee
 
-spring.jpa.properties.javax.persistence.schema-generation.database.action: none
+spring.jpa.properties.javax.persistence.schema-generation.database.action: none # drop-and-create
 
 server.servlet.context-path: /sge-api
 server.port: 12021

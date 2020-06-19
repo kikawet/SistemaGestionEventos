@@ -120,6 +120,10 @@ public interface InterfaceSistemaGestionEventos {
 	 */
 	public void cancelarInscripcionUsuario(UsuarioDTO usuario, Long idEvento);
 
-	public UsuarioDTO getUsuario(Long idUsuario);
+	public UsuarioDTO getUsuario(long idUsuario);
+
+	public EventoDTO getEvento(long idEvento);
+
+	public EstadoUsuarioEvento getEstadoUsuarioEvento(long idUsuario, long idEvento);
 
 }

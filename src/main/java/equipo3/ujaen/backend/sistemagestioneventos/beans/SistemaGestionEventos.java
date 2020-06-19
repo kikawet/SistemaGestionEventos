@@ -130,9 +130,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (eventoDTO.getIdEvento() != null && eventoDAO.existsById(eventoDTO.getIdEvento()))
 			throw new EventoYaRegistrado();
 
-		Evento evento = new Evento(eventoDTO);
-
-		evento.setCreador(usuarioValido);
+		Evento evento = new Evento(eventoDTO, usuarioValido);
 
 		if (inscribirCreador) {
 			LocalDateTime hoy = LocalDateTime.now();
@@ -161,10 +159,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (idEvento == null)
 			throw new ParametrosInvalidos("idEvento no puede ser null");
 
-		Evento evento = eventoDAO.findById(idEvento).orElse(null);
-
-		if (evento == null)
-			throw new EventoNoExiste();
+		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new);
 
 		boolean contiene = usuarioValido.getEventosCreados().contains(evento);
 
@@ -188,10 +183,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Transactional
 	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
-		Evento evento = eventoDAO.findById(idEvento).orElse(null);
-
-		if (evento == null)
-			throw new EventoNoRegistrado();
+		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoRegistrado::new);
 
 		LocalDateTime hoy = LocalDateTime.now();
 
@@ -212,24 +204,30 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Transactional
 	public void cancelarInscripcionUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
-		Evento evento = eventoDAO.findById(idEvento).get();
-
-		if (evento == null) {
-			throw new EventoNoRegistrado();
-		}
+		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoRegistrado::new);
 
 		usuarioValido.cancelarInscripcion(evento);
 		evento.eliminarAsistente(usuarioValido);
 	}
 
 	@Override
-	public UsuarioDTO getUsuario(Long idUsuario) {
-		Usuario u = usuarioDAO.findById(idUsuario).orElse(null);
+	public UsuarioDTO getUsuario(long idUsuario) {
+		return usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"))
+				.toDTO();
+	}
 
-		if (u == null)
-			throw new AccesoDenegado("id de usuario inexistente");
+	@Override
+	public EventoDTO getEvento(long idEvento) {
+		return eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new).toDTO();
+	}
 
-		return u.toDTO();
+	@Override
+	public EstadoUsuarioEvento getEstadoUsuarioEvento(long idUsuario, long idEvento) {
+
+		Usuario u = usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"));
+		Evento e = eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new);
+
+		return e.getEstadoUsuario(u);
 	}
 
 	/**

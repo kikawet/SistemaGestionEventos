@@ -1,8 +1,13 @@
 package equipo3.ujaen.backend.sistemagestioneventos.restapi;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @RestController
@@ -42,34 +46,59 @@ public class RESTUsuario {
 		return gestorEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 	}
 
-	@GetMapping("/{login}")
-	UsuarioDTO getUsuario(@PathVariable String login, @RequestParam long id) {
-		UsuarioDTO usuario = gestorEventos.getUsuario(id);
+	@GetMapping("/{id}")
+	UsuarioDTO getUsuario(@PathVariable long id, @RequestParam(value = "id") long idUsuarioPeticion) {
+		// Comprovamos que el usuario está logeado
+		gestorEventos.getUsuario(idUsuarioPeticion);
 
-		if (usuario.getLogin().equals(login))
-			throw new UsuarioNoRegistrado();
+		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-		return usuario;
+		if (u.getNumEventosInscritos() > 0)
+			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, idUsuarioPeticion))
+					.withRel("eventosInscritos"));
+
+		if (u.getNumEventosCreados() > 0)
+			u.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, idUsuarioPeticion)).withRel("eventosCreados"));
+
+		return u;
 	}
 
-	@GetMapping("/{login}/inscritos")
-	List<EventoDTO> listarInscritos(@PathVariable String login, @RequestParam long id) {
-		UsuarioDTO u = new UsuarioDTO();
+	@GetMapping("/{id}/inscritos")
+	CollectionModel<EventoDTO> listarInscritos(@PathVariable long id,
+			@RequestParam(value = "id") long idUsuarioPeticion) {
+		gestorEventos.getUsuario(idUsuarioPeticion);
+		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-		u.setLogin(login);
-		u.setUId(id);
+		List<EventoDTO> eventos = gestorEventos.listarEventosInscritosDeUnUsuario(u);
 
-		return gestorEventos.listarEventosInscritosDeUnUsuario(u);
+		eventos = RESTEvento.addLinks(eventos);
+
+		Link selfLink = linkTo(RESTUsuario.class).withSelfRel();
+
+		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
+
+		resultado.add(selfLink);
+
+		return resultado;
 	}
 
-	@GetMapping("/{login}/creados")
-	List<EventoDTO> listarCreados(@PathVariable String login, @RequestParam long id) {
-		UsuarioDTO u = new UsuarioDTO();
+	@GetMapping("/{id}/creados")
+	CollectionModel<EventoDTO> listarCreados(@PathVariable long id,
+			@RequestParam(value = "id") long idUsuarioPeticion) {
+		gestorEventos.getUsuario(idUsuarioPeticion);
+		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-		u.setLogin(login);
-		u.setUId(id);
+		List<EventoDTO> eventos = gestorEventos.listarEventosCreadosPorUnUsuario(u);
 
-		return gestorEventos.listarEventosCreadosPorUnUsuario(u);
+		eventos = RESTEvento.addLinks(eventos);
+
+		Link selfLink = linkTo(RESTUsuario.class).withSelfRel();
+
+		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
+
+		resultado.add(selfLink);
+
+		return resultado;
 	}
 
 }
