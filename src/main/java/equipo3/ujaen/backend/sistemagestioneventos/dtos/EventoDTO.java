@@ -2,6 +2,13 @@ package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
 import java.time.LocalDateTime;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class EventoDTO {
 
 	public enum EstadoUsuarioEvento {
@@ -30,102 +37,22 @@ public class EventoDTO {
 
 	private EventoDTO.EstadoUsuarioEvento estado;
 
-	public EventoDTO(int aforoMaximo, String descripcion, LocalDateTime fecha, Long idEvento, String lugar,
-			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, int numAsistentes,
-			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado, UsuarioDTO creador) {
-		super();
-		this.aforoMaximo = aforoMaximo;
-		this.descripcion = descripcion;
-		this.fecha = fecha;
-		this.idEvento = idEvento;
-		this.lugar = lugar;
-		this.tipoEvento = tipoEvento;
-		this.categoriaEvento = categoriaEvento;
-		this.numAsistentes = numAsistentes;
-		this.numListaEspera = numListaEspera;
-		this.estado = estado;
-		this.creador = creador;
-	}
-
-	public int getAforoMaximo() {
-		return aforoMaximo;
-	}
-
-	public void setAforoMaximo(int aforoMaximo) {
-		this.aforoMaximo = aforoMaximo;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public LocalDateTime getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(LocalDateTime fecha) {
-		this.fecha = fecha;
-	}
-
-	public Long getIdEvento() {
-		return idEvento;
-	}
-
-	public void setIdEvento(Long idEvento) {
-		this.idEvento = idEvento;
-	}
-
-	public String getLugar() {
-		return lugar;
-	}
-
-	public void setLugar(String lugar) {
-		this.lugar = lugar;
-	}
-
-	public EventoDTO.TipoEvento getTipoEvento() {
-		return tipoEvento;
-	}
-
-	public void setTipoEvento(EventoDTO.TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
-	public EventoDTO.CategoriaEvento getCategoriaEvento() {
-		return categoriaEvento;
-	}
-
-	public void setCategoriaEvento(EventoDTO.CategoriaEvento categoriaEvento) {
-		this.categoriaEvento = categoriaEvento;
-	}
-
-	public int getNumAsistentes() {
-		return numAsistentes;
-	}
-
-	public void setNumAsistentes(int numAsistentes) {
-		this.numAsistentes = numAsistentes;
-	}
-
-	public int getNumListaEspera() {
-		return numListaEspera;
-	}
-
-	public void setNumListaEspera(int numListaEspera) {
-		this.numListaEspera = numListaEspera;
-	}
-
-	public EventoDTO.EstadoUsuarioEvento getEstado() {
-		return estado;
-	}
-
-	public void setEstado(EventoDTO.EstadoUsuarioEvento estado) {
-		this.estado = estado;
-	}
+//	public EventoDTO(int aforoMaximo, String descripcion, LocalDateTime fecha, Long idEvento, String lugar,
+//			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, int numAsistentes,
+//			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado, UsuarioDTO creador) {
+//		super();
+//		this.aforoMaximo = aforoMaximo;
+//		this.descripcion = descripcion;
+//		this.fecha = fecha;
+//		this.idEvento = idEvento;
+//		this.lugar = lugar;
+//		this.tipoEvento = tipoEvento;
+//		this.categoriaEvento = categoriaEvento;
+//		this.numAsistentes = numAsistentes;
+//		this.numListaEspera = numListaEspera;
+//		this.estado = estado;
+//		this.creador = creador;
+//	}
 
 	public void clone(EventoDTO e) {
 		this.aforoMaximo = e.aforoMaximo;
@@ -139,14 +66,6 @@ public class EventoDTO {
 		this.numListaEspera = e.numListaEspera;
 		this.estado = e.estado;
 		this.creador = e.creador;
-	}
-
-	public UsuarioDTO getCreador() {
-		return creador;
-	}
-
-	public void setCreador(UsuarioDTO creador) {
-		this.creador = creador;
 	}
 
 }
