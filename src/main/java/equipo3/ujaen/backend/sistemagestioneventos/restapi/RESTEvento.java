@@ -108,8 +108,8 @@ public class RESTEvento {
 		return gestorEventos.inscribirUsuario(u, idEvento);
 	}
 
-	@DeleteMapping("/{id}/inscripcion")
-	void cancelarInscripcion(@PathVariable(value = "id") long idEvento, @RequestParam(value = "id") long uId) {
+	@DeleteMapping("/{id}/inscripcion/{uId}")
+	void cancelarInscripcion(@PathVariable(value = "id") long idEvento, @PathVariable long uId) {
 		UsuarioDTO u = gestorEventos.getUsuario(uId);
 
 		gestorEventos.cancelarInscripcionUsuario(u, idEvento);
