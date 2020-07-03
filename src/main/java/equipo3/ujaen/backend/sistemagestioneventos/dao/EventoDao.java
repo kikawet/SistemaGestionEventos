@@ -22,7 +22,7 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 			String descripcionParcial, Pageable cantidad);
 
 	@Cacheable({ "buscaEvento" })
-	List<Evento> findByDescripcionContainsIgnoreCase(String descripcionParcial, Pageable cantidad);
+	List<Evento> findByDescripcionContainsIgnoreCase(String descripcionParcial, Pageable pageable);
 
 	@Query("select e from Evento e join fetch e.asistentes where e.idEvento=?1")
 	Evento findByIdEventoFetchingAsistentes(Long idEvento);

@@ -126,7 +126,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertNotNull(e);
 
-		List<EventoDTO> eventos = gestorEventos.listarEventos(null, "", 1);
+		List<EventoDTO> eventos = gestorEventos.listarEventos(null, "", 0, 1);
 
 		assertEquals(1, eventos.size());
 
@@ -204,7 +204,7 @@ public class SistemaGestionEventosIntegrationTest {
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
 			Assertions.assertThrows(UsuarioNoRegistrado.class,
-					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2));
+					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2, 0, 1));
 		}
 
 		// TEST USUARIO NO INSCRITO //
@@ -213,8 +213,10 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
 
-		assertTrue(gestorEventos.listarEventosInscritosDeUnUsuario(usuario).isEmpty());
-		assertEquals(1, gestorEventos.listarEventosCreadosPorUnUsuario(usuario).size());
+		assertTrue(gestorEventos.listarEventosInscritosDeUnUsuario(usuario, 0, 1).isEmpty());
+		List<EventoDTO> e = gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100);
+
+		assertEquals(1, gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100).size());
 
 		// TEST SUPERANDO AFORO //
 
@@ -223,10 +225,10 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// Eventos inscritos
 
-		List<EventoDTO> eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario);
-		List<EventoDTO> eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1);
+		List<EventoDTO> eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario, 0, 100);
+		List<EventoDTO> eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1, 0, 100);
 
-		assertTrue(eventosU.size() == 1);
+		assertEquals(1, eventosU.size());
 		assertEquals(eventosU.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
 
 		assertTrue(eventosU1.size() == 1);
@@ -234,8 +236,8 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// Eventos creados
 
-		eventosU = gestorEventos.listarEventosCreadosPorUnUsuario(usuario);
-		eventosU1 = gestorEventos.listarEventosCreadosPorUnUsuario(usuario1);
+		eventosU = gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100);
+		eventosU1 = gestorEventos.listarEventosCreadosPorUnUsuario(usuario1, 0, 100);
 
 		assertTrue(eventosU.size() == 1);
 		assertEquals(eventosU.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
@@ -248,8 +250,8 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// Eventos inscritos
 
-		eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario);
-		eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1);
+		eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario, 0, 100);
+		eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1, 0, 100);
 
 		assertTrue(eventosU.isEmpty());
 
@@ -258,8 +260,8 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// Eventos creados
 
-		eventosU = gestorEventos.listarEventosCreadosPorUnUsuario(usuario);
-		eventosU1 = gestorEventos.listarEventosCreadosPorUnUsuario(usuario1);
+		eventosU = gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100);
+		eventosU1 = gestorEventos.listarEventosCreadosPorUnUsuario(usuario1, 0, 100);
 
 		assertTrue(eventosU.size() == 1);
 		assertNull(eventosU.get(0).getEstado());
@@ -281,7 +283,7 @@ public class SistemaGestionEventosIntegrationTest {
 		{
 			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
 			Assertions.assertThrows(UsuarioNoRegistrado.class,
-					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2));
+					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2, 0, 1));
 		}
 
 		// TEST SIN EVENTOS -- DESCARTADO POR NO BORRAR LA BD
@@ -333,17 +335,20 @@ public class SistemaGestionEventosIntegrationTest {
 		assertThat(eventos).extracting(EventoDTO::getIdEvento)
 				.containsAll(borrar.stream().map(EventoDTO::getIdEvento).collect(Collectors.toList()));
 
-		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, null, -100));
+		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, null, 0, -100));
 
 		// TEST CANTIDAD
 
 		eventos = gestorEventos.listarEventos(null, "", 100);
 		assertTrue(borrar.size() <= eventos.size());
 
-		eventos = gestorEventos.listarEventos(null, "", 1);
+		eventos = gestorEventos.listarEventos(null, "", 0, 1);
 		assertEquals(1, eventos.size());
 
-		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0));
+		eventos = gestorEventos.listarEventos(null, "", 1, 2);
+		assertEquals(1, eventos.size());
+
+		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0, 0));
 
 	}
 
@@ -381,8 +386,9 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.cancelarEventoPorUsuario(usuario, evento.getIdEvento());
 
-		gestorEventos.listarEventos(null, "", 100).forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
-		gestorEventos.listarEventosCreadosPorUnUsuario(usuario)
+		gestorEventos.listarEventos(null, "", 0, 100)
+				.forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
+		gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100)
 				.forEach(e -> assertNotSame(evento.getIdEvento(), e.getIdEvento()));
 
 	}
