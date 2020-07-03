@@ -1,10 +1,8 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -32,7 +30,7 @@ public class Usuario {
 	private List<Evento> eventosCreados;
 
 	@ManyToMany
-	private Set<Evento> eventosInscritos;
+	private List<Evento> eventosInscritos;// Para trabajar con la paginación usar listas es más comodo
 
 	public Usuario() {
 		super();
@@ -41,7 +39,7 @@ public class Usuario {
 		this.password = null;
 
 		this.eventosCreados = new ArrayList<>();
-		this.eventosInscritos = new HashSet<>();
+		this.eventosInscritos = new ArrayList<>();
 		this.rol = null;
 		this.uId = null;
 	}
@@ -62,7 +60,7 @@ public class Usuario {
 		this.password = password;
 
 		this.eventosCreados = new ArrayList<>();
-		this.eventosInscritos = new HashSet<>();
+		this.eventosInscritos = new ArrayList<>();
 		this.rol = null;
 		this.uId = null;
 	}

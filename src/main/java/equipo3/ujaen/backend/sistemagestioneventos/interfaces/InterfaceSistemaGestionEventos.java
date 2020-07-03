@@ -43,31 +43,46 @@ public interface InterfaceSistemaGestionEventos {
 	/**
 	 * @brief Método que lista los eventos que hay en el sistema
 	 *
-	 * @param categoria          categoría del evento. Null para nuscar de cualquier
-	 *                           categoría
-	 * @param descripcionParcial descripción parcial del evento
-	 * @param cantidadMaxima     cantidad máxima de resultados devueltos
-	 * @return lista de DTO que cumplen las restricicones
+	 * @param categoria categoría del evento. Null para nuscar de cualquier
+	 *                  categoría @param descripcionParcial descripción parcial del
+	 *                  evento @param pagina página desde la que leer los
+	 *                  elementos @param cantidad cantidad máxima de resultados
+	 *                  devueltos @return lista de DTO que cumplen las restricicones
 	 *
-	 * @throws ParametrosInvalidos cantidad <= 0
-	 * @throws ParametrosInvalidos descripcionParcial == null
+	 * @throws ParametrosInvalidos pagina < 0 || cantidad <= 0 || descripcionParcial
+	 *                             == null
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
-	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int cantidadMaxima);
+	public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, int pagina,
+			int cantidad);
 
 	/**
 	 * @brief Método para listar los eventos de un usuario, indicando si este está
 	 *        aceptado o en lista de espera
 	 *
-	 * @param usuario usuario del que devolver la lista de eventos inscritos
+	 * @param usuario  usuario del que devolver la lista de eventos inscritos
+	 * @param pagina   página desde la que leer los elementos
+	 * @param cantidad cantidad máxima de resultados devueltos
+	 *
+	 * @throws ParametrosInvalidos pagina < 0 || cantidad <= 0
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
-	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuario);
+	public List<EventoDTO> listarEventosInscritosDeUnUsuario(UsuarioDTO usuario, int pagina, int cantidad);
 
 	/**
 	 * @brief Método para listar los eventos que ha creado un usuario
 	 *
-	 * @param usuario usuario del que devolver la lista de eventos que ha creado
+	 * @param usuario  usuario del que devolver la lista de eventos que ha creado
+	 * @param pagina   página desde la que leer los elementos
+	 * @param cantidad cantidad máxima de resultados devueltos
+	 *
+	 * @throws ParametrosInvalidos pagina < 0 || cantidad <= 0
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
-	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuario);
+	public List<EventoDTO> listarEventosCreadosPorUnUsuario(UsuarioDTO usuario, int pagina, int cantidad);
 
 	/**
 	 * @brief Método para crear un evento por usuario
@@ -76,8 +91,10 @@ public interface InterfaceSistemaGestionEventos {
 	 * @param evento           datos con los que se va a cear el evento
 	 * @param inscribirCreador true para inscribir al creador al evento
 	 *
-	 * @throws EventoYaRegistrado ya existe ese evento
-	 * @throws EventoPrescrito    la fecha del evento es anterior a la de hoy
+	 * @throws EventoYaRegistrado  ya existe ese evento
+	 * @throws EventoPrescrito     la fecha del evento es anterior a la de hoy
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
 	public void crearEventoPorUsuario(UsuarioDTO usuario, EventoDTO evento, boolean inscribirCreador);
 
@@ -91,6 +108,8 @@ public interface InterfaceSistemaGestionEventos {
 	 * @throws EventoNoExiste      no existe ningun evento con ese id
 	 * @throws AccesoDenegado      el usuario no tiene permisos para cancelar el
 	 *                             evento
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
 	public void cancelarEventoPorUsuario(UsuarioDTO usuario, Long idEvento);
 
@@ -105,9 +124,11 @@ public interface InterfaceSistemaGestionEventos {
 	 *         lista de espera
 	 * @return null el usuario ya estaba inscrito
 	 *
-	 * @throws EventoNoRegistrado no existe ningún evento con ese id
-	 * @throws EventoPrescrito    un usuario intenta inscribirse pasada la fecha del
-	 *                            evento
+	 * @throws EventoNoRegistrado  no existe ningún evento con ese id
+	 * @throws EventoPrescrito     un usuario intenta inscribirse pasada la fecha
+	 *                             del evento
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
 	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuario, Long idEvento);
 
@@ -116,7 +137,9 @@ public interface InterfaceSistemaGestionEventos {
 	 * @param usuario  usuario que quiere cancelar la inscripción
 	 * @param idEvento id del evento al que se va a inscribir
 	 *
-	 * @throws EventoNoRegistrado no existe ningún evento con ese id
+	 * @throws EventoNoRegistrado  no existe ningún evento con ese id
+	 * @throws UsuarioNoRegistrado no existe ningun usuario con ese login
+	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
 	public void cancelarInscripcionUsuario(UsuarioDTO usuario, Long idEvento);
 
