@@ -203,6 +203,8 @@ public class SistemaGestionEventosIntegrationTest {
 		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
 
 		assertTrue(gestorEventos.listarEventosInscritosDeUnUsuario(usuario, 0, 1).isEmpty());
+		List<EventoDTO> e = gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100);
+
 		assertEquals(1, gestorEventos.listarEventosCreadosPorUnUsuario(usuario, 0, 100).size());
 
 		// TEST SUPERANDO AFORO //
@@ -215,7 +217,7 @@ public class SistemaGestionEventosIntegrationTest {
 		List<EventoDTO> eventosU = gestorEventos.listarEventosInscritosDeUnUsuario(usuario, 0, 100);
 		List<EventoDTO> eventosU1 = gestorEventos.listarEventosInscritosDeUnUsuario(usuario1, 0, 100);
 
-		assertTrue(eventosU.size() == 1);
+		assertEquals(1, eventosU.size());
 		assertEquals(eventosU.get(0).getEstado(), EstadoUsuarioEvento.ACEPTADO);
 
 		assertTrue(eventosU1.size() == 1);
@@ -327,6 +329,9 @@ public class SistemaGestionEventosIntegrationTest {
 		assertEquals(borrar.size(), eventos.size());
 
 		eventos = gestorEventos.listarEventos(null, "", 0, 1);
+		assertEquals(1, eventos.size());
+
+		eventos = gestorEventos.listarEventos(null, "", 1, 2);
 		assertEquals(1, eventos.size());
 
 		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0, 0));

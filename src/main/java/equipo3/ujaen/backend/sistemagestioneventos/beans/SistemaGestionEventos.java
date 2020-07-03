@@ -112,11 +112,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (cantidad <= 0)
 			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
-		Usuario u = usuarioDAO.findByLoginFetchingInscritos(usuarioValido.getLogin());
+		int fromIndex = Math.min(usuarioValido.getEventosInscritos().size(), pagina * cantidad);
+		int toIndex = Math.min(usuarioValido.getEventosInscritos().size(), (pagina + 1) * cantidad);
 
-		return u == null ? new ArrayList<>()
-				: u.getEventosInscritos().stream().map(evento -> evento.toDTO(usuarioValido))
-						.collect(Collectors.toList());
+		List<Evento> eventos = usuarioValido.getEventosInscritos().subList(fromIndex, toIndex);
+
+		return eventos.stream().map(evento -> evento.toDTO(usuarioValido)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -129,11 +130,14 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (cantidad <= 0)
 			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
 
-		Usuario u = usuarioDAO.findByLoginFetchingCreados(usuarioValido.getLogin());
+		List<Evento> e = usuarioValido.getEventosCreados();
 
-		return u == null ? new ArrayList<EventoDTO>()
-				: u.getEventosCreados().stream().map(evento -> evento.toDTO(usuarioValido))
-						.collect(Collectors.toList());
+		int fromIndex = Math.min(usuarioValido.getEventosCreados().size(), pagina * cantidad);
+		int toIndex = Math.min(usuarioValido.getEventosCreados().size(), (pagina + 1) * cantidad);
+
+		List<Evento> eventos = usuarioValido.getEventosCreados().subList(fromIndex, toIndex);
+
+		return eventos.stream().map(evento -> evento.toDTO(usuarioValido)).collect(Collectors.toList());
 	}
 
 	@Override
