@@ -49,9 +49,10 @@ public class RESTEvento {
 	@GetMapping
 	CollectionModel<EventoDTO> listarEventos(@RequestParam(required = false) CategoriaEvento categoria,
 			@RequestParam(required = false, defaultValue = "") String descripcion,
+			@RequestParam(required = false, defaultValue = "0") int pagina,
 			@RequestParam(required = false, defaultValue = "10") int cantidad) {
 
-		List<EventoDTO> eventos = gestorEventos.listarEventos(categoria, descripcion, cantidad);
+		List<EventoDTO> eventos = gestorEventos.listarEventos(categoria, descripcion, pagina, cantidad);
 
 		eventos = addLinks(eventos);
 

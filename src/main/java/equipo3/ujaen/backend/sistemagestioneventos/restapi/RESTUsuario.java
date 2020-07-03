@@ -54,22 +54,25 @@ public class RESTUsuario {
 		UsuarioDTO u = gestorEventos.getUsuario(id);
 
 		if (u.getNumEventosInscritos() > 0)
-			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, idUsuarioPeticion))
+			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, 0, 10, idUsuarioPeticion))
 					.withRel("eventosInscritos"));
 
 		if (u.getNumEventosCreados() > 0)
-			u.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, idUsuarioPeticion)).withRel("eventosCreados"));
+			u.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, 0, 10, idUsuarioPeticion))
+					.withRel("eventosCreados"));
 
 		return u;
 	}
 
 	@GetMapping("/{id}/inscritos")
 	CollectionModel<EventoDTO> listarInscritos(@PathVariable long id,
+			@RequestParam(required = false, defaultValue = "0") int pagina,
+			@RequestParam(required = false, defaultValue = "10") int cantidad,
 			@RequestParam(value = "id") long idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-		List<EventoDTO> eventos = gestorEventos.listarEventosInscritosDeUnUsuario(u);
+		List<EventoDTO> eventos = gestorEventos.listarEventosInscritosDeUnUsuario(u, pagina, cantidad);
 
 		eventos = RESTEvento.addLinks(eventos);
 
@@ -84,11 +87,13 @@ public class RESTUsuario {
 
 	@GetMapping("/{id}/creados")
 	CollectionModel<EventoDTO> listarCreados(@PathVariable long id,
+			@RequestParam(required = false, defaultValue = "0") int pagina,
+			@RequestParam(required = false, defaultValue = "10") int cantidad,
 			@RequestParam(value = "id") long idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-		List<EventoDTO> eventos = gestorEventos.listarEventosCreadosPorUnUsuario(u);
+		List<EventoDTO> eventos = gestorEventos.listarEventosCreadosPorUnUsuario(u, pagina, cantidad);
 
 		eventos = RESTEvento.addLinks(eventos);
 
