@@ -83,6 +83,17 @@ public class RESTUsuario {
 
 		resultado.add(selfLink);
 
+		if (pagina > 0)
+			resultado.add(
+					linkTo(methodOn(RESTUsuario.class).listarInscritos(id, pagina - 1, cantidad, idUsuarioPeticion))
+							.withRel("anterior"));
+
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() < cantidad)
+			resultado.add(
+					linkTo(methodOn(RESTUsuario.class).listarInscritos(id, pagina + 1, cantidad, idUsuarioPeticion))
+							.withRel("siguiente"));
+
 		return resultado;
 	}
 
@@ -103,6 +114,15 @@ public class RESTUsuario {
 		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
 
 		resultado.add(selfLink);
+
+		if (pagina > 0)
+			resultado.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, pagina - 1, cantidad, idUsuarioPeticion))
+					.withRel("anterior"));
+
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() < cantidad)
+			resultado.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, pagina + 1, cantidad, idUsuarioPeticion))
+					.withRel("siguiente"));
 
 		return resultado;
 	}

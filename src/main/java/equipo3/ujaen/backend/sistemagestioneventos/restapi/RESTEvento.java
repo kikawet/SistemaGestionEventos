@@ -63,6 +63,15 @@ public class RESTEvento {
 
 		resultado.add(selfLink);
 
+		if (pagina > 0)
+			resultado.add(linkTo(methodOn(RESTEvento.class).listarEventos(categoria, descripcion, pagina - 1, cantidad))
+					.withRel("anterior"));
+
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() < cantidad)
+			resultado.add(linkTo(methodOn(RESTEvento.class).listarEventos(categoria, descripcion, pagina + 1, cantidad))
+					.withRel("siguiente"));
+
 		return resultado;
 	}
 
