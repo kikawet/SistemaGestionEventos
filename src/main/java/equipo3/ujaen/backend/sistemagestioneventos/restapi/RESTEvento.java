@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -67,10 +68,10 @@ public class RESTEvento {
 
 	@GetMapping("/{id}")
 	EventoDTO getEvento(@PathVariable(value = "id") long idEvento,
-			@RequestParam(required = false, value = "id") Long uId) {
+			@RequestParam(required = false, value = "id") UUID uId) {
 		EventoDTO evento = gestorEventos.getEvento(idEvento);
 
-		if (uId != null && uId != 0) {
+		if (uId != null) {
 			gestorEventos.getUsuario(uId);
 			evento.add(linkTo(methodOn(RESTUsuario.class).getUsuario(evento.getIdCreador(), uId)).withRel("creador"));
 
@@ -86,7 +87,7 @@ public class RESTEvento {
 
 	@PostMapping
 	@ResponseStatus(code = HttpStatus.CREATED)
-	void crearEvento(@RequestBody EventoDTO evento, @RequestParam(value = "id") long uId,
+	void crearEvento(@RequestBody EventoDTO evento, @RequestParam(value = "id") UUID uId,
 			@RequestParam(required = false, defaultValue = "false") boolean inscribir) {
 		UsuarioDTO creador = gestorEventos.getUsuario(uId);
 
@@ -94,7 +95,7 @@ public class RESTEvento {
 	}
 
 	@DeleteMapping("/{id}")
-	void cancelarEvento(@PathVariable(value = "id") long idEvento, @RequestParam(value = "id") long uId) {
+	void cancelarEvento(@PathVariable(value = "id") long idEvento, @RequestParam(value = "id") UUID uId) {
 		UsuarioDTO u = gestorEventos.getUsuario(uId);
 
 		gestorEventos.cancelarEventoPorUsuario(u, idEvento);
@@ -102,14 +103,14 @@ public class RESTEvento {
 
 	@PostMapping("/{id}/inscripcion")
 	EstadoUsuarioEvento inscribirUsuario(@PathVariable(value = "id") long idEvento,
-			@RequestParam(value = "id") long uId) {
+			@RequestParam(value = "id") UUID uId) {
 		UsuarioDTO u = gestorEventos.getUsuario(uId);
 
 		return gestorEventos.inscribirUsuario(u, idEvento);
 	}
 
 	@DeleteMapping("/{id}/inscripcion/{uId}")
-	void cancelarInscripcion(@PathVariable(value = "id") long idEvento, @PathVariable long uId) {
+	void cancelarInscripcion(@PathVariable(value = "id") long idEvento, @PathVariable UUID uId) {
 		UsuarioDTO u = gestorEventos.getUsuario(uId);
 
 		gestorEventos.cancelarInscripcionUsuario(u, idEvento);

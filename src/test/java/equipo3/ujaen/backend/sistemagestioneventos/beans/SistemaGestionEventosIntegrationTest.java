@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.validation.ConstraintViolationException;
@@ -51,7 +52,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
 
-		return gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+		return gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 	}
 
 	EventoDTO crearEventoValido() {
@@ -67,7 +68,7 @@ public class SistemaGestionEventosIntegrationTest {
 		int numAsistentes = 603;
 		int numListaEspera = 0;
 		EventoDTO.EstadoUsuarioEvento estado = null;
-		Long idCreador = null;
+		UUID idCreador = null;
 
 		return new EventoDTO(idEvento, aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, idCreador,
 				numAsistentes, numListaEspera, estado);
@@ -88,7 +89,7 @@ public class SistemaGestionEventosIntegrationTest {
 		Assertions.assertThrows(UsuarioYaRegistrado.class,
 				() -> gestorEventos.registroUsuarios(loginUsuario, passwordUsuario));
 
-		UsuarioDTO u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+		UsuarioDTO u = gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 
 		assertNotNull(u);
 		assertEquals(loginUsuario, u.getLogin());
@@ -103,7 +104,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
 
-		UsuarioDTO u = gestorEventos.loginUsuario(loginUsuario, passwordUsuario);
+		UsuarioDTO u = gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 
 		assertNotNull(u);
 		assertEquals(loginUsuario, u.getLogin());

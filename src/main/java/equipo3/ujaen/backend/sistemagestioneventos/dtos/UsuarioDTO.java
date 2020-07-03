@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -27,7 +28,7 @@ public class UsuarioDTO extends RepresentationModel<UsuarioDTO> implements Seria
 
 	private String login;
 	private String password;
-	private Long uId;
+	private UUID uId;
 	private RolUsuario rol;
 
 	private int numEventosCreados;

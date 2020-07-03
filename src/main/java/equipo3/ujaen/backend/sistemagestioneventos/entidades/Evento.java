@@ -37,7 +37,7 @@ public class Evento {
 	private LocalDateTime fecha;
 
 	@NotNull
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	private Usuario creador;
 
 	@Id
@@ -165,7 +165,7 @@ public class Evento {
 
 	public EventoDTO toDTO(Usuario u) {
 		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
-				this.tipoEvento, this.categoriaEvento, this.creador.getuId(), this.asistentes.size(),
+				this.tipoEvento, this.categoriaEvento, this.creador.getUId(), this.asistentes.size(),
 				this.listaEspera.size(), this.getEstadoUsuario(u));
 
 		return eventoDTO;

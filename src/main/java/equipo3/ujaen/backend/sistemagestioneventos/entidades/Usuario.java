@@ -3,13 +3,17 @@ package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+
+import org.hibernate.annotations.Type;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
@@ -18,12 +22,14 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
 public class Usuario {
 	private RolUsuario rol;
 
+	@Column(unique = true)
 	private String login;
 	private String password;
 
 	@Id
 	@GeneratedValue
-	private Long uId;
+	@Type(type = "uuid-char")
+	private UUID uId;
 
 	// Al modificar creador se actualiza la lista
 	@OneToMany(mappedBy = "creador")
@@ -33,15 +39,7 @@ public class Usuario {
 	private List<Evento> eventosInscritos;// Para trabajar con la paginación usar listas es más comodo
 
 	public Usuario() {
-		super();
-
-		this.login = null;
-		this.password = null;
-
-		this.eventosCreados = new ArrayList<>();
-		this.eventosInscritos = new ArrayList<>();
-		this.rol = null;
-		this.uId = null;
+		this(null, null);
 	}
 
 	public Usuario(UsuarioDTO usuarioDTO) {
@@ -65,7 +63,7 @@ public class Usuario {
 		this.uId = null;
 	}
 
-	public void setuId(Long uId) {
+	public void setUId(UUID uId) {
 		this.uId = uId;
 	}
 
@@ -114,7 +112,7 @@ public class Usuario {
 		this.rol = rol;
 	}
 
-	public Long getuId() {
+	public UUID getUId() {
 		return uId;
 	}
 

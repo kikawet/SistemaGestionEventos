@@ -1,5 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dao;
 
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -15,7 +17,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
  * @author flo00008
  *
  */
-public interface UsuarioDao extends JpaRepository<Usuario, Long> {
+public interface UsuarioDao extends JpaRepository<Usuario, UUID> {
 //	@Cacheable({ "existeUsuario" })
 	boolean existsByLogin(String login);
 

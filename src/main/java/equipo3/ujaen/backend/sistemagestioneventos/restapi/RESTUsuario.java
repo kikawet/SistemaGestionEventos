@@ -4,6 +4,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -42,12 +43,12 @@ public class RESTUsuario {
 	}
 
 	@PutMapping
-	UsuarioDTO login(@RequestBody UsuarioDTO usuarioDTO) {
+	UUID login(@RequestBody UsuarioDTO usuarioDTO) {
 		return gestorEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 	}
 
 	@GetMapping("/{id}")
-	UsuarioDTO getUsuario(@PathVariable long id, @RequestParam(value = "id") long idUsuarioPeticion) {
+	UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "id") UUID idUsuarioPeticion) {
 		// Comprovamos que el usuario está logeado
 		gestorEventos.getUsuario(idUsuarioPeticion);
 
@@ -65,10 +66,10 @@ public class RESTUsuario {
 	}
 
 	@GetMapping("/{id}/inscritos")
-	CollectionModel<EventoDTO> listarInscritos(@PathVariable long id,
+	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
 			@RequestParam(required = false, defaultValue = "0") int pagina,
 			@RequestParam(required = false, defaultValue = "10") int cantidad,
-			@RequestParam(value = "id") long idUsuarioPeticion) {
+			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);
 
@@ -86,10 +87,10 @@ public class RESTUsuario {
 	}
 
 	@GetMapping("/{id}/creados")
-	CollectionModel<EventoDTO> listarCreados(@PathVariable long id,
+	CollectionModel<EventoDTO> listarCreados(@PathVariable UUID id,
 			@RequestParam(required = false, defaultValue = "0") int pagina,
 			@RequestParam(required = false, defaultValue = "10") int cantidad,
-			@RequestParam(value = "id") long idUsuarioPeticion) {
+			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);
 

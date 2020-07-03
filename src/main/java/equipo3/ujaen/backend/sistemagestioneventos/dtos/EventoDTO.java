@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.hateoas.RepresentationModel;
 
@@ -40,7 +41,7 @@ public class EventoDTO extends RepresentationModel<EventoDTO> implements Seriali
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;
-	private Long idCreador;
+	private UUID idCreador;
 	private int numAsistentes;
 	private int numListaEspera;
 
