@@ -304,7 +304,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento1, inscribirCreador);
 
-		List<EventoDTO> eventos = gestorEventos.listarEventos(CategoriaEvento.CHARLAS, "", 100);
+		List<EventoDTO> eventos = gestorEventos.listarEventos(CategoriaEvento.CHARLAS, "", 0, 100);
 		MatcherAssert.assertThat(eventos,
 				Matchers.hasItem(Matchers.hasProperty("idEvento", Matchers.is(evento1.getIdEvento()))));
 
@@ -318,7 +318,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento2, inscribirCreador);
 
-		eventos = gestorEventos.listarEventos(CategoriaEvento.DEPORTE, "integracion", 100);
+		eventos = gestorEventos.listarEventos(CategoriaEvento.DEPORTE, "integracion", 0, 100);
 		MatcherAssert.assertThat(eventos,
 				Matchers.hasItem(Matchers.hasProperty("idEvento", Matchers.is(evento2.getIdEvento()))));
 
@@ -330,7 +330,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		gestorEventos.crearEventoPorUsuario(usuario, evento, inscribirCreador);
 
-		eventos = gestorEventos.listarEventos(null, "", 100);
+		eventos = gestorEventos.listarEventos(null, "", 0, 100);
 		assertTrue(eventos.containsAll(borrar));
 		assertThat(eventos).extracting(EventoDTO::getIdEvento)
 				.containsAll(borrar.stream().map(EventoDTO::getIdEvento).collect(Collectors.toList()));
@@ -339,7 +339,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		// TEST CANTIDAD
 
-		eventos = gestorEventos.listarEventos(null, "", 100);
+		eventos = gestorEventos.listarEventos(null, "", 0, 100);
 		assertTrue(borrar.size() <= eventos.size());
 
 		eventos = gestorEventos.listarEventos(null, "", 0, 1);
