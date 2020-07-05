@@ -74,12 +74,13 @@ public class RESTUsuario {
 	@GetMapping("/{id}/inscritos")
 	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
 			@RequestParam(required = false, defaultValue = "0") int pagina,
-			@RequestParam(required = false, defaultValue = "10") int cantidad, @RequestParam EstadoUsuarioEvento estado,
+			@RequestParam(required = false, defaultValue = "10") int cantidad, 
+			@RequestParam(required = false) EstadoUsuarioEvento estado,
 			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-		List<EventoDTO> eventos = gestorEventos.listarEventosInscritosDeUnUsuario(u, pagina, cantidad);
+		List<EventoDTO> eventos = gestorEventos.listarEventosUsuario(id, estado, pagina, cantidad);
 
 		eventos = RESTEvento.addLinks(eventos);
 
