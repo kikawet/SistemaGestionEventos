@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
@@ -51,16 +52,16 @@ public class RESTUsuario {
 	@GetMapping("/{id}")
 	UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "id") UUID idUsuarioPeticion) {
 		// Comprovamos que el usuario está logeado
-		UsuarioDTO usuario=gestorEventos.getUsuario(idUsuarioPeticion);
+		UsuarioDTO usuario = gestorEventos.getUsuario(idUsuarioPeticion);
 
 		UsuarioDTO u = gestorEventos.getUsuario(id);
-		
-		if(!u.equals(usuario)) {
+
+		if (!u.equals(usuario)) {
 			throw new AccesoDenegado("No tienes permitido leer los datos de este usuario");
 		}
-		
+
 		if (u.getNumEventosInscritos() > 0)
-			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, 0, 10, idUsuarioPeticion))
+			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, 0, 10, null, idUsuarioPeticion))
 					.withRel("eventosInscritos"));
 
 		if (u.getNumEventosCreados() > 0)
@@ -73,7 +74,7 @@ public class RESTUsuario {
 	@GetMapping("/{id}/inscritos")
 	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
 			@RequestParam(required = false, defaultValue = "0") int pagina,
-			@RequestParam(required = false, defaultValue = "10") int cantidad,
+			@RequestParam(required = false, defaultValue = "10") int cantidad, @RequestParam EstadoUsuarioEvento estado,
 			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);
@@ -89,14 +90,14 @@ public class RESTUsuario {
 		resultado.add(selfLink);
 
 		if (pagina > 0)
-			resultado.add(
-					linkTo(methodOn(RESTUsuario.class).listarInscritos(id, pagina - 1, cantidad, idUsuarioPeticion))
+			resultado.add(linkTo(
+					methodOn(RESTUsuario.class).listarInscritos(id, pagina - 1, cantidad, estado, idUsuarioPeticion))
 							.withRel("anterior"));
 
 		// La siguiente página ya no tendrá resultados
 		if (eventos.size() < cantidad)
-			resultado.add(
-					linkTo(methodOn(RESTUsuario.class).listarInscritos(id, pagina + 1, cantidad, idUsuarioPeticion))
+			resultado.add(linkTo(
+					methodOn(RESTUsuario.class).listarInscritos(id, pagina + 1, cantidad, estado, idUsuarioPeticion))
 							.withRel("siguiente"));
 
 		return resultado;

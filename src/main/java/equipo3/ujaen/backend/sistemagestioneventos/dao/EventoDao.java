@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dao;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -48,5 +49,12 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 	@Override
 	@CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
 	Evento saveAndFlush(Evento evento);
+	
+	@Query("select e from Evento e where e.asistentes in ?1")
+	List<Evento> findByIdUsuarioWhereUsuarioIsInscrito(UUID idUsuario,Pageable cantidad);
+	
+	@Query("select e from Evento e where e.listaEspera in ?1")
+	List<Evento> findByIdUsuarioWhereUsuarioIsEsperando(UUID idUsuario,Pageable cantidad);
+	
 
 }

@@ -269,4 +269,36 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return usuarioInterno;
 	}
 
+	private Usuario validarUsuarioId(UUID idUsuario) {
+
+		return usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"));
+
+	}
+
+	@Transactional(readOnly = true)
+	public List<EventoDTO> listarEventosUsuario(UUID idUsuario, EstadoUsuarioEvento eue, int pagina, int cantidad) {
+		Usuario usuarioValido=validarUsuarioId(idUsuario);
+		List<Evento> result=new ArrayList<Evento>();
+		
+		if (pagina < 0)
+			throw new ParametrosInvalidos("La pagina no puede ser negativa");
+
+		if (cantidad <= 0)
+			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
+		
+		if(eue==null) {		
+
+			int fromIndex = Math.min(usuarioValido.getEventosInscritos().size(), pagina * cantidad);
+			int toIndex = Math.min(usuarioValido.getEventosInscritos().size(), (pagina + 1) * cantidad);
+
+			result=usuarioValido.getEventosInscritos().subList(fromIndex, toIndex);
+			
+		}else if(eue.equals(EstadoUsuarioEvento.LISTA_DE_ESPERA)) {
+			result=eventoDAO.findByIdUsuarioWhereUsuarioIsEsperando(idUsuario,PageRequest.of(pagina, cantidad));
+		}else if(eue.equals(EstadoUsuarioEvento.ACEPTADO)){
+			result=eventoDAO.findByIdUsuarioWhereUsuarioIsInscrito(idUsuario, PageRequest.of(pagina, cantidad));
+		}
+		return result.stream().map(evento -> evento.toDTO()).collect(Collectors.toList());
+	}
+
 }
