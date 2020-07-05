@@ -50,12 +50,11 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 	@Override
 	@CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
 	Evento saveAndFlush(Evento evento);
-	
+
 	@Query("select distinct e from Evento e where ?1 member of e.asistentes")
-	List<Evento> findByIdUsuarioWhereUsuarioIsInscrito(Usuario usuario,Pageable cantidad);
-	
+	List<Evento> findByIdUsuarioWhereUsuarioIsInscrito(Usuario usuario, Pageable cantidad);
+
 	@Query("select distinct e from Evento e where ?1 member of e.listaEspera")
-	List<Evento> findByIdUsuarioWhereUsuarioIsEsperando(Usuario usuario,Pageable cantidad);
-	
+	List<Evento> findByIdUsuarioWhereUsuarioIsEsperando(Usuario usuario, Pageable cantidad);
 
 }

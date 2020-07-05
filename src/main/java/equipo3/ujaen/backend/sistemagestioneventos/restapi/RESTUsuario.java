@@ -38,13 +38,13 @@ public class RESTUsuario {
 
 	}
 
-	@PostMapping
-	@ResponseStatus(code = HttpStatus.CREATED)
+	@PostMapping("/registro")
+	@ResponseStatus(HttpStatus.CREATED)
 	void registrar(@RequestBody UsuarioDTO usuarioDTO) {
 		gestorEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 	}
 
-	@PutMapping
+	@PostMapping("/login")
 	UUID login(@RequestBody UsuarioDTO usuarioDTO) {
 		return gestorEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 	}
@@ -73,9 +73,9 @@ public class RESTUsuario {
 
 	@GetMapping("/{id}/inscritos")
 	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
-			@RequestParam(required = false, defaultValue = "0") int pagina,
-			@RequestParam(required = false, defaultValue = "10") int cantidad, 
-			@RequestParam(required = false) EstadoUsuarioEvento estado,
+			@RequestParam(required = false, defaultValue = "0", value = "page") int pagina,
+			@RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad, 
+			@RequestParam(required = false, value = "estado") EstadoUsuarioEvento estado,
 			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);
 		UsuarioDTO u = gestorEventos.getUsuario(id);

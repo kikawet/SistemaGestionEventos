@@ -149,7 +149,7 @@ public interface InterfaceSistemaGestionEventos {
 	public EventoDTO getEvento(long idEvento);
 
 	public EstadoUsuarioEvento getEstadoUsuarioEvento(UUID idUsuario, long idEvento);
-	
-	public List<EventoDTO> listarEventosUsuario(UUID idUsuario,EstadoUsuarioEvento eue, int pagina, int cantidad);
+
+	public List<EventoDTO> listarEventosUsuario(UUID idUsuario, EstadoUsuarioEvento eue, int pagina, int cantidad);
 
 }

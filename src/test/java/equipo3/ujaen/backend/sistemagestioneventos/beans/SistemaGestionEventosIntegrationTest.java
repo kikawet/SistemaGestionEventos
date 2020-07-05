@@ -396,41 +396,39 @@ public class SistemaGestionEventosIntegrationTest {
 
 	@Test
 	void listarEventosUsuario() {
-		
-		// TEST USUARIO NO LOGEADO //
-				{
-					UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
-					Assertions.assertThrows(UsuarioNoRegistrado.class,
-							() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2, 0, 1));
-				}
-		
-				UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
-				//UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
-				
-				for(int i=0;i<10;i++) {
-					EventoDTO evento = crearEventoValido();
-					if(i%2==0) {
-						evento.setAforoMaximo(0);
-					}else {
-						evento.setAforoMaximo(1);
-					}
-					
-					gestorEventos.crearEventoPorUsuario(usuario, evento, true);
-				}
-				
-				
-		//PROBANDO ESTADO NULL
-		List<EventoDTO> lista=gestorEventos.listarEventosUsuario(usuario.getUId(), null, 0, 100);
-		assertEquals(10, lista.size());		
-		
-		//PROBANDO ESTADO ACEPTADO
-		lista=gestorEventos.listarEventosUsuario(usuario.getUId(), EstadoUsuarioEvento.ACEPTADO, 0, 100);
-		assertEquals(5, lista.size());	
-		
-		//PROBANDO ESTADO LISTA ESPERA
-		lista=gestorEventos.listarEventosUsuario(usuario.getUId(), EstadoUsuarioEvento.LISTA_DE_ESPERA, 0, 100);
-		assertEquals(5, lista.size());	
 
-		
+		// TEST USUARIO NO LOGEADO //
+		{
+			UsuarioDTO usuario2 = new UsuarioDTO("PeterParker33", "🕷");
+			Assertions.assertThrows(UsuarioNoRegistrado.class,
+					() -> gestorEventos.listarEventosInscritosDeUnUsuario(usuario2, 0, 1));
+		}
+
+		UsuarioDTO usuario = crearUsuarioRegistradoLogeado();
+		// UsuarioDTO usuario1 = crearUsuarioRegistradoLogeado();
+
+		for (int i = 0; i < 10; i++) {
+			EventoDTO evento = crearEventoValido();
+			if (i % 2 == 0) {
+				evento.setAforoMaximo(0);
+			} else {
+				evento.setAforoMaximo(1);
+			}
+
+			gestorEventos.crearEventoPorUsuario(usuario, evento, true);
+		}
+
+		// PROBANDO ESTADO NULL
+		List<EventoDTO> lista = gestorEventos.listarEventosUsuario(usuario.getUId(), null, 0, 100);
+		assertEquals(10, lista.size());
+
+		// PROBANDO ESTADO ACEPTADO
+		lista = gestorEventos.listarEventosUsuario(usuario.getUId(), EstadoUsuarioEvento.ACEPTADO, 0, 100);
+		assertEquals(5, lista.size());
+
+		// PROBANDO ESTADO LISTA ESPERA
+		lista = gestorEventos.listarEventosUsuario(usuario.getUId(), EstadoUsuarioEvento.LISTA_DE_ESPERA, 0, 100);
+		assertEquals(5, lista.size());
+
 	}
 }
