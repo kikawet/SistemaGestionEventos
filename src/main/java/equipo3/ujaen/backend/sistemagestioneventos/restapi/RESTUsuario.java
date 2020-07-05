@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @RestController
@@ -50,10 +51,14 @@ public class RESTUsuario {
 	@GetMapping("/{id}")
 	UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "id") UUID idUsuarioPeticion) {
 		// Comprovamos que el usuario está logeado
-		gestorEventos.getUsuario(idUsuarioPeticion);
+		UsuarioDTO usuario=gestorEventos.getUsuario(idUsuarioPeticion);
 
 		UsuarioDTO u = gestorEventos.getUsuario(id);
-
+		
+		if(!u.equals(usuario)) {
+			throw new AccesoDenegado("No tienes permitido leer los datos de este usuario");
+		}
+		
 		if (u.getNumEventosInscritos() > 0)
 			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, 0, 10, idUsuarioPeticion))
 					.withRel("eventosInscritos"));
