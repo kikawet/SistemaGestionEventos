@@ -77,7 +77,7 @@ public class RESTEvento {
 
 	@GetMapping("/{id}")
 	EventoDTO getEvento(@PathVariable(value = "id") long idEvento,
-			@RequestParam(required = false, value = "id") UUID uId) {
+			@RequestParam(required = false, value = "uid") UUID uId) {
 		EventoDTO evento = gestorEventos.getEvento(idEvento);
 
 		if (uId != null) {

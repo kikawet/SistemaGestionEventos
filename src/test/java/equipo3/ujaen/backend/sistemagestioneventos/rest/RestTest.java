@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.rest;
 
+import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
 
@@ -20,6 +21,8 @@ import org.springframework.http.ResponseEntity;
 import equipo3.ujaen.backend.sistemagestioneventos.beans.SistemaGestionEventos;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.servidor.ServidorSistemaGestionEventos;
 
 @SpringBootTest(classes = ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -40,6 +43,26 @@ public class RestTest {
 
 		return usu;
 	}
+	
+	EventoDTO crearEventoValido() {
+		LocalDateTime manana = LocalDateTime.now().plusDays(1);
+
+		int aforoMaximo = 1500;
+		String descripcion = "El evento al que todo el mundo vendrá";
+		LocalDateTime fecha = manana;
+		Long idEvento = new Random().nextLong();
+		String lugar = "Jaén";
+		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;
+		EventoDTO.CategoriaEvento categoriaEvento = CategoriaEvento.EXCURSIONES;
+		int numAsistentes = 603;
+		int numListaEspera = 0;
+		EventoDTO.EstadoUsuarioEvento estado = null;
+		UUID idCreador = null;
+
+		return new EventoDTO(idEvento, aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, idCreador,
+				numAsistentes, numListaEspera, estado);
+	}
+
 
 	@PostConstruct
 	void crearRestTemplate() {
@@ -54,7 +77,7 @@ public class RestTest {
 
 	@Test
 	void testPing() {
-		ResponseEntity<Void> respuesta = restTemplateUsuario.getForEntity("/ping", Void.class);
+		ResponseEntity<Void> respuesta = restTemplateEvento.getForEntity("/ping", Void.class);
 
 		Assertions.assertEquals(HttpStatus.OK, respuesta.getStatusCode());
 	}
@@ -94,9 +117,41 @@ public class RestTest {
 
 		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 
-		ResponseEntity<> respuesta = restTemplateUsuario
-				.getForEntity("/" + uidUsuario + "/inscritos?id=" + uidUsuario, Object[].class);
+		//ResponseEntity<> respuesta = restTemplateUsuario
+			//	.getForEntity("/" + uidUsuario + "/inscritos?id=" + uidUsuario, Object[].class);
 
-		Assertions.assertTrue(respuesta.getBody().length > 0);
+		//Assertions.assertTrue(respuesta.getBody().length > 0);
+	}
+	
+	@Test
+	void crearEventoTest() {
+		EventoDTO eventoDTO = crearEventoValido();
+		UsuarioDTO usuarioDTO = crearUsuarioValido();
+		sistemaGestionEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+
+		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		
+		ResponseEntity<Void> response = restTemplateEvento.postForEntity("/?id=" + uidUsuario, eventoDTO, Void.class);
+		
+		Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+	}
+	
+	@Test
+	void getEventoTest() {
+		UsuarioDTO usuarioDTO = crearUsuarioValido();
+		sistemaGestionEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+
+		usuarioDTO.setUId(uidUsuario);
+		EventoDTO eventoDTO = crearEventoValido();
+		eventoDTO.setIdCreador(uidUsuario);
+
+		sistemaGestionEventos.crearEventoPorUsuario(usuarioDTO, eventoDTO, false);
+		
+		ResponseEntity<EventoDTO> response = restTemplateEvento
+				.getForEntity("/" + eventoDTO.getIdEvento() + "?uid=" + uidUsuario , EventoDTO.class);
+		
+		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+		Assertions.assertEquals(eventoDTO, response.getBody());
 	}
 }
