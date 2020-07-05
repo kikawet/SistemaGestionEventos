@@ -168,6 +168,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDTO.setPassword(null);
 
 		eventoDTO.clone(evento.toDTO());
+		
 	}
 
 	@Override

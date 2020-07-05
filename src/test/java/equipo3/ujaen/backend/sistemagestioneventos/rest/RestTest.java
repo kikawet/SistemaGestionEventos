@@ -22,6 +22,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.beans.SistemaGestionEventos;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.servidor.ServidorSistemaGestionEventos;
 
@@ -149,7 +150,7 @@ public class RestTest {
 		sistemaGestionEventos.crearEventoPorUsuario(usuarioDTO, eventoDTO, false);
 		
 		ResponseEntity<EventoDTO> response = restTemplateEvento
-				.getForEntity("/" + eventoDTO.getIdEvento() + "?uid=" + uidUsuario , EventoDTO.class);
+				.getForEntity("/" + eventoDTO.getIdEvento() +"?uid=" + uidUsuario, EventoDTO.class);
 		
 		Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
 		Assertions.assertEquals(eventoDTO, response.getBody());
