@@ -294,9 +294,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 			result=usuarioValido.getEventosInscritos().subList(fromIndex, toIndex);
 			
 		}else if(eue.equals(EstadoUsuarioEvento.LISTA_DE_ESPERA)) {
-			result=eventoDAO.findByIdUsuarioWhereUsuarioIsEsperando(idUsuario,PageRequest.of(pagina, cantidad));
+			result=eventoDAO.findByIdUsuarioWhereUsuarioIsEsperando(usuarioValido,PageRequest.of(pagina, cantidad));
 		}else if(eue.equals(EstadoUsuarioEvento.ACEPTADO)){
-			result=eventoDAO.findByIdUsuarioWhereUsuarioIsInscrito(idUsuario, PageRequest.of(pagina, cantidad));
+			result=eventoDAO.findByIdUsuarioWhereUsuarioIsInscrito(usuarioValido, PageRequest.of(pagina, cantidad));
 		}
 		return result.stream().map(evento -> evento.toDTO()).collect(Collectors.toList());
 	}

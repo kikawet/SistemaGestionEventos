@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento;
+import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 
 @Repository
 public interface EventoDao extends JpaRepository<Evento, Long> {
@@ -50,11 +51,11 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
 	@CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
 	Evento saveAndFlush(Evento evento);
 	
-	@Query("select e from Evento e where e.asistentes in ?1")
-	List<Evento> findByIdUsuarioWhereUsuarioIsInscrito(UUID idUsuario,Pageable cantidad);
+	@Query("select distinct e from Evento e where ?1 member of e.asistentes")
+	List<Evento> findByIdUsuarioWhereUsuarioIsInscrito(Usuario usuario,Pageable cantidad);
 	
-	@Query("select e from Evento e where e.listaEspera in ?1")
-	List<Evento> findByIdUsuarioWhereUsuarioIsEsperando(UUID idUsuario,Pageable cantidad);
+	@Query("select distinct e from Evento e where ?1 member of e.listaEspera")
+	List<Evento> findByIdUsuarioWhereUsuarioIsEsperando(Usuario usuario,Pageable cantidad);
 	
 
 }

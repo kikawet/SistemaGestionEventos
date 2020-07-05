@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
@@ -164,8 +165,9 @@ public class Evento {
 	}
 
 	public EventoDTO toDTO(Usuario u) {
+		UUID creadorId=this.creador==null?null:this.creador.getUId();
 		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
-				this.tipoEvento, this.categoriaEvento, this.creador.getUId(), this.asistentes.size(),
+				this.tipoEvento, this.categoriaEvento, creadorId, this.asistentes.size(),
 				this.listaEspera.size(), this.getEstadoUsuario(u));
 
 		return eventoDTO;
