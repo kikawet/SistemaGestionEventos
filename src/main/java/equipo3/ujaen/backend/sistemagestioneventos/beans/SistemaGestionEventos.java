@@ -3,6 +3,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	@Override
 	@Transactional(propagation = Propagation.SUPPORTS)
-	public UsuarioDTO loginUsuario(String login, String password) {
+	public UUID loginUsuario(String login, String password) {
 		if (login == null || password == null)
 			throw new ParametrosInvalidos("Ni el login ni la contraseña pueden ser null");
 
@@ -68,10 +69,10 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		}
 
 		if (!usuario.getPassword().equals(password)) {
-			throw new AccesoDenegado();
+			throw new AccesoDenegado("Contraseña incorrecta");
 		}
 
-		return usuario.toDTO();
+		return usuario.getUId();
 	}
 
 	@Override
@@ -148,9 +149,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (eventoDTO.getIdEvento() != null && eventoDAO.existsById(eventoDTO.getIdEvento()))
 			throw new EventoYaRegistrado();
 
-		Evento evento = new Evento(eventoDTO);
-
-		evento.setCreador(usuarioValido);
+		Evento evento = new Evento(eventoDTO, usuarioValido);
 
 		if (inscribirCreador) {
 			LocalDateTime hoy = LocalDateTime.now();
@@ -169,6 +168,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDTO.setPassword(null);
 
 		eventoDTO.clone(evento.toDTO());
+		
 	}
 
 	@Override
@@ -179,15 +179,12 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (idEvento == null)
 			throw new ParametrosInvalidos("idEvento no puede ser null");
 
-		Evento evento = eventoDAO.findById(idEvento).orElse(null);
-
-		if (evento == null)
-			throw new EventoNoExiste();
+		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new);
 
 		boolean contiene = usuarioValido.getEventosCreados().contains(evento);
 
 		if (usuarioValido.getRol() != UsuarioDTO.RolUsuario.ADMIN && !contiene)
-			throw new AccesoDenegado();
+			throw new AccesoDenegado("No es administrador ni el creador");
 
 		Evento cancelarEvento = eventoDAO.findByIdEventoFetchingAsistentes(evento.getIdEvento());
 		if (cancelarEvento != null)
@@ -206,10 +203,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Transactional
 	public EstadoUsuarioEvento inscribirUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
-		Evento evento = eventoDAO.findById(idEvento).orElse(null);
-
-		if (evento == null)
-			throw new EventoNoRegistrado();
+		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoRegistrado::new);
 
 		LocalDateTime hoy = LocalDateTime.now();
 
@@ -230,14 +224,39 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Transactional
 	public void cancelarInscripcionUsuario(UsuarioDTO usuarioDTO, Long idEvento) {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
-		Evento evento = eventoDAO.findById(idEvento).get();
-
-		if (evento == null) {
-			throw new EventoNoRegistrado();
-		}
+		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoRegistrado::new);
 
 		usuarioValido.cancelarInscripcion(evento);
 		evento.eliminarAsistente(usuarioValido);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public UsuarioDTO getUsuario(UUID idUsuario) {
+		return usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"))
+				.toDTO();
+	}
+	
+	
+	@Transactional(readOnly = true)
+	public UsuarioDTO getUsuarioLogin(String login) {
+		return usuarioDAO.findByLogin(login).toDTO();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public EventoDTO getEvento(long idEvento) {
+		return eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new).toDTO();
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public EstadoUsuarioEvento getEstadoUsuarioEvento(UUID idUsuario, long idEvento) {
+
+		Usuario u = usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"));
+		Evento e = eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new);
+
+		return e.getEstadoUsuario(u);
 	}
 
 	/**
@@ -251,10 +270,42 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();
 
-		if (usuarioInterno.getuId() != usuarioDTO.getUId())
-			throw new AccesoDenegado();
+		if (!usuarioInterno.getUId().equals(usuarioDTO.getUId()))
+			throw new AccesoDenegado("id de usuario incorrecto");
 
 		return usuarioInterno;
+	}
+
+	private Usuario validarUsuarioId(UUID idUsuario) {
+
+		return usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"));
+
+	}
+
+	@Transactional(readOnly = true)
+	public List<EventoDTO> listarEventosUsuario(UUID idUsuario, EstadoUsuarioEvento eue, int pagina, int cantidad) {
+		Usuario usuarioValido = validarUsuarioId(idUsuario);
+		List<Evento> result = new ArrayList<Evento>();
+
+		if (pagina < 0)
+			throw new ParametrosInvalidos("La pagina no puede ser negativa");
+
+		if (cantidad <= 0)
+			throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
+
+		if (eue == null) {
+
+			int fromIndex = Math.min(usuarioValido.getEventosInscritos().size(), pagina * cantidad);
+			int toIndex = Math.min(usuarioValido.getEventosInscritos().size(), (pagina + 1) * cantidad);
+
+			result = usuarioValido.getEventosInscritos().subList(fromIndex, toIndex);
+
+		} else if (eue.equals(EstadoUsuarioEvento.LISTA_DE_ESPERA)) {
+			result = eventoDAO.findByIdUsuarioWhereUsuarioIsEsperando(usuarioValido, PageRequest.of(pagina, cantidad));
+		} else if (eue.equals(EstadoUsuarioEvento.ACEPTADO)) {
+			result = eventoDAO.findByIdUsuarioWhereUsuarioIsInscrito(usuarioValido, PageRequest.of(pagina, cantidad));
+		}
+		return result.stream().map(evento -> evento.toDTO()).collect(Collectors.toList());
 	}
 
 }

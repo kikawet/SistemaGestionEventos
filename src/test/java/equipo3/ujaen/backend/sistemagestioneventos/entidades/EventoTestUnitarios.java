@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
-import java.util.Random;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Assertions;
@@ -30,7 +30,7 @@ class EventoTestUnitarios {
 	Usuario crearUsuario() {
 		// Aunque tengan el mismo usuario y contraseña tendrán disinto ID
 		Usuario u = new Usuario("login", "password");
-		u.setuId(new Random().nextLong());
+		u.setUId(UUID.randomUUID());
 		return u;
 	}
 

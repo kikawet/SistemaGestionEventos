@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.interfaces;
 
 import java.util.List;
+import java.util.UUID;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
@@ -32,13 +33,13 @@ public interface InterfaceSistemaGestionEventos {
 	 *        con el. Una vez logeado nunca se cierra sesión
 	 * @param login    Es el id de usuario
 	 * @param password Es la contraseña del usuario
-	 * @return devuelve un usuario al cliente
+	 * @return UsuarioDTO devuelve un usuario al cliente
 	 *
 	 * @throws ParametrosInvalidos login o password son null
 	 * @throws UsuarioNoRegistrado no existe ningún usuario con ese login
 	 * @throws AccesoDenegado      la contraseña es incorrecta
 	 */
-	public UsuarioDTO loginUsuario(String login, String password);
+	public UUID loginUsuario(String login, String password);
 
 	/**
 	 * @brief Método que lista los eventos que hay en el sistema
@@ -142,5 +143,13 @@ public interface InterfaceSistemaGestionEventos {
 	 * @throws AccesoDenegado      el usuario no ha hecho login
 	 */
 	public void cancelarInscripcionUsuario(UsuarioDTO usuario, Long idEvento);
+
+	public UsuarioDTO getUsuario(UUID idUsuario);
+
+	public EventoDTO getEvento(long idEvento);
+
+	public EstadoUsuarioEvento getEstadoUsuarioEvento(UUID idUsuario, long idEvento);
+
+	public List<EventoDTO> listarEventosUsuario(UUID idUsuario, EstadoUsuarioEvento eue, int pagina, int cantidad);
 
 }
