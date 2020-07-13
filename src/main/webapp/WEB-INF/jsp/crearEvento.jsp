@@ -19,7 +19,7 @@
 </head>
 
 <body>
-	<%@include file="jspf/cabecera.jspf"%>
+	<%@include file="../jspf/cabecera.jspf"%>
 
 	<h2 class='m-5'>Crear nuevo evento</h2>
 	<div class='container pb-5 w-50'>
@@ -107,5 +107,5 @@
 
 </body>
 
-<%@include file="jspf/footer.jspf"%>
+<%@include file="../jspf/footer.jspf"%>
 </html>
