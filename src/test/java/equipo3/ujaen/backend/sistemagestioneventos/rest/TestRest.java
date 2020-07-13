@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -22,12 +23,16 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 
-@SpringBootTest(classes = equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.DEFINED_PORT)
-public class RestTest {
+@SpringBootTest(classes = equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+public class TestRest {
 
 	@LocalServerPort
 	int localPort;
+
+	@Value("${server.servlet.context-path}${rest.base-path}")
+	String rootPath;
 
 	TestRestTemplate restTemplateUsuario;
 	TestRestTemplate restTemplateEvento;
@@ -67,9 +72,9 @@ public class RestTest {
 	@PostConstruct
 	void crearRestTemplate() {
 		RestTemplateBuilder restTemplateBuilderUsuario = new RestTemplateBuilder()
-				.rootUri("http://localhost:" + localPort + "/sge-api/usuario");
+				.rootUri("http://localhost:" + localPort + rootPath + "/usuario");
 		RestTemplateBuilder restTemplateBuilderEvento = new RestTemplateBuilder()
-				.rootUri("http://localhost:" + localPort + "/sge-api/evento");
+				.rootUri("http://localhost:" + localPort + rootPath + "/evento");
 
 		restTemplateUsuario = new TestRestTemplate(restTemplateBuilderUsuario);
 		restTemplateEvento = new TestRestTemplate(restTemplateBuilderEvento);
