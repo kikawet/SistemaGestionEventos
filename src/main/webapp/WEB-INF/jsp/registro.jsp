@@ -2,7 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="custom" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="custom"%>
 <c:set var="req" value="${pageContext.request}" />
 <c:set var="url">${req.requestURL}</c:set>
 <c:set var="uri" value="${req.requestURI}" />
@@ -126,176 +126,12 @@ body {
 	color: #343a40;
 }
 
-.form-label-group
-
-
-
-
- 
-
-
-
-
-input
-
-
-
-
-
-
-
-
-:not
-
-
-
-
- 
-
-
-
-
-(
-:placeholder-shown
-
-
-
-
- 
-
-
-
-
-)
-{
-padding-top
-
-
-
-
-
-
-
-
-:
-
-
-
-
- 
-
-
-
-
-calc
-
-
-
-
-
-
-
-
-(
-var
-
-
-
-
-
-
-(-
--input-padding-y
-
-
-
-
-
-
-
-
-)
-+
-var
-
-
-
-
-
-
-
-
-(-
--input-padding-y
-
-
-
-
-
-
-
-
-)
-*
-
-
-
-
- 
-
-
-
-
-(2/3));
-padding-bottom
-
-
-
-
-
-
-
-
-:
-
-
-
-
- 
-
-
-
-
-calc
-
-
-
-
-
-
-
-
-(
-var
-
-
-
-
-
-
-(-
--input-padding-y
-
-
-
-
-
-
-
-
-)/3);
+.form-label-group input:not(:placeholder-shown) {
+	padding-top: calc(var(- -input-padding-y)+var(- -input-padding-y)*(2/3));
+	padding-bottom: calc(var(- -input-padding-y)/3);
 }
-.form-label-group input:not (:placeholder-shown )~label {
+
+.form-label-group input:not (:placeholder-shown ) ~label {
 	padding-top: calc(var(- -input-padding-y)/3);
 	padding-bottom: calc(var(- -input-padding-y)/3);
 	font-size: 12px;
@@ -305,8 +141,8 @@ var
 /* Fallback for Edge
 -------------------------------------------------- */
 @
-supports (-ms-ime-align: auto ) { .form-label-group>label {
-	display: none;
+supports (-ms-ime-align: auto ) { .form-label-group >label { display:none;
+	
 }
 
 .form-label-group input::-ms-input-placeholder {
