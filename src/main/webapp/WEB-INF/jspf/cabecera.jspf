@@ -1,0 +1,50 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+
+<style type="text/css">
+#logo {
+	max-height: 5em;
+	max-width: 5em;
+}
+</style>
+
+<nav class="navbar navbar-dark bg-dark navbar-default navbar-fixed-top">
+
+	<aside>
+		<img id="logo" alt="logo" class="mr-3"
+			src="http://imgfz.com/i/VKDOJvy.png">
+		<!-- Para redireccionar con botón onclick="location.href='';" -->
+		<div class="btn-group btn-group-toggle">
+			<%-- label class="btn btn-secondary active"> <input type="radio"
+				name="options" id="option1" checked onclick="location.href='${pageContext.request.contextPath}';" />
+				Inicio
+			</label> --%>
+
+				<a href="${pageContext.request.contextPath}" class="btn btn-secondary active" role="button" 
+				aria-pressed="true">Inicio</a>
+				
+			<c:if test="${not empty session.login}">
+
+				<a href="${pageContext.request.contextPath}/evento/crear" class="btn btn-secondary" role="button"
+					aria-pressed="true"> Crear Evento</a>				
+			</c:if>
+
+		</div>
+	</aside>
+	<div>
+		<c:if test="${empty session.login}">
+			<a href="inicio/registro" class="btn btn-outline-light" role="button"
+				aria-pressed="true">Registro</a>
+			<a href="inicio/login" class="btn btn-outline-light" role="button"
+				aria-pressed="true">Inicio sesión</a>
+		</c:if>
+		<c:if test="${not empty session.login}">
+			<a href="${pageContext.request.contextPath}/usuario/perfil" class="btn btn-outline-light" role="button"
+				aria-pressed="true">Perfil</a>
+			<a href="${pageContext.request.contextPath}/inicio/logout" class="btn btn-outline-light" role="button"
+				aria-pressed="true">Cerrar sesión</a>
+		</c:if>
+	</div>
+</nav>

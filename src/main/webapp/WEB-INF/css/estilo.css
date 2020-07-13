@@ -1,0 +1,20 @@
+<style type="text/css">
+html, body {
+	height: 100%;
+}
+
+main {
+	flex: 1 0 auto;
+}
+
+#sticky-footer {
+	position: relative;
+	bottom: 0;
+	width: 100%;
+}
+
+#logo {
+	max-height: 5em;
+	max-width: 5em;
+}
+</style>
