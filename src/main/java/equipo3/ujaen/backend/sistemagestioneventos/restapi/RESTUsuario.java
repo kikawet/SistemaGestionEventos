@@ -73,7 +73,7 @@ public class RESTUsuario {
 	@GetMapping("/{id}/inscritos")
 	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
 			@RequestParam(required = false, defaultValue = "0", value = "page") int pagina,
-			@RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad, 
+			@RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad,
 			@RequestParam(required = false, value = "estado") EstadoUsuarioEvento estado,
 			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);

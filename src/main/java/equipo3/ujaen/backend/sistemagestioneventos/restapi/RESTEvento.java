@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -111,11 +112,11 @@ public class RESTEvento {
 	}
 
 	@PostMapping("/{id}/inscripcion")
-	EstadoUsuarioEvento inscribirUsuario(@PathVariable(value = "id") long idEvento,
+	ResponseEntity<EstadoUsuarioEvento> inscribirUsuario(@PathVariable(value = "id") long idEvento,
 			@RequestParam(value = "id") UUID uId) {
 		UsuarioDTO u = gestorEventos.getUsuario(uId);
 
-		return gestorEventos.inscribirUsuario(u, idEvento);
+		return ResponseEntity.ok(gestorEventos.inscribirUsuario(u, idEvento));
 	}
 
 	@DeleteMapping("/{id}/inscripcion/{uId}")

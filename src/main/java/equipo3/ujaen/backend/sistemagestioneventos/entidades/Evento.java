@@ -165,10 +165,10 @@ public class Evento {
 	}
 
 	public EventoDTO toDTO(Usuario u) {
-		UUID creadorId=this.creador==null?null:this.creador.getUId();
+		UUID creadorId = this.creador == null ? null : this.creador.getUId();
 		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
-				this.tipoEvento, this.categoriaEvento, creadorId, this.asistentes.size(),
-				this.listaEspera.size(), this.getEstadoUsuario(u));
+				this.tipoEvento, this.categoriaEvento, creadorId, this.asistentes.size(), this.listaEspera.size(),
+				this.getEstadoUsuario(u));
 
 		return eventoDTO;
 	}
