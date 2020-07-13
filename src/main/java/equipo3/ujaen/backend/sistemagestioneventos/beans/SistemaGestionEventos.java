@@ -168,7 +168,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		usuarioDTO.setPassword(null);
 
 		eventoDTO.clone(evento.toDTO());
-		
+
 	}
 
 	@Override
@@ -236,8 +236,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		return usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"))
 				.toDTO();
 	}
-	
-	
+
 	@Transactional(readOnly = true)
 	public UsuarioDTO getUsuarioLogin(String login) {
 		return usuarioDAO.findByLogin(login).toDTO();
@@ -282,6 +281,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public List<EventoDTO> listarEventosUsuario(UUID idUsuario, EstadoUsuarioEvento eue, int pagina, int cantidad) {
 		Usuario usuarioValido = validarUsuarioId(idUsuario);

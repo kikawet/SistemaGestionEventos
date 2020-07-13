@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -74,7 +73,7 @@ public class RESTUsuario {
 	@GetMapping("/{id}/inscritos")
 	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
 			@RequestParam(required = false, defaultValue = "0", value = "page") int pagina,
-			@RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad, 
+			@RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad,
 			@RequestParam(required = false, value = "estado") EstadoUsuarioEvento estado,
 			@RequestParam(value = "id") UUID idUsuarioPeticion) {
 		gestorEventos.getUsuario(idUsuarioPeticion);

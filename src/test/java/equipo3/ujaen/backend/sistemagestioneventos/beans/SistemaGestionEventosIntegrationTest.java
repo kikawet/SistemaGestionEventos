@@ -67,7 +67,7 @@ public class SistemaGestionEventosIntegrationTest {
 		EventoDTO.CategoriaEvento categoriaEvento = CategoriaEvento.EXCURSIONES;
 		int numAsistentes = 603;
 		int numListaEspera = 0;
-		EventoDTO.EstadoUsuarioEvento estado = null;
+		EstadoUsuarioEvento estado = null;
 		UUID idCreador = null;
 
 		return new EventoDTO(idEvento, aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, idCreador,
@@ -344,9 +344,6 @@ public class SistemaGestionEventosIntegrationTest {
 		assertTrue(borrar.size() <= eventos.size());
 
 		eventos = gestorEventos.listarEventos(null, "", 0, 1);
-		assertEquals(1, eventos.size());
-
-		eventos = gestorEventos.listarEventos(null, "", 1, 2);
 		assertEquals(1, eventos.size());
 
 		Assertions.assertThrows(ParametrosInvalidos.class, () -> gestorEventos.listarEventos(null, "", 0, 0));
