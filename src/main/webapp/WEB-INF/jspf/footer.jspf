@@ -1,0 +1,16 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+
+<style type="text/css">
+#sticky-footer {
+	position: relative;
+	bottom: 0;
+	width: 100%;
+}
+</style>
+
+  <footer id="sticky-footer" class="py-4 bg-light text-white-50">
+    <div class="container">
+      <span class="text-muted"> <a href="" class="mr-3">Sobre nosotros</a> <a href="" class="">Contacta con nosotros</a> </span>
+    </div>
+  </footer>

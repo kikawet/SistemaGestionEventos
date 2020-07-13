@@ -9,3 +9,5 @@ spring.jpa.open-in-view: false
 
 server.servlet.context-path: /sge-api
 server.port: 12021
+
+spring:  mvc:    view:      prefix: /WEB-INF/jsp/      suffix: .jsp    static-path-pattern: /resources/** 

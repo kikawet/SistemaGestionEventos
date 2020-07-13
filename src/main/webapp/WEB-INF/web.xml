@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
+	version="4.0">
+	<display-name>sistemagestioneventos-frontend</display-name>
+	<!-- Session configuration -->
+	<session-config>
+		<session-timeout>
+			30<!-- Time in minutes to expire after the last request -->
+		</session-timeout>
+		<cookie-config>
+			<http-only>true</http-only> <!-- Prevent client side scripting from accessing/manipulating session cookie. -->
+			<secure>false</secure> <!-- true to force send over TLS connection -->
+		</cookie-config>
+		<tracking-mode>COOKIE</tracking-mode> <!-- This disables URL rewriting. -->
+	</session-config>
+	
+	<welcome-file-list>
+		<welcome-file>inicio</welcome-file>
+	</welcome-file-list>
+	<context-param>
+		<param-name>viewsPath</param-name>
+		<param-value>/WEB-INF/</param-value>
+	</context-param>
+	<security-role>
+		<role-name>USUARIOS</role-name>
+	</security-role>
+	<security-role>
+		<role-name>ADMINISTRADORES</role-name>
+	</security-role>
+</web-app>
