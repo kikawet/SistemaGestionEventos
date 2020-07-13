@@ -2,6 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="custom"%>
 <c:set var="req" value="${pageContext.request}" />
 <c:set var="url">${req.requestURL}</c:set>
@@ -126,11 +128,45 @@ body {
 	color: #343a40;
 }
 
-.form-label-group input:not(:placeholder-shown) {
-	padding-top: calc(var(- -input-padding-y)+var(- -input-padding-y)*(2/3));
-	padding-bottom: calc(var(- -input-padding-y)/3);
-}
+.form-label-group
+ 
+input
+:not
+ 
+(
+:placeholder-shown
+ 
+)
+{
+padding-top
+:
+ 
+calc
+(var(-
+ 
+-input-padding-y
+)
++
+var
+(-
+ 
+-input-padding-y
+)
+*
+(2/3));
 
+	
+padding-bottom
+:
+ 
+calc
+(var(-
+ 
+-input-padding-y
+)/3);
+
+
+}
 .form-label-group input:not (:placeholder-shown ) ~label {
 	padding-top: calc(var(- -input-padding-y)/3);
 	padding-bottom: calc(var(- -input-padding-y)/3);
@@ -141,8 +177,8 @@ body {
 /* Fallback for Edge
 -------------------------------------------------- */
 @
-supports (-ms-ime-align: auto ) { .form-label-group >label { display:none;
-	
+supports (-ms-ime-align: auto ) { .form-label-group>label {
+	display: none;
 }
 
 .form-label-group input::-ms-input-placeholder {
@@ -174,42 +210,49 @@ supports (-ms-ime-align: auto ) { .form-label-group >label { display:none;
 					<div class="card-body">
 						<custom:return />
 						<h5 class="card-title text-center">WebApp</h5>
-						<form class="form-signin" action="usuario/registro" method="POST">
+						<form:form class="form-signin" action="usuario/registro"
+							method="POST" modelAttribute="usuario">
 
 							<div class="form-label-group">
-								<input name="nombre" value="${usuario.login}" type="text"
-									id="login"
-									class="form-control ${not empty errors['login'] ?'is-invalid': empty errors ? '' : 'is-valid'} "
-									placeholder="Introduce tu nombre de usuario" required autofocus>
-								<span class='invalid-feedback'>${errors['login']} </span>
+								<s:bind path="login">
+									<form:input path="login" type="text" id="login"
+										class="form-control  ${status.error ?'is-invalid': empty status.value ? '' : 'is-valid'} "
+										placeholder="Introduce tu nombre de usuario" />
+									<form:errors path="login" cssClass="invalid-feedback" />
+								</s:bind>
 							</div>
 
 							<div class="form-label-group">
-								<input name="email" value="${usuario.email}" type="email"
-									id="inputEmail"
-									class="form-control ${not empty errors['email'] ?'is-invalid': empty errors ? '' :'is-valid'} "
-									placeholder="Correo Electronico" required autofocus> <span
-									class='invalid-feedback'>${errors['email']} </span>
+								<s:bind path="email">
+									<form:input path="email" type="email" id="inputEmail"
+										class="form-control ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'} "
+										placeholder="Correo Electronico" />
+									<form:errors path="email" cssClass="invalid-feedback" />
+								</s:bind>
 							</div>
 							<div class="form-label-group">
-								<input name="password" value="${usuario.password}"
-									type="password" id="inputPassword"
-									class="form-control ${not empty errors['password'] ?'is-invalid': empty errors ? '' :'is-valid'} "
-									placeholder="Contraseña" required> <span
-									class='invalid-feedback'>${errors['password']} </span>
+								<s:bind path="password">
+									<form:password path="password" id="inputPassword"
+										class="form-control ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'} "
+										placeholder="Contraseña" />
+									<form:errors path="password" cssClass="invalid-feedback" />
+								</s:bind>
 							</div>
 
 							<div class="custom-control custom-checkbox mb-3">
-								<input type="checkbox" value="${terminos}" name="terminos"
-									class="custom-control-input ${not empty errors['terminos'] ?'is-invalid': empty errors ? '' :'is-valid'} "
-									id="customCheck1"> <label class="custom-control-label"
-									for="customCheck1">Acepto terminos y licencias</label> <span
-									class='invalid-feedback'>${errors['terminos']} </span>
+								<s:bind path="terminos">
+									<form:checkbox path="terminos"
+										class="custom-control-input ${status.error ?'is-invalid': status.value ? 'is-valid' : ''} "
+										id="customCheck1" />
+									<label class="custom-control-label" for="customCheck1">Acepto
+										terminos y licencias</label>
+									<form:errors path="terminos" cssClass="invalid-feedback" />
+								</s:bind>
 							</div>
 							<button class="btn btn-lg btn-block colorBoton text-uppercase"
 								type="submit">Registrarse</button>
 							<hr class="my-4">
-						</form>
+						</form:form>
 					</div>
 				</div>
 			</div>

@@ -43,17 +43,19 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	}
 
 	@Override
-	public void registroUsuarios(String login, String password) {
-		if (login == null || password == null)
-			throw new ParametrosInvalidos("Ni el login ni la contraseña pueden ser null");
+	public void registroUsuarios(UsuarioDTO usuario) {
 
-		if (usuarioDAO.existsByLogin(login)) {
+		if (usuario.getLogin() == null || usuario.getLogin().length() == 0 || usuario.getPassword() == null
+				|| usuario.getPassword().length() == 0)
+			throw new ParametrosInvalidos("Ni el login ni la contraseña pueden estar vacios");
+
+		if (usuarioDAO.existsByLogin(usuario.getLogin())) {
 			throw new UsuarioYaRegistrado();
 		}
 
-		Usuario usuario = new Usuario(login, password);
+		Usuario newUsuario = new Usuario(usuario);
 
-		usuarioDAO.save(usuario);
+		usuarioDAO.save(newUsuario);
 	}
 
 	@Override

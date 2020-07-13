@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import org.springframework.hateoas.RepresentationModel;
 
 import lombok.AllArgsConstructor;
@@ -35,8 +39,11 @@ public class EventoDTO extends RepresentationModel<EventoDTO> implements Seriali
 	}
 
 	private Long idEvento;
+	@Min(message = "El valor minimo para el aforo de un evento es 5", value = 5)
+	@Max(message = "El valor máximo para el aforo de un evento es 5000", value = 5000)
 	private int aforoMaximo;
 	private String descripcion;
+	@Future(message = "El evento tiene que ser en un futuro")
 	private LocalDateTime fecha;
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
