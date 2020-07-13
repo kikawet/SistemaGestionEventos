@@ -131,7 +131,7 @@ public class Usuario {
 	}
 
 	public UsuarioDTO toDTO() {
-		return new UsuarioDTO(this.login, this.email, this.password, this.uId, this.rol, this.eventosCreados.size(),
+		return new UsuarioDTO(this.login, this.password, this.email, this.uId, this.rol, this.eventosCreados.size(),
 				this.eventosInscritos.size(), true);
 	}
 

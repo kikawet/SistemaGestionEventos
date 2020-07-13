@@ -103,9 +103,9 @@ public class SistemaGestionEventosIntegrationTest {
 		String loginUsuario = login.toString();
 		String passwordUsuario = "123456789a.";
 
-		UsuarioDTO usario = new UsuarioDTO(loginUsuario, passwordUsuario);
+		UsuarioDTO usuario = new UsuarioDTO(loginUsuario, passwordUsuario);
 
-		gestorEventos.registroUsuarios(usario);
+		gestorEventos.registroUsuarios(usuario);
 
 		UsuarioDTO u = gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 

@@ -167,8 +167,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		eventoDAO.saveAndFlush(evento);
 
 		usuarioDTO.clone(usuarioValido.toDTO());
-		usuarioDTO.setPassword(null);
-
 		eventoDTO.clone(evento.toDTO());
 
 	}
