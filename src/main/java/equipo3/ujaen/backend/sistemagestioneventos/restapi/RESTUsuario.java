@@ -26,7 +26,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @RestController
-@RequestMapping("/api/usuario")
+@RequestMapping("{rest.base-path}/usuario")
 public class RESTUsuario {
 
 	@Autowired
