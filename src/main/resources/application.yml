@@ -6,3 +6,5 @@ spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-
 
 server.servlet.context-path: /sge-api
 server.port: 12021
+
+spring:  mvc:    view:      prefix: /WEB-INF/jsp/      suffix: .jsp    static-path-pattern: /resources/** 

@@ -57,7 +57,7 @@
 		</div>
 	</main>
 
-	<%@include file="jspf/footer.jspf"%>
+	<%@include file="../jspf/footer.jspf"%>
 
 
 
