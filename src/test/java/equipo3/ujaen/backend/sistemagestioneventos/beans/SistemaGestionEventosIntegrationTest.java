@@ -37,9 +37,8 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEven
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
-import equipo3.ujaen.backend.sistemagestioneventos.servidor.ServidorSistemaGestionEventos;
 
-@SpringBootTest(classes = { ServidorSistemaGestionEventos.class })
+@SpringBootTest(classes = { equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class })
 public class SistemaGestionEventosIntegrationTest {
 
 	@Autowired

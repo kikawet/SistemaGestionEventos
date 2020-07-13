@@ -2,7 +2,8 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-<%@ taglib tagdir="/WEB-INF/tags" prefix="custom" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="custom"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
 <!doctype html>
 <html lang="es">
@@ -24,19 +25,20 @@
 	<%@include file="/WEB-INF/jspf/cabecera.jspf"%>
 
 	<main class="container" role="main">
-	
-	<custom:flashmessage/>
-	
+
+		<custom:flashmessage />
+
 		<div class="container my-3 mx-auto">
 			<div class="row align-items-between row-cols-2">
 				<form class="form-inline my-2 col-8" action="" method="POST">
-				<input name="limpiar" hidden type="checkbox" ${empty session.filtroTitulo ? '' : 'checked'}>
-					<input name="buscarNombre" value="${session.filtroTitulo}"
+					<input name="limpiar" hidden type="checkbox"
+						${empty session.filtroTitulo ? '' : 'checked'}> <input
+						name="buscarNombre" value="${session.filtroTitulo}"
 						class="form-control py-2 border-right-0 border w-75" type="search"
 						placeholder="buscar ..." autocomplete="off"> <span
 						class="input-group-append"> <input role="button"
 						class="btn btn-outline-secondary border-left-0 border"
-						type="submit" value="${empty session.filtroTitulo ? '🔍' : '❌'}"/>
+						type="submit" value="${empty session.filtroTitulo ? '🔍' : '❌'}" />
 					</span>
 				</form>
 
