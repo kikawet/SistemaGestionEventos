@@ -22,10 +22,8 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.servidor.ServidorSistemaGestionEventos;
 
-@SpringBootTest(classes = ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(classes = equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.DEFINED_PORT)
 public class RestTest {
 
 	@LocalServerPort

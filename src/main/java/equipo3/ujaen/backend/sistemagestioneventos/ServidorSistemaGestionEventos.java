@@ -1,4 +1,4 @@
-package equipo3.ujaen.backend.sistemagestioneventos.servidor;
+package equipo3.ujaen.backend.sistemagestioneventos;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -6,8 +6,9 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-@SpringBootApplication(scanBasePackages = { ServidorSistemaGestionEventos.basePackageRoot + ".beans",
-		ServidorSistemaGestionEventos.basePackageRoot + ".restapi" })
+@SpringBootApplication
+//(scanBasePackages = { ServidorSistemaGestionEventos.basePackageRoot + ".beans",
+//ServidorSistemaGestionEventos.basePackageRoot + ".restapi", })
 @EntityScan(basePackages = ServidorSistemaGestionEventos.basePackageRoot + ".entidades")
 @EnableJpaRepositories(basePackages = ServidorSistemaGestionEventos.basePackageRoot + ".dao")
 @EnableCaching

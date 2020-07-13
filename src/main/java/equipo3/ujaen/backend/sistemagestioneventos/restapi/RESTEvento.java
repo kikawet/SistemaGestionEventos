@@ -28,7 +28,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @RestController
-@RequestMapping("/evento")
+@RequestMapping("/api/evento")
 public class RESTEvento {
 
 	@Autowired
