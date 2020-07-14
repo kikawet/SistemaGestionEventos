@@ -132,7 +132,7 @@ public class Usuario {
 
 	public UsuarioDTO toDTO() {
 		return new UsuarioDTO(this.login, this.password, this.email, this.uId, this.rol, this.eventosCreados.size(),
-				this.eventosInscritos.size(), true);
+				this.eventosInscritos.size());
 	}
 
 }

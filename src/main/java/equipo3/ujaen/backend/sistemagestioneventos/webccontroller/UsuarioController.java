@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.qos.logback.classic.Logger;
 import equipo3.ujaen.backend.sistemagestioneventos.beans.Principal;
@@ -33,10 +33,10 @@ public class UsuarioController {
 
 	@Autowired
 	InterfaceSistemaGestionEventos ige;
-	
+
 	@Autowired
 	Principal principal;
-	
+
 	@RequestMapping(value = "/registro", method = RequestMethod.GET)
 	public String resgitro(ModelMap model) {
 		log.info("get - registro");
@@ -45,9 +45,16 @@ public class UsuarioController {
 	}
 
 	@PostMapping("/registro")
-	public String nuevoUsuario(@ModelAttribute("usuario") @Valid UsuarioDTO usuarioDTO, BindingResult result) {
+	public String nuevoUsuario(@ModelAttribute("usuario") @Valid UsuarioDTO usuarioDTO, BindingResult result,
+			@RequestParam(value = "terminos", required = false) boolean terminos, ModelMap model) {
 		log.info("post - registro");
 		String view = "redirect:/";
+
+		if (!terminos) {
+			model.addAttribute("errorTerminos", "Debes de aceptar los términos y condiciones");
+		}
+		model.addAttribute("terminos", terminos);
+		log.info("post - registro - terminos: " + terminos);
 
 		if (!result.hasErrors())
 			try {
@@ -64,46 +71,45 @@ public class UsuarioController {
 
 		return view;
 	}
+
 	@GetMapping("/login")
 	public String login(ModelMap model) {
-		log.info("CONTROLADOR LOGIN!!");
+		log.info("get - login");
 		model.addAttribute("usuario", new UsuarioDTO());
 		return "login";
 	}
-	
+
 	@PostMapping("/login")
-	public String comprobar(@ModelAttribute("usuario") @Valid UsuarioDTO usuario,
-			BindingResult result,  RedirectAttributes redAttr) {
-		
-		String view="login";
-		
-		log.info("GET OBJECT NAME - "+result.getObjectName());
-		log.info("NestedPath - "+result.getNestedPath());
+	public String comprobar(@ModelAttribute("usuario") UsuarioDTO usuario, BindingResult result) {
+		log.info("post - login");
+		String view = "login";
+
 		try {
-		 if (!result.hasErrors()) {
-			UUID uuid=ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
-			log.info("Iniciando login!!"+uuid);	
-			principal.setName(uuid.toString());
-			view="redirect:/";
-		 }else {
-			 UUID uuid=ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
-			 log.info("Iniciando login!!"+uuid.toString());
-			 log.info("login!!"+usuario.getLogin());
-			 log.info("pass!!"+usuario.getPassword());
-		 }
-		}catch(ParametrosInvalidos p) {
-			result.rejectValue("terminos", "error.usuario.login", "Login o contraseña invalidos");		
-			log.info("Login o contraseña invalidos-1");
-		}catch (UsuarioNoRegistrado e) {
-			result.rejectValue("terminos", "error.usuario.login", "Login o contraseña invalidos");
+			if (!result.hasErrors()) {
+				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
+				log.info("Iniciando login!!" + uuid);
+				principal.setName(uuid.toString());
+				view = "redirect:/";
+			} else {
+				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
+				log.info("Iniciando login!!" + uuid.toString());
+				log.info("login!!" + usuario.getLogin());
+				log.info("pass!!" + usuario.getPassword());
+			}
+		} catch (ParametrosInvalidos p) {
+			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
+			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
+			log.info("post.login.error parametros invalidos " + p.getMessage());
+		} catch (UsuarioNoRegistrado e) {
+			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
+			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
 			log.info("Login o contraseña invalidos-2");
-		}catch (AccesoDenegado a) {
+		} catch (AccesoDenegado a) {
 			result.rejectValue("password", "error.usuario.login", "Contraseña incorrecta");
 			log.info("Contraseña incorrecta-3");
 		}
-		log.info("REDIRECCIONANDO A "+view);
-		 return view;
+		log.info("REDIRECCIONANDO A " + view);
+		return view;
 	}
-
 
 }
