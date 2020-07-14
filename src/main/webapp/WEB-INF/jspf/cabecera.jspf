@@ -38,7 +38,7 @@
 		<c:if test="${empty session.login}">
 			<a href="<s:url value='/usuario/registro'/> "  class="btn btn-outline-light" role="button"
 				aria-pressed="true">Registro</a>
-			<a href="inicio/login" class="btn btn-outline-light" role="button"
+			<a href="<s:url value='/usuario/login'/>" class="btn btn-outline-light" role="button"
 				aria-pressed="true">Inicio sesión</a>
 		</c:if>
 		<c:if test="${not empty session.login}">
