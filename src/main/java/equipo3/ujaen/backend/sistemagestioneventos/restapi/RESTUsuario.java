@@ -40,7 +40,7 @@ public class RESTUsuario {
 	@PostMapping("/registro")
 	@ResponseStatus(HttpStatus.CREATED)
 	void registrar(@RequestBody UsuarioDTO usuarioDTO) {
-		gestorEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		gestorEventos.registroUsuarios(usuarioDTO);
 	}
 
 	@PostMapping("/login")

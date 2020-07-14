@@ -104,7 +104,7 @@ public class TestRest {
 	void getUsuarioTest() {
 
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		sistemaGestionEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		sistemaGestionEventos.registroUsuarios(usuarioDTO);
 		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 
 		ResponseEntity<UsuarioDTO> respuesta = restTemplateUsuario.getForEntity("/" + uidUsuario + "?id=" + uidUsuario,
@@ -118,7 +118,7 @@ public class TestRest {
 	void listarInscritosTest() {
 
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		sistemaGestionEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		sistemaGestionEventos.registroUsuarios(usuarioDTO);
 
 		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 
@@ -133,7 +133,7 @@ public class TestRest {
 	void crearEventoTest() {
 		EventoDTO eventoDTO = crearEventoValido();
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		sistemaGestionEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		sistemaGestionEventos.registroUsuarios(usuarioDTO);
 
 		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 
@@ -145,7 +145,7 @@ public class TestRest {
 	@Test
 	void getEventoTest() {
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		sistemaGestionEventos.registroUsuarios(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		sistemaGestionEventos.registroUsuarios(usuarioDTO);
 		UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 
 		usuarioDTO.setUId(uidUsuario);

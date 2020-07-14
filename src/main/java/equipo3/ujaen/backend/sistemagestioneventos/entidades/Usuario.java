@@ -24,6 +24,7 @@ public class Usuario {
 
 	@Column(unique = true)
 	private String login;
+	private String email;
 	private String password;
 
 	@Id
@@ -46,6 +47,7 @@ public class Usuario {
 		this(usuarioDTO.getLogin(), usuarioDTO.getPassword());
 
 		this.rol = usuarioDTO.getRol();
+		this.email = usuarioDTO.getEmail();
 
 		if (usuarioDTO.getUId() != null)
 			this.uId = usuarioDTO.getUId();
@@ -129,8 +131,8 @@ public class Usuario {
 	}
 
 	public UsuarioDTO toDTO() {
-		return new UsuarioDTO(this.login, this.password, this.uId, this.rol, this.eventosCreados.size(),
-				this.eventosInscritos.size());
+		return new UsuarioDTO(this.login, this.password, this.email, this.uId, this.rol, this.eventosCreados.size(),
+				this.eventosInscritos.size(), true);
 	}
 
 }

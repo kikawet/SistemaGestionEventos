@@ -48,8 +48,9 @@ public class SistemaGestionEventosIntegrationTest {
 		Long login = new Random().nextLong();
 		String loginUsuario = login.toString();
 		String passwordUsuario = "123456789a.";
+		UsuarioDTO u = new UsuarioDTO(loginUsuario, passwordUsuario);
 
-		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
+		gestorEventos.registroUsuarios(u);
 
 		return gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 	}
@@ -80,19 +81,20 @@ public class SistemaGestionEventosIntegrationTest {
 		String loginUsuario = login.toString();
 		String passwordUsuario = "123456789a.";
 
+		UsuarioDTO u = new UsuarioDTO(loginUsuario, passwordUsuario);
+
 		Assertions.assertThrows(UsuarioNoRegistrado.class,
 				() -> gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 
-		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
+		gestorEventos.registroUsuarios(u);
 
-		Assertions.assertThrows(UsuarioYaRegistrado.class,
-				() -> gestorEventos.registroUsuarios(loginUsuario, passwordUsuario));
+		Assertions.assertThrows(UsuarioYaRegistrado.class, () -> gestorEventos.registroUsuarios(u));
 
-		UsuarioDTO u = gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
+		UsuarioDTO usuario = gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 
-		assertNotNull(u);
-		assertEquals(loginUsuario, u.getLogin());
-		assertEquals(passwordUsuario, u.getPassword());
+		assertNotNull(usuario);
+		assertEquals(loginUsuario, usuario.getLogin());
+		assertEquals(passwordUsuario, usuario.getPassword());
 	}
 
 	@Test
@@ -101,7 +103,9 @@ public class SistemaGestionEventosIntegrationTest {
 		String loginUsuario = login.toString();
 		String passwordUsuario = "123456789a.";
 
-		gestorEventos.registroUsuarios(loginUsuario, passwordUsuario);
+		UsuarioDTO usuario = new UsuarioDTO(loginUsuario, passwordUsuario);
+
+		gestorEventos.registroUsuarios(usuario);
 
 		UsuarioDTO u = gestorEventos.getUsuario(gestorEventos.loginUsuario(loginUsuario, passwordUsuario));
 

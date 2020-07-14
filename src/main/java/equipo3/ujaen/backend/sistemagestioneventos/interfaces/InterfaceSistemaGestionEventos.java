@@ -26,7 +26,7 @@ public interface InterfaceSistemaGestionEventos {
 	 * @throws ParametrosInvalidos login o password son null
 	 * @throws UsuarioYaRegistrado existe otro usuario con ese login
 	 */
-	public void registroUsuarios(String login, String password);
+	public void registroUsuarios(UsuarioDTO usuario);
 
 	/**
 	 * @brief Método que devuelve un usuario al cliente para que este pueda trabajar
