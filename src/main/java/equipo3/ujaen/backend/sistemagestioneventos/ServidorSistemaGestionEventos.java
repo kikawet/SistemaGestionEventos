@@ -80,6 +80,20 @@ public class ServidorSistemaGestionEventos {
 				CategoriaEvento.CHARLAS, null, 0, 0, null, "Evento 2",
 				"https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg");
 
+		// En el caso de persistencia necesitamos borrar los eventos
+		try {
+			EventoDTO borraEvento = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
+			ige.cancelarEventoPorUsuario(patricio, borraEvento.getIdEvento());
+
+			borraEvento = ige.listarEventosCreadosPorUnUsuario(francisco, 0, 10).get(0);
+			ige.cancelarEventoPorUsuario(francisco, borraEvento.getIdEvento());
+
+			log.info("Eventos anteriores borrados");
+		} catch (IndexOutOfBoundsException e) {
+			log.info("Los eventos no existían");
+		}
+
+		log.info("Creando eventos");
 		try {
 			ige.crearEventoPorUsuario(patricio, evento1, true);
 			ige.crearEventoPorUsuario(francisco, evento2, false);
