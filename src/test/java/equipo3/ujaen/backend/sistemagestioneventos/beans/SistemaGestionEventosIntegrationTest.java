@@ -69,9 +69,11 @@ public class SistemaGestionEventosIntegrationTest {
 		int numListaEspera = 0;
 		EstadoUsuarioEvento estado = null;
 		UUID idCreador = null;
+		String titulo = null;
+		String foto = null;
 
 		return new EventoDTO(idEvento, aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, idCreador,
-				numAsistentes, numListaEspera, estado);
+				numAsistentes, numListaEspera, estado, titulo, foto);
 	}
 
 	@Test

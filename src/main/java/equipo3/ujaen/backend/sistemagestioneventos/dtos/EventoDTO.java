@@ -54,6 +54,9 @@ public class EventoDTO extends RepresentationModel<EventoDTO> implements Seriali
 
 	private EventoDTO.EstadoUsuarioEvento estado;
 
+	private String titulo;
+	private String foto;
+
 	public void clone(EventoDTO e) {
 		this.aforoMaximo = e.aforoMaximo;
 		this.descripcion = e.descripcion;
@@ -65,6 +68,8 @@ public class EventoDTO extends RepresentationModel<EventoDTO> implements Seriali
 		this.numAsistentes = e.numAsistentes;
 		this.numListaEspera = e.numListaEspera;
 		this.estado = e.estado;
+		this.titulo = e.titulo;
+		this.foto = e.foto;
 	}
 
 }

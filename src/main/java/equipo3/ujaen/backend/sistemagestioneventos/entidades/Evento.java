@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,13 @@ import javax.validation.constraints.NotNull;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@Getter
+@Setter
 @Entity
 public class Evento {
 
@@ -34,6 +41,7 @@ public class Evento {
 	@OrderColumn
 	private List<Usuario> listaEspera;
 
+	@Column(columnDefinition = "LONGTEXT")
 	private String descripcion;
 	private LocalDateTime fecha;
 
@@ -50,10 +58,14 @@ public class Evento {
 	@NotNull
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
+	private String titulo;
+	private String foto;
+
 	public Evento(EventoDTO eventoDTO, Usuario creador) {
 
 		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
-				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), creador);
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), creador, eventoDTO.getTitulo(),
+				eventoDTO.getFoto());
 
 		if (eventoDTO.getIdEvento() != null)
 			this.idEvento = eventoDTO.getIdEvento();
@@ -61,23 +73,9 @@ public class Evento {
 			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	public Evento() {
-		super();
-		// TODO llamar al constuctor parametrizado
-		this.lugar = null;
-		this.fecha = null;
-		this.tipoEvento = null;
-		this.categoriaEvento = null;
-		this.descripcion = null;
-		this.aforoMaximo = 0;
-		this.idEvento = null;
-		this.creador = null;
-		this.asistentes = new HashSet<>();
-		this.listaEspera = new ArrayList<>();
-	}
-
 	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
-			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador) {
+			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador, String titulo,
+			String foto) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
@@ -89,6 +87,8 @@ public class Evento {
 		this.creador = creador;
 		this.asistentes = new HashSet<>();
 		this.listaEspera = new ArrayList<>();
+		this.titulo = titulo;
+		this.foto = foto;
 	}
 
 	/**
@@ -120,55 +120,19 @@ public class Evento {
 		}
 	}
 
-	public int getAforoMaximo() {
-		return aforoMaximo;
-	}
-
 	public List<Usuario> getAsistentes() {
 		return asistentes.stream().collect(Collectors.toList());
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public LocalDateTime getFecha() {
-		return fecha;
-	}
-
-	public Long getIdEvento() {
-		return idEvento;
 	}
 
 	public List<Usuario> getListaEspera() {
 		return listaEspera.stream().collect(Collectors.toList());
 	}
 
-	public String getLugar() {
-		return lugar;
-	}
-
-	public EventoDTO.TipoEvento getTipoEvento() {
-		return tipoEvento;
-	}
-
-	public EventoDTO.CategoriaEvento getCategoriaEvento() {
-		return this.categoriaEvento;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public void setFecha(LocalDateTime fecha) {
-		this.fecha = fecha;
-	}
-
 	public EventoDTO toDTO(Usuario u) {
 		UUID creadorId = this.creador == null ? null : this.creador.getUId();
 		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
 				this.tipoEvento, this.categoriaEvento, creadorId, this.asistentes.size(), this.listaEspera.size(),
-				this.getEstadoUsuario(u));
+				this.getEstadoUsuario(u), this.titulo, this.foto);
 
 		return eventoDTO;
 	}
@@ -184,34 +148,9 @@ public class Evento {
 		this.aforoMaximo = aforoMaximo;
 	}
 
-	public void setIdEvento(Long idEvento) {
-		this.idEvento = idEvento;
-	}
-
-	public void setLugar(String lugar) {
-		this.lugar = lugar;
-	}
-
-	public void setTipoEvento(EventoDTO.TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
-	public void setCategoriaEvento(EventoDTO.CategoriaEvento categoriaEvento) {
-		this.categoriaEvento = categoriaEvento;
-	}
-
 	public EstadoUsuarioEvento getEstadoUsuario(Usuario u) {
 		return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
 				: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
-
-	}
-
-	public Usuario getCreador() {
-		return creador;
-	}
-
-	public void setCreador(Usuario creador) {
-		this.creador = creador;
 	}
 
 }
