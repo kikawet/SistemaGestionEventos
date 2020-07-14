@@ -22,9 +22,11 @@ class EventoTestUnitarios {
 	private final static EventoDTO.CategoriaEvento categoriaEvento = EventoDTO.CategoriaEvento.DEPORTE;
 	private final static String descripcion = "Evento al que todo el mundo asistirá";
 	private final static int aforoMaximo = 1500;
+	private final static String titulo = "Evento 1";
+	private final static String foto = "https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg";
 
 	Evento crearEvento() {
-		return new Evento(aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, null);
+		return new Evento(aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, null, titulo, foto);
 	}
 
 	Usuario crearUsuario() {
