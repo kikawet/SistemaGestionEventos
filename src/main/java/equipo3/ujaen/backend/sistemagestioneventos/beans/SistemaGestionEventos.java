@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,7 +155,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		Evento evento = new Evento(eventoDTO, usuarioValido);
 
 		if (inscribirCreador) {
-			LocalDateTime hoy = LocalDateTime.now();
+			LocalDate hoy = LocalDate.now();
 
 			// hoy > evento.getFecha
 			if (hoy.compareTo(evento.getFecha()) > 0)
@@ -205,7 +206,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoRegistrado::new);
 
-		LocalDateTime hoy = LocalDateTime.now();
+		LocalDate hoy = LocalDate.now();
 
 		// hoy > evento.getFecha
 		if (hoy.compareTo(evento.getFecha()) > 0)
@@ -269,8 +270,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();
 
-		if (!usuarioInterno.getUId().equals(usuarioDTO.getUId()))
-			throw new AccesoDenegado("id de usuario incorrecto");
+		/*if (!usuarioInterno.getUId().equals(usuarioDTO.getUId()))
+			throw new AccesoDenegado("id de usuario incorrecto");*/
 
 		return usuarioInterno;
 	}

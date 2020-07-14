@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.rest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.UUID;
@@ -51,11 +52,11 @@ public class TestRest {
 	}
 
 	EventoDTO crearEventoValido() {
-		LocalDateTime manana = LocalDateTime.now().plusDays(1);
+		LocalDate manana = LocalDate.now().plusDays(1);
 
 		int aforoMaximo = 1500;
 		String descripcion = "El evento al que todo el mundo vendrá";
-		LocalDateTime fecha = manana;
+		LocalDate fecha = manana;
 		Long idEvento = null;
 		String lugar = "Jaén";
 		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;

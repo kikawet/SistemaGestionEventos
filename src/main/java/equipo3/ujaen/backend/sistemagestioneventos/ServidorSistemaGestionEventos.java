@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.PostConstruct;
@@ -70,7 +71,7 @@ public class ServidorSistemaGestionEventos {
 		patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
 		francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
 
-		LocalDateTime manana = LocalDateTime.now().plusDays(20);
+		LocalDate manana = LocalDate.now().plusDays(20);
 
 		EventoDTO evento1 = new EventoDTO(null, 2, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
 				CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",

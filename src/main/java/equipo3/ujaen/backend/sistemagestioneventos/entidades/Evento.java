@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,7 +44,7 @@ public class Evento {
 
 	@Column(columnDefinition = "LONGTEXT")
 	private String descripcion;
-	private LocalDateTime fecha;
+	private LocalDate fecha;
 
 	@NotNull
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -73,7 +74,7 @@ public class Evento {
 			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
+	public Evento(int aforoMaximo, String descripcion, LocalDate fecha, String lugar,
 			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador, String titulo,
 			String foto) {
 		super();

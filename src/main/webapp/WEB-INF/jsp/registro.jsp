@@ -136,37 +136,19 @@ input
 (
 :placeholder-shown
  
-)
-{
-padding-top
-:
+) {
+	padding-top: calc(var(- 
  
-calc
-(var(-
+ -input-padding-y)+ 
+var(- 
  
--input-padding-y
-)
-+
-var
-(-
- 
--input-padding-y
-)
-*
+-input-padding-y)* 
 (2/3));
-
-	
-padding-bottom
-:
+	padding-bottom: calc(var(- 
  
-calc
-(var(-
- 
--input-padding-y
-)/3);
-
-
+ -input-padding-y)/3);
 }
+
 .form-label-group input:not (:placeholder-shown ) ~label {
 	padding-top: calc(var(- -input-padding-y)/3);
 	padding-bottom: calc(var(- -input-padding-y)/3);
@@ -177,8 +159,8 @@ calc
 /* Fallback for Edge
 -------------------------------------------------- */
 @
-supports (-ms-ime-align: auto ) { .form-label-group>label {
-	display: none;
+supports (-ms-ime-align: auto ) { .form-label-group >label { display:none;
+	
 }
 
 .form-label-group input::-ms-input-placeholder {

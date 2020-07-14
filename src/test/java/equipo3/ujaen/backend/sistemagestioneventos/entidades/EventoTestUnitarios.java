@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioE
 
 class EventoTestUnitarios {
 	private final static String lugar = "Jaén";
-	private final static LocalDateTime fecha = LocalDateTime.now();
+	private final static LocalDate fecha = LocalDate.now();
 	private final static EventoDTO.TipoEvento tipoEvento = EventoDTO.TipoEvento.BENEFICO;
 	private final static EventoDTO.CategoriaEvento categoriaEvento = EventoDTO.CategoriaEvento.DEPORTE;
 	private final static String descripcion = "Evento al que todo el mundo asistirá";
@@ -70,7 +71,7 @@ class EventoTestUnitarios {
 
 		String nuevoLugar = "Sevilla";
 		TimeUnit.SECONDS.sleep(1);
-		LocalDateTime nuevaFecha = LocalDateTime.now();
+		LocalDate nuevaFecha = LocalDate.now();
 		EventoDTO.TipoEvento nuevoTipoEvento = EventoDTO.TipoEvento.NO_BENEFICO;
 		EventoDTO.CategoriaEvento nuevaCategoriaEventoEvento = EventoDTO.CategoriaEvento.CULTURAL;
 		String nuevaDescripcion = "Evento al que nadie en el mundo asistirá";

@@ -7,6 +7,7 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,11 +57,11 @@ public class SistemaGestionEventosIntegrationTest {
 	}
 
 	EventoDTO crearEventoValido() {
-		LocalDateTime manana = LocalDateTime.now().plusDays(1);
+		LocalDate manana = LocalDate.now().plusDays(1);
 
 		int aforoMaximo = 1500;
 		String descripcion = "El evento al que todo el mundo vendrá";
-		LocalDateTime fecha = manana;
+		LocalDate fecha = manana;
 		Long idEvento = null;
 		String lugar = "Jaén";
 		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;

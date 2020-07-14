@@ -1,14 +1,19 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 import javax.validation.constraints.Future;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,7 +49,8 @@ public class EventoDTO extends RepresentationModel<EventoDTO> implements Seriali
 	private int aforoMaximo;
 	private String descripcion;
 	@Future(message = "El evento tiene que ser en un futuro")
-	private LocalDateTime fecha;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate fecha;
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;
