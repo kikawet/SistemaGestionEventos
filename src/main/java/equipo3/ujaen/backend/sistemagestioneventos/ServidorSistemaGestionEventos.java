@@ -38,70 +38,72 @@ public class ServidorSistemaGestionEventos {
 		System.out.println("Saludos desde el servidor");
 	}
 
-	@Autowired
+	@Autowired(required = false)
 	private InterfaceSistemaGestionEventos ige;
 
 	@PostConstruct
 	public void init() {
-		log.info("Creando eventos y usuarios");
+		if (ige != null) {
+			log.info("Creando eventos y usuarios");
 
-		String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\r\n"
-				+ "										do eiusmod tempor incididunt ut labore et dolore magna aliqua.\r\n"
-				+ "										Ut enim ad minim veniam, quis nostrud exercitation ullamco\r\n"
-				+ "										laboris nisi ut aliquip ex ea commodo consequat. Duis aute\r\n"
-				+ "										irure dolor in reprehenderit in voluptate velit esse cillum\r\n"
-				+ "										dolore eu fugiat nulla paria";
+			String lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\r\n"
+					+ "										do eiusmod tempor incididunt ut labore et dolore magna aliqua.\r\n"
+					+ "										Ut enim ad minim veniam, quis nostrud exercitation ullamco\r\n"
+					+ "										laboris nisi ut aliquip ex ea commodo consequat. Duis aute\r\n"
+					+ "										irure dolor in reprehenderit in voluptate velit esse cillum\r\n"
+					+ "										dolore eu fugiat nulla paria";
 
-		UsuarioDTO patricio = new UsuarioDTO("Patricio Ruiz", "1234");
-		UsuarioDTO francisco = new UsuarioDTO("Francisco López", "1234");
+			UsuarioDTO patricio = new UsuarioDTO("Patricio Ruiz", "1234");
+			UsuarioDTO francisco = new UsuarioDTO("Francisco López", "1234");
 
-		patricio.setEmail("patricio@yahoo.com");
-		francisco.setEmail("flo00008@red.ujaen.es");
+			patricio.setEmail("patricio@yahoo.com");
+			francisco.setEmail("flo00008@red.ujaen.es");
 
-		try {
-			ige.registroUsuarios(patricio);
-			ige.registroUsuarios(francisco);
+			try {
+				ige.registroUsuarios(patricio);
+				ige.registroUsuarios(francisco);
 
-			log.info("Usuarios creados");
-		} catch (UsuarioYaRegistrado e) {
-			log.info("Usuarios ya registrados");
-		}
+				log.info("Usuarios creados");
+			} catch (UsuarioYaRegistrado e) {
+				log.info("Usuarios ya registrados");
+			}
 
-		patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
-		francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
+			patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
+			francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
 
-		LocalDateTime manana = LocalDateTime.now().plusDays(20);
+			LocalDateTime manana = LocalDateTime.now().plusDays(20);
 
-		EventoDTO evento1 = new EventoDTO(null, 2, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
-				CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",
-				"https://cdn.discordapp.com/attachments/559336561934729217/707619803828846592/EVvyVijX0AMJdaq.png");
+			EventoDTO evento1 = new EventoDTO(null, 2, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
+					CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",
+					"https://cdn.discordapp.com/attachments/559336561934729217/707619803828846592/EVvyVijX0AMJdaq.png");
 
-		EventoDTO evento2 = new EventoDTO(null, 150, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
-				CategoriaEvento.CHARLAS, null, 0, 0, null, "Evento 2",
-				"https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg");
-
-		try {
-			ige.crearEventoPorUsuario(patricio, evento1, true);
-			ige.crearEventoPorUsuario(francisco, evento2, false);
-			log.info("Eventos creados");
-		} catch (EventoYaRegistrado e) {
-			log.info("Eventos ya creados");
-		} catch (EventoPrescrito e) {
-			log.info("Eventos prescritos, recreando eventos");
-
-			evento1 = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
-			evento2 = ige.listarEventosCreadosPorUnUsuario(francisco, 0, 10).get(0);
-
-			ige.cancelarEventoPorUsuario(patricio, evento1.getIdEvento());
-			ige.cancelarEventoPorUsuario(francisco, evento2.getIdEvento());
+			EventoDTO evento2 = new EventoDTO(null, 150, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
+					CategoriaEvento.CHARLAS, null, 0, 0, null, "Evento 2",
+					"https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg");
 
 			try {
 				ige.crearEventoPorUsuario(patricio, evento1, true);
 				ige.crearEventoPorUsuario(francisco, evento2, false);
-
 				log.info("Eventos creados");
-			} catch (Exception e2) {
-				log.info("Error al volver a crear los eventos");
+			} catch (EventoYaRegistrado e) {
+				log.info("Eventos ya creados");
+			} catch (EventoPrescrito e) {
+				log.info("Eventos prescritos, recreando eventos");
+
+				evento1 = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
+				evento2 = ige.listarEventosCreadosPorUnUsuario(francisco, 0, 10).get(0);
+
+				ige.cancelarEventoPorUsuario(patricio, evento1.getIdEvento());
+				ige.cancelarEventoPorUsuario(francisco, evento2.getIdEvento());
+
+				try {
+					ige.crearEventoPorUsuario(patricio, evento1, true);
+					ige.crearEventoPorUsuario(francisco, evento2, false);
+
+					log.info("Eventos creados");
+				} catch (Exception e2) {
+					log.info("Error al volver a crear los eventos");
+				}
 			}
 		}
 	}

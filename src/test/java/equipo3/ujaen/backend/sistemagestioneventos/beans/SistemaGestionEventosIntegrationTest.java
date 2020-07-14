@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
@@ -33,6 +34,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistra
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioYaRegistrado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
+@ActiveProfiles("test")
 @SpringBootTest(classes = { equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class })
 public class SistemaGestionEventosIntegrationTest {
 

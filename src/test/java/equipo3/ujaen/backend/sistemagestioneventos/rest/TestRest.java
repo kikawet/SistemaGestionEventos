@@ -25,6 +25,8 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioE
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 
+//Rest da problemas al insertar json a la BD, como se va a mockear no hay problema
+//@ActiveProfiles("test")
 @SpringBootTest(classes = equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 public class TestRest {
 
