@@ -1,8 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.security.InvalidParameterException;
 import java.time.LocalDateTime;
@@ -46,12 +44,12 @@ class EventoTestUnitarios {
 		Evento evento = crearEvento();
 
 		// Datos creados por el constuctor
-		assertTrue(evento.getLugar().equals(lugar));
-		assertTrue(evento.getFecha().equals(fecha));
-		assertTrue(evento.getTipoEvento().equals(tipoEvento));
-		assertTrue(evento.getCategoriaEvento().equals(categoriaEvento));
-		assertTrue(evento.getDescripcion().equals(descripcion));
-		assertTrue(evento.getAforoMaximo() == aforoMaximo);
+		assertThat(evento).extracting(Evento::getLugar).isEqualTo(lugar);
+		assertThat(evento).extracting(Evento::getFecha).isEqualTo(fecha);
+		assertThat(evento).extracting(Evento::getTipoEvento).isEqualTo(tipoEvento);
+		assertThat(evento).extracting(Evento::getCategoriaEvento).isEqualTo(categoriaEvento);
+		assertThat(evento).extracting(Evento::getDescripcion).isEqualTo(descripcion);
+		assertThat(evento).extracting(Evento::getAforoMaximo).isEqualTo(aforoMaximo);
 
 		// Datos creados internamente
 
@@ -59,8 +57,8 @@ class EventoTestUnitarios {
 		// assertNotNull(evento.getIdEvento());
 		// assertTrue(evento.getIdEvento() != 0);
 
-		assertTrue(evento.getAsistentes().isEmpty());
-		assertTrue(evento.getListaEspera().isEmpty());
+		assertThat(evento.getAsistentes()).isEmpty();
+		assertThat(evento.getListaEspera()).isEmpty();
 	}
 
 	@Test
@@ -83,12 +81,12 @@ class EventoTestUnitarios {
 		evento.setDescripcion(nuevaDescripcion);
 		evento.setAforoMaximo(nuevoAforoMaximo);
 
-		assertTrue(evento.getLugar().equals(nuevoLugar));
-		assertTrue(evento.getFecha().equals(nuevaFecha));
-		assertTrue(evento.getTipoEvento().equals(nuevoTipoEvento));
-		assertTrue(evento.getCategoriaEvento().equals(nuevaCategoriaEventoEvento));
-		assertTrue(evento.getDescripcion().equals(nuevaDescripcion));
-		assertTrue(evento.getAforoMaximo() == nuevoAforoMaximo);
+		assertThat(evento).extracting(Evento::getLugar).isEqualTo(nuevoLugar);
+		assertThat(evento).extracting(Evento::getFecha).isEqualTo(nuevaFecha);
+		assertThat(evento).extracting(Evento::getTipoEvento).isEqualTo(nuevoTipoEvento);
+		assertThat(evento).extracting(Evento::getCategoriaEvento).isEqualTo(nuevaCategoriaEventoEvento);
+		assertThat(evento).extracting(Evento::getDescripcion).isEqualTo(nuevaDescripcion);
+		assertThat(evento).extracting(Evento::getAforoMaximo).isEqualTo(nuevoAforoMaximo);
 
 		Usuario usuario = crearUsuario();
 		Usuario usuario2 = crearUsuario();
@@ -112,20 +110,23 @@ class EventoTestUnitarios {
 
 		EstadoUsuarioEvento estado = evento.anadirAsistente(usuario);
 
-		assertTrue(estado.equals(EstadoUsuarioEvento.ACEPTADO));
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().isEmpty());
+		assertThat(estado).isEqualTo(EstadoUsuarioEvento.ACEPTADO);
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).isEmpty();
 
 		estado = evento.anadirAsistente(usuario2);
 
-		assertTrue(estado.equals(EstadoUsuarioEvento.LISTA_DE_ESPERA));
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().size() == 1);
+		assertThat(estado).isEqualTo(EstadoUsuarioEvento.LISTA_DE_ESPERA);
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).hasSize(1);
 
 		// Si el usuario ya existe devuelve null
-		assertNull(evento.anadirAsistente(usuario));
-		assertNull(evento.anadirAsistente(usuario2));
+		assertThat(evento.anadirAsistente(usuario)).isNull();
+		assertThat(evento.anadirAsistente(usuario2)).isNull();
 
 		// No se inserta ningun asistenten nuevo
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().size() == 1);
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).hasSize(1);
 	}
 
 	@Test
@@ -144,8 +145,8 @@ class EventoTestUnitarios {
 		evento.eliminarAsistente(usuario);
 
 		// Al borrar el asistente inscrito el de la lista de espera se mueve
-		assertEquals(1, evento.getAsistentes().size());
-		assertTrue(evento.getListaEspera().isEmpty());
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).isEmpty();
 	}
 
 }
