@@ -9,7 +9,8 @@ public class SistemaGestionEventosMvcConfig implements WebMvcConfigurer{
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		// TODO Auto-generated method stub
+		
+		//WebMvcConfigurer.super.addViewControllers(registry);
 		registry.addViewController("/").setViewName("index");
 		
 	}
