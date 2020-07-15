@@ -10,12 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class ConfigSecurity extends WebSecurityConfigurerAdapter {
 
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-		auth.inMemoryAuthentication().withUser("usuario").password("{noop}secreto").roles("USUARIOS").and()
-				.withUser("admin").password(encoder.encode("secreto")).roles("ADMINISTRADORES");
-	}
+//	@Override
+//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+//		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+//		auth.inMemoryAuthentication().withUser("usuario").password("{noop}secreto").roles("USUARIOS").and()
+//				.withUser("admin").password(encoder.encode("secreto")).roles("ADMINISTRADORES");
+//	}
 
 	
 	
