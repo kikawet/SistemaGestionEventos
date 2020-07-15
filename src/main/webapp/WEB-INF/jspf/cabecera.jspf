@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@taglib prefix="s" uri="http://www.springframework.org/tags" %>
-
+<%@taglib prefix="s" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <style type="text/css">
 #logo {
@@ -23,29 +25,39 @@
 				Inicio
 			</label> --%>
 
-				<a href="${pageContext.request.contextPath}" class="btn btn-secondary active" role="button" 
-				aria-pressed="true">Inicio</a>
-				
-			<c:if test="${not empty session.login}">
+			<a href="${pageContext.request.contextPath}"
+				class="btn btn-secondary active" role="button" aria-pressed="true">Inicio</a>
 
-				<a href="${pageContext.request.contextPath}/evento/crear" class="btn btn-secondary" role="button"
-					aria-pressed="true"> Crear Evento</a>				
-			</c:if>
+			<sec:authorize access="isAuthenticated()">
+				<a href="${pageContext.request.contextPath}/evento/crear"
+					class="btn btn-secondary" role="button" aria-pressed="true">
+					Crear Evento</a>
+			</sec:authorize>
+
 
 		</div>
 	</aside>
 	<div>
-		<c:if test="${empty session.login}">
-			<a href="<s:url value='/usuario/registro'/> "  class="btn btn-outline-light" role="button"
-				aria-pressed="true">Registro</a>
-			<a href="<s:url value='/usuario/login'/>" class="btn btn-outline-light" role="button"
-				aria-pressed="true">Inicio sesión</a>
-		</c:if>
-		<c:if test="${not empty session.login}">
-			<a href="${pageContext.request.contextPath}/usuario/perfil" class="btn btn-outline-light" role="button"
-				aria-pressed="true">Perfil</a>
-			<a href="${pageContext.request.contextPath}/inicio/logout" class="btn btn-outline-light" role="button"
-				aria-pressed="true">Cerrar sesión</a>
-		</c:if>
+		<sec:authorize access="not isAuthenticated()">
+			<a href="<s:url value='/usuario/registro'/> "
+				class="btn btn-outline-light" role="button" aria-pressed="true">Registro</a>
+			<a href="<s:url value='/usuario/login'/>"
+				class="btn btn-outline-light" role="button" aria-pressed="true">Iniciar
+				sesión</a>
+		</sec:authorize>
+		<sec:authorize access="isAuthenticated()">
+			<div class="container ">
+				<a href="${pageContext.request.contextPath}/usuario/perfil"
+					class="btn btn-outline-light" role="button" aria-pressed="true">Perfil</a>
+
+				<c:url value="/logout" var="logout_url" />
+				<form:form action="${logout_url}" method="POST" cssClass="mx-1">
+					<button class="btn btn-outline-light" aria-pressed="true">Cerrar
+						sesión</button>
+				</form:form>
+			</div>
+		</sec:authorize>
+
+
 	</div>
 </nav>

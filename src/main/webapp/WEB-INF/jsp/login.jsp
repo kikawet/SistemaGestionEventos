@@ -128,43 +128,76 @@ body {
 }
 
 .form-label-group
+
  
+
 input
+
+
 :not
+
  
+
 (
 :placeholder-shown
+
  
+
 )
 {
 padding-top
+
+
 :
+
  
+
 calc
-(var(-
+
+
+(
+var
+(-
+
  
+
 -input-padding-y
+
+
 )
 +
 var
+
+
 (-
- 
 -input-padding-y
+
+
 )
 *
+
+
 (2/3));
-
-	
 padding-bottom
+
+
 :
+
  
+
 calc
-(var(-
+
+
+(
+var
+(-
+
  
+
 -input-padding-y
+
+
 )/3);
-
-
 }
 .form-label-group input:not (:placeholder-shown )~label {
 	padding-top: calc(var(- -input-padding-y)/3);
@@ -209,25 +242,24 @@ supports (-ms-ime-align: auto ) { .form-label-group>label {
 					<div class="card-body">
 						<custom:return />
 						<h5 class="card-title text-center">WebApp</h5>
-						<form:form method="POST" modelAttribute="usuario">
+						<form:form method="POST" cssClass="form-signin">
 
-							<div class="form-label-group">
-								<s:bind path="login">
-									<form:input path="login" type="text" id="inputLogin"
-										class="form-control ${status.error ?'is-invalid': empty status.value ? '' : 'is-valid'}" placeholder="Login" />
-									<form:errors path="login" cssClass="invalid-feedback" />
-								</s:bind>
+							<div class="form-group">
+<label for="inputLogin" class="">Usuario</label> 
+								<input type="text" id="inputLogin" class="form-control"
+									name="username" placeholder="login" />
+
+
 							</div>
-							<div class="form-label-group">
-								<s:bind path="password">
-									<form:password path="password" id="inputPassword"
-										class="form-control ${status.error ?'is-invalid': empty status.value ? '' : 'is-valid'}" placeholder="Contraseña" />
-									<form:errors path="password" cssClass="invalid-feedback" />
-								</s:bind>
+							<div class="form-group">
+								<label for="inputPassword">Contraseña</label> <input
+									type="password" name="password" id="inputPassword"
+									class="form-control" placeholder="contraseña" />
+
 							</div>
 
 							<div class="custom-control custom-checkbox mb-3">
-								<input type="checkbox" name="checkbox"
+								<input type="checkbox" name="remember-me"
 									class="custom-control-input" id="customCheck1"> <label
 									class="custom-control-label" for="customCheck1">Recordar
 									Contraseña</label>
