@@ -3,7 +3,6 @@ package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 import java.io.Serializable;
 import java.util.UUID;
 
-import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -41,9 +40,6 @@ public class UsuarioDTO extends RepresentationModel<UsuarioDTO> implements Seria
 
 	private int numEventosCreados;
 	private int numEventosInscritos;
-
-	@AssertTrue(message = "Debes de aceptar los terminos y condiciones")
-	private boolean terminos = false;
 
 	public UsuarioDTO(String login, String password) {
 		this.login = login;
