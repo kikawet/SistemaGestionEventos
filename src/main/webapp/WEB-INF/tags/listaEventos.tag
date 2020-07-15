@@ -2,8 +2,8 @@
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
-
-
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <%@ attribute name="eventos" required="true" type="java.util.List"%>
 
@@ -17,7 +17,7 @@
 				<div class="card-body">
 					<div class="d-flex justify-content-between">
 						<h2 class="card-title">${evento.titulo}</h2>
-						<c:if test="${not empty session.usuario}">
+						<sec:authorize access="isAuthenticated()">
 							<c:choose>
 								<c:when test="${evento.estado == 'ACEPTADO'}">
 									<form action="${pageContext.request.contextPath}/evento/inscribir" method="POST">
@@ -50,7 +50,7 @@
 									</form>
 								</c:otherwise>
 							</c:choose>
-						</c:if>
+						</sec:authorize>
 
 					</div>
 					<p class="card-text">
