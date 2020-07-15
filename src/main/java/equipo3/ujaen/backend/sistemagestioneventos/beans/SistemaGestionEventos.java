@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Autowired
 	private EventoDao eventoDAO;
 
+	private static final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+
 	public SistemaGestionEventos() {
 	}
 
@@ -54,6 +58,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		}
 
 		Usuario newUsuario = new Usuario(usuario);
+
+		newUsuario.setPassword(encoder.encode(newUsuario.getPassword()));
 
 		usuarioDAO.save(newUsuario);
 	}
