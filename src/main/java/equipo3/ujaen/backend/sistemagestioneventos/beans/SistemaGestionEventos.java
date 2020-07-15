@@ -42,7 +42,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	@Autowired
 	private EventoDao eventoDAO;
 
-	private static final PasswordEncoder encoder = new BCryptPasswordEncoder();
+	private static final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
 	public SistemaGestionEventos() {
 	}
