@@ -1,16 +1,14 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dao.UsuarioDao;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTODetails;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
-import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @Service
 public class UserDetailService implements UserDetailsService {
@@ -26,10 +24,7 @@ public class UserDetailService implements UserDetailsService {
 			throw new UsernameNotFoundException("Usuario no encontrado");
 		}
 
-		UserDetails userDetails = User.withUsername(username).password(usuario.getPassword())
-				.roles(this.getRoles(usuario)).build();
-		return userDetails;
-
+		return new UsuarioDTODetails(usuario.toDTO());
 	}
 
 	public String[] getRoles(Usuario u) {

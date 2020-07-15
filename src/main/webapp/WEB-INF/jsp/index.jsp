@@ -5,6 +5,9 @@
 <%@ taglib tagdir="/WEB-INF/tags" prefix="custom"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -58,7 +61,7 @@
 			<custom:listaEventos eventos="${eventos}" />
 		</div>
 	</main>
-
+	<sec:authentication property="principal" />
 	<%@include file="../jspf/footer.jspf"%>
 
 
