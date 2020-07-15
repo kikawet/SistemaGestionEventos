@@ -209,21 +209,18 @@ supports (-ms-ime-align: auto ) { .form-label-group>label {
 					<div class="card-body">
 						<custom:return />
 						<h5 class="card-title text-center">WebApp</h5>
-						<form:form method="POST" modelAttribute="usuario">
+						<form:form method="POST">
 
 							<div class="form-label-group">
-								<s:bind path="login">
-									<form:input path="login" type="text" id="inputLogin"
-										class="form-control ${status.error ?'is-invalid': empty status.value ? '' : 'is-valid'}" placeholder="Login" />
-									<form:errors path="login" cssClass="invalid-feedback" />
-								</s:bind>
+								
+									<input  type="text" id="inputLogin"	class="form-control" name="username"/>
+									
+								
 							</div>
 							<div class="form-label-group">
-								<s:bind path="password">
-									<form:password path="password" id="inputPassword"
-										class="form-control ${status.error ?'is-invalid': empty status.value ? '' : 'is-valid'}" placeholder="Contraseña" />
-									<form:errors path="password" cssClass="invalid-feedback" />
-								</s:bind>
+								
+									<input type="password" name="password" id="inputPassword"class="form-control" />
+								
 							</div>
 
 							<div class="custom-control custom-checkbox mb-3">
