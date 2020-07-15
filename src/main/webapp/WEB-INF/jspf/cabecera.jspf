@@ -4,6 +4,7 @@
 <%@taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="sec"
 	uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
 <style type="text/css">
 #logo {
@@ -41,17 +42,22 @@
 			<a href="<s:url value='/usuario/registro'/> "
 				class="btn btn-outline-light" role="button" aria-pressed="true">Registro</a>
 			<a href="<s:url value='/usuario/login'/>"
-				class="btn btn-outline-light" role="button" aria-pressed="true">Inicio
+				class="btn btn-outline-light" role="button" aria-pressed="true">Iniciar
 				sesión</a>
 		</sec:authorize>
 		<sec:authorize access="isAuthenticated()">
-			<a href="${pageContext.request.contextPath}/usuario/perfil"
-				class="btn btn-outline-light" role="button" aria-pressed="true">Perfil</a>
-			<a href="${pageContext.request.contextPath}/inicio/logout"
-				class="btn btn-outline-light" role="button" aria-pressed="true">Cerrar
-				sesión</a>
+			<div class="container ">
+				<a href="${pageContext.request.contextPath}/usuario/perfil"
+					class="btn btn-outline-light" role="button" aria-pressed="true">Perfil</a>
+
+				<c:url value="/logout" var="logout_url" />
+				<form:form action="${logout_url}" method="POST" cssClass="mx-1">
+					<button class="btn btn-outline-light" aria-pressed="true">Cerrar
+						sesión</button>
+				</form:form>
+			</div>
 		</sec:authorize>
-		
-		
+
+
 	</div>
 </nav>
