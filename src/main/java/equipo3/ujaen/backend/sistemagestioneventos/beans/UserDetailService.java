@@ -6,25 +6,26 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import equipo3.ujaen.backend.sistemagestioneventos.dao.UsuarioDao;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTODetails;
 import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
+import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @Service
 public class UserDetailService implements UserDetailsService {
 
 	@Autowired
-	UsuarioDao usuarioDao;
+	InterfaceSistemaGestionEventos sge;
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-		Usuario usuario = usuarioDao.findByLogin(username);
+		UsuarioDTO usuario = sge.getUsuarioLogin(username);
 		if (usuario == null) {
 			throw new UsernameNotFoundException("Usuario no encontrado");
 		}
 
-		return new UsuarioDTODetails(usuario.toDTO());
+		return new UsuarioDTODetails(usuario);
 	}
 
 	public String[] getRoles(Usuario u) {

@@ -61,7 +61,7 @@
 			<custom:listaEventos eventos="${eventos}" />
 		</div>
 	</main>
-	<sec:authentication property="principal" />
+	
 	<%@include file="../jspf/footer.jspf"%>
 
 

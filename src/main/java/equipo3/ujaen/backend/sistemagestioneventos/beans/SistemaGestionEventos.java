@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
@@ -244,6 +243,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 				.toDTO();
 	}
 
+	@Override
 	@Transactional(readOnly = true)
 	public UsuarioDTO getUsuarioLogin(String login) {
 		return usuarioDAO.findByLogin(login).toDTO();
