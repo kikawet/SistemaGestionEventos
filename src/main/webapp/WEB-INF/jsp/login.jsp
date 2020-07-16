@@ -2,7 +2,9 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="custom"%>
+<%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <c:set var="req" value="${pageContext.request}" />
 <c:set var="url">${req.requestURL}</c:set>
 <c:set var="uri" value="${req.requestURI}" />
@@ -22,7 +24,7 @@
 	integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
 	crossorigin="anonymous">
 
-<title>LOGIN</title>
+<title>login</title>
 
 <style type="text/css">
 :root { -
@@ -125,11 +127,78 @@ body {
 	color: #343a40;
 }
 
-.form-label-group input:not(:placeholder-shown) {
-	padding-top: calc(var(--input-padding-y)+var(--input-padding-y)*(2/3));
-	padding-bottom: calc(var(--input-padding-y)/3);
-}
+.form-label-group
 
+ 
+
+input
+
+
+:not
+
+ 
+
+(
+:placeholder-shown
+
+ 
+
+)
+{
+padding-top
+
+
+:
+
+ 
+
+calc
+
+
+(
+var
+(-
+
+ 
+
+-input-padding-y
+
+
+)
++
+var
+
+
+(-
+-input-padding-y
+
+
+)
+*
+
+
+(2/3));
+padding-bottom
+
+
+:
+
+ 
+
+calc
+
+
+(
+var
+(-
+
+ 
+
+-input-padding-y
+
+
+)/3);
+}
 .form-label-group input:not (:placeholder-shown )~label {
 	padding-top: calc(var(- -input-padding-y)/3);
 	padding-bottom: calc(var(- -input-padding-y)/3);
@@ -144,9 +213,9 @@ supports (-ms-ime-align: auto ) { .form-label-group>label {
 	display: none;
 }
 
-	.form-label-group input::-ms-input-placeholder {
-		color: black;
-	}
+.form-label-group input::-ms-input-placeholder {
+	color: black;
+}
 
 }
 
@@ -171,22 +240,26 @@ supports (-ms-ime-align: auto ) { .form-label-group>label {
 			<div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
 				<div class="card card-signin my-5">
 					<div class="card-body">
-						<custom:return/>
+						<custom:return />
 						<h5 class="card-title text-center">WebApp</h5>
-						<form class="form-signin" action="usuario/login" method="POST">
-							<div class="form-label-group">
-								<input name="login" type="text" value="${login}" id="inputLogin"
-									class="form-control " placeholder="Login" required autofocus>
+						<form:form method="POST" cssClass="form-signin">
+
+							<div class="form-group">
+<label for="inputLogin" class="">Usuario</label> 
+								<input type="text" id="inputLogin" class="form-control"
+									name="username" placeholder="login" />
+
+
 							</div>
-							<div class="form-label-group">
-								<input name="password" type="password" value="${password}"
-									id="inputPassword" class="form-control "
-									placeholder="Contraseña" required>
+							<div class="form-group">
+								<label for="inputPassword">Contraseña</label> <input
+									type="password" name="password" id="inputPassword"
+									class="form-control" placeholder="contraseña" />
 
 							</div>
 
 							<div class="custom-control custom-checkbox mb-3">
-								<input type="checkbox" name="checkbox"
+								<input type="checkbox" name="remember-me"
 									class="custom-control-input" id="customCheck1"> <label
 									class="custom-control-label" for="customCheck1">Recordar
 									Contraseña</label>
@@ -194,7 +267,7 @@ supports (-ms-ime-align: auto ) { .form-label-group>label {
 							<button class="btn btn-lg btn-block colorBoton text-uppercase"
 								type="submit">Iniciar Sesión</button>
 							<hr class="my-4">
-						</form>
+						</form:form>
 						<c:if test="${not empty error}">
 							<section class="alert alert-danger my-auto" role="alert">${error}</section>
 						</c:if>

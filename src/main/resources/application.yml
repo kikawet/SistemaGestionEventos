@@ -3,12 +3,13 @@ spring.datasource.username: sge_user
 spring.datasource.password: javaee
 spring.jpa.databasePlatform: org.hibernate.dialect.MySQL5InnoDBDialect
 
-spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
+spring.jpa.properties.javax.persistence.schema-generation.database.action: none # drop-and-create
 spring.jpa.open-in-view: false
 
 server.servlet.context-path: /sge-api
 rest.base-path: /rest
 
 server.port: 12021
+remember-me.key: spring
 
 spring:  mvc:    view:      prefix: /WEB-INF/jsp/      suffix: .jsp    static-path-pattern: /resources/** 

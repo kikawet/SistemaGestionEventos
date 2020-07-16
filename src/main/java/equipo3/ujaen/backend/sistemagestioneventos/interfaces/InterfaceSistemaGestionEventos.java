@@ -146,6 +146,8 @@ public interface InterfaceSistemaGestionEventos {
 
 	public UsuarioDTO getUsuario(UUID idUsuario);
 
+	public UsuarioDTO getUsuarioLogin(String login);
+
 	public EventoDTO getEvento(long idEvento);
 
 	public EstadoUsuarioEvento getEstadoUsuarioEvento(UUID idUsuario, long idEvento);
