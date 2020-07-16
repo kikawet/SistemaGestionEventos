@@ -25,7 +25,6 @@
 				Inicio
 			</label> --%>
 
-
 			<a href="${pageContext.request.contextPath}"
 				class="btn btn-secondary active" role="button" aria-pressed="true">Inicio</a>
 
