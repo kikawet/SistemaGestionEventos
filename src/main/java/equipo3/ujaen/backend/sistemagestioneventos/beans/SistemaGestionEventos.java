@@ -161,7 +161,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		Evento evento = new Evento(eventoDTO, usuarioValido);
 
 		if (inscribirCreador) {
-			LocalDate hoy = LocalDate.now();
+			LocalDateTime hoy = LocalDateTime.now();
 
 			// hoy > evento.getFecha
 			if (hoy.compareTo(evento.getFecha()) > 0)
@@ -212,7 +212,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		Usuario usuarioValido = validarUsuario(usuarioDTO);
 		Evento evento = eventoDAO.findById(idEvento).orElseThrow(EventoNoRegistrado::new);
 
-		LocalDate hoy = LocalDate.now();
+		LocalDateTime hoy = LocalDateTime.now();
 
 		// hoy > evento.getFecha
 		if (hoy.compareTo(evento.getFecha()) > 0)

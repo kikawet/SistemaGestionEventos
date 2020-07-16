@@ -18,7 +18,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioE
 
 class EventoTestUnitarios {
 	private final static String lugar = "Jaén";
-	private final static LocalDate fecha = LocalDate.now();
+	private final static LocalDateTime fecha = LocalDateTime.now();
 	private final static EventoDTO.TipoEvento tipoEvento = EventoDTO.TipoEvento.BENEFICO;
 	private final static EventoDTO.CategoriaEvento categoriaEvento = EventoDTO.CategoriaEvento.DEPORTE;
 	private final static String descripcion = "Evento al que todo el mundo asistirá";
@@ -71,7 +71,7 @@ class EventoTestUnitarios {
 
 		String nuevoLugar = "Sevilla";
 		TimeUnit.SECONDS.sleep(1);
-		LocalDate nuevaFecha = LocalDate.now();
+		LocalDateTime nuevaFecha = LocalDateTime.now();
 		EventoDTO.TipoEvento nuevoTipoEvento = EventoDTO.TipoEvento.NO_BENEFICO;
 		EventoDTO.CategoriaEvento nuevaCategoriaEventoEvento = EventoDTO.CategoriaEvento.CULTURAL;
 		String nuevaDescripcion = "Evento al que nadie en el mundo asistirá";

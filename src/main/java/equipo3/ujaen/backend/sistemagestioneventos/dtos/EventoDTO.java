@@ -49,8 +49,8 @@ public class EventoDTO extends RepresentationModel<EventoDTO> implements Seriali
 	private int aforoMaximo;
 	private String descripcion;
 	@Future(message = "El evento tiene que ser en un futuro")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate fecha;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
+	private LocalDateTime fecha;
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;

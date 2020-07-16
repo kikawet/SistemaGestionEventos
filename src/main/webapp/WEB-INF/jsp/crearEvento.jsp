@@ -84,7 +84,7 @@
 			<div class='form-group'>
 				<label for='TextBox'>Fecha</label>
 				<s:bind path="fecha">
-					<form:input path="fecha" type="date" id="inputFecha"
+					<form:input path="fecha" type="datetime-local" id="inputFecha"
 						class="form-control ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'}"
 						placeholder='' aria-describedby='shortDesc' />
 					<small id='fecha' class='form-text text-muted'></small>

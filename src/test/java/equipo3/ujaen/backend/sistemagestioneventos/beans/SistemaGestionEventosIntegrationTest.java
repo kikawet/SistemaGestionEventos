@@ -57,11 +57,11 @@ public class SistemaGestionEventosIntegrationTest {
 	}
 
 	EventoDTO crearEventoValido() {
-		LocalDate manana = LocalDate.now().plusDays(1);
+		LocalDateTime manana = LocalDateTime.now().plusDays(1);
 
 		int aforoMaximo = 1500;
 		String descripcion = "El evento al que todo el mundo vendrá";
-		LocalDate fecha = manana;
+		LocalDateTime fecha = manana;
 		Long idEvento = null;
 		String lugar = "Jaén";
 		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;
