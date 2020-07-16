@@ -1,4 +1,6 @@
 <%@ tag language="java" pageEncoding="UTF-8"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
@@ -20,7 +22,10 @@
 						<sec:authorize access="isAuthenticated()">
 							<c:choose>
 								<c:when test="${evento.estado == 'ACEPTADO'}">
-									<form action="${pageContext.request.contextPath}/evento/inscribir" method="POST">
+									<form
+										action="${pageContext.request.contextPath}/evento/inscribir"
+										method="POST">
+										<sec:csrfInput />
 										<input name="idEvento" type="number"
 											value="${evento.idEvento}" hidden /> <input name="cancelar"
 											type="checkbox" checked hidden />
@@ -30,7 +35,10 @@
 									</form>
 								</c:when>
 								<c:when test="${evento.estado == 'LISTA_DE_ESPERA'}">
-									<form action="${pageContext.request.contextPath}/evento/inscribir" method="POST">
+									<form
+										action="${pageContext.request.contextPath}/evento/inscribir"
+										method="POST">
+										<sec:csrfInput />
 										<input name="idEvento" type="number"
 											value="${evento.idEvento}" hidden /> <input name="cancelar"
 											type="checkbox" checked hidden />
@@ -40,7 +48,10 @@
 									</form>
 								</c:when>
 								<c:otherwise>
-									<form action="${pageContext.request.contextPath}/evento/inscribir" method="POST">
+									<form
+										action="${pageContext.request.contextPath}/evento/inscribir"
+										method="POST">
+										<sec:csrfInput />
 										<input name="idEvento" type="number"
 											value="${evento.idEvento}" hidden /> <input name="cancelar"
 											type="checkbox" hidden />
@@ -55,9 +66,9 @@
 					</div>
 					<p class="card-text">
 						<small class="text-muted">Fecha <fmt:parseDate
- 								value="${evento.fecha}" pattern="yyyy-MM-dd" var="parsedDate" 
-								type="date" /> <fmt:formatDate value="${parsedDate}" 
-								type="date" pattern="dd/MM/yyyy" /> 
+								value="${evento.fecha}" pattern="yyyy-MM-dd" var="parsedDate"
+								type="date" /> <fmt:formatDate value="${parsedDate}"
+								type="date" pattern="dd/MM/yyyy" />
 						</small>
 					</p>
 					<p class="card-text">
