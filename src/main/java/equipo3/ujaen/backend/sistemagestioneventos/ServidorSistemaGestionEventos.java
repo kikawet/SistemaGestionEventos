@@ -71,7 +71,28 @@ public class ServidorSistemaGestionEventos {
 			patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
 			francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
 
-			LocalDateTime manana = LocalDateTime.now().plusDays(20);
+		// En el caso de persistencia necesitamos borrar los eventos
+		try {
+			EventoDTO borraEvento = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
+			ige.cancelarEventoPorUsuario(patricio, borraEvento.getIdEvento());
+
+			borraEvento = ige.listarEventosCreadosPorUnUsuario(francisco, 0, 10).get(0);
+			ige.cancelarEventoPorUsuario(francisco, borraEvento.getIdEvento());
+
+			log.info("Eventos anteriores borrados");
+		} catch (IndexOutOfBoundsException e) {
+			log.info("Los eventos no existían");
+		}
+
+		log.info("Creando eventos");
+		try {
+			ige.crearEventoPorUsuario(patricio, evento1, true);
+			ige.crearEventoPorUsuario(francisco, evento2, false);
+			log.info("Eventos creados");
+		} catch (EventoYaRegistrado e) {
+			log.info("Eventos ya creados");
+		} catch (EventoPrescrito e) {
+			log.info("Eventos prescritos, recreando eventos");
 
 			EventoDTO evento1 = new EventoDTO(null, 2, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
 					CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",

@@ -129,43 +129,76 @@ body {
 }
 
 .form-label-group
+
  
+
 input
+
+
 :not
+
  
+
 (
 :placeholder-shown
+
  
+
 )
 {
 padding-top
+
+
 :
+
  
+
 calc
-(var(-
+
+
+(
+var
+(-
+
  
+
 -input-padding-y
+
+
 )
 +
 var
+
+
 (-
- 
 -input-padding-y
+
+
 )
 *
+
+
 (2/3));
-
-	
 padding-bottom
+
+
 :
+
  
+
 calc
-(var(-
+
+
+(
+var
+(-
+
  
+
 -input-padding-y
+
+
 )/3);
-
-
 }
 .form-label-group input:not (:placeholder-shown ) ~label {
 	padding-top: calc(var(- -input-padding-y)/3);
@@ -240,14 +273,11 @@ supports (-ms-ime-align: auto ) { .form-label-group>label {
 							</div>
 
 							<div class="custom-control custom-checkbox mb-3">
-								<s:bind path="terminos">
-									<form:checkbox path="terminos"
-										class="custom-control-input ${status.error ?'is-invalid': status.value ? 'is-valid' : ''} "
-										id="customCheck1" />
-									<label class="custom-control-label" for="customCheck1">Acepto
-										terminos y licencias</label>
-									<form:errors path="terminos" cssClass="invalid-feedback" />
-								</s:bind>
+								<input type="checkbox" name="terminos" ${terminos ? 'checked' : ''}
+									class="custom-control-input ${not empty errorTerminos ? 'is-invalid': empty terminos ? '' : 'is-valid' } "
+									id="terminos" /> <label class="custom-control-label"
+									for="terminos">Aceptar terminos y condiciones</label> <span
+									class="invalid-feedback">${errorTerminos }</span>
 							</div>
 							<button class="btn btn-lg btn-block colorBoton text-uppercase"
 								type="submit">Registrarse</button>

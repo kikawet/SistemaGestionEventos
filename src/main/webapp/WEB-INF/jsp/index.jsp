@@ -4,6 +4,8 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
 <%@ taglib tagdir="/WEB-INF/tags" prefix="custom"%>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
+<%@taglib prefix="sec"
+	uri="http://www.springframework.org/security/tags"%>
 
 <!doctype html>
 <html lang="es">
@@ -58,7 +60,6 @@
 			<custom:listaEventos eventos="${eventos}" />
 		</div>
 	</main>
-
 	<%@include file="../jspf/footer.jspf"%>
 
 
