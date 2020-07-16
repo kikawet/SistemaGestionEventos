@@ -32,11 +32,11 @@ public class InicioController {
 
     @GetMapping(path = { "/" })
     public String listado(ModelMap model, @ModelAttribute("busqueda") String tituloParcial) {
-
+    
 	if (tituloParcial == null) {
 	    tituloParcial = "";
 	}
-
+	model.addAttribute("filtroTitulo",tituloParcial);
 	List<EventoDTO> eventos = ige.listarEventos(null, "", tituloParcial, 0, 10);
 	model.addAttribute("eventos", eventos);
 	log.info("Cargando eventos!!" + eventos.size());
@@ -44,9 +44,10 @@ public class InicioController {
     }
 
     @PostMapping
-    public String busqueda(@RequestParam(value = "buscarNombre") String busqueda, RedirectAttributes redirect) {
-
-	redirect.addFlashAttribute("busqueda", busqueda);
+    public String busqueda(@RequestParam(value = "buscarNombre") String busqueda,@RequestParam(required = false) boolean limpiar, RedirectAttributes redirect) {
+    if(!limpiar) {
+    	redirect.addFlashAttribute("busqueda", busqueda);
+    }	
 
 	return "redirect:/";
     }
