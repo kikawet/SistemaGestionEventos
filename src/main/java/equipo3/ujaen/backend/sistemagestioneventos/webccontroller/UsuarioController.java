@@ -1,11 +1,16 @@
 package equipo3.ujaen.backend.sistemagestioneventos.webccontroller;
 
+
+import java.security.Principal;
+import java.util.List;
 import java.util.UUID;
 
 import javax.validation.Valid;
+import javax.xml.ws.Action;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
@@ -17,8 +22,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import ch.qos.logback.classic.Logger;
-import equipo3.ujaen.backend.sistemagestioneventos.beans.Principal;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTODetails;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.ParametrosInvalidos;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoRegistrado;
@@ -34,8 +40,9 @@ public class UsuarioController {
 	@Autowired
 	InterfaceSistemaGestionEventos ige;
 
-	@Autowired
-	Principal principal;
+	//@Autowired
+	//Principal principal;
+	
 
 	@RequestMapping(value = "/registro", method = RequestMethod.GET)
 	public String resgitro(ModelMap model) {
@@ -79,37 +86,49 @@ public class UsuarioController {
 		return "login";
 	}
 
-	@PostMapping("/login")
-	public String comprobar(@ModelAttribute("usuario") UsuarioDTO usuario, BindingResult result) {
-		log.info("post - login");
-		String view = "login";
-
-		try {
-			if (!result.hasErrors()) {
-				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
-				log.info("Iniciando login!!" + uuid);
-				principal.setName(uuid.toString());
-				view = "redirect:/";
-			} else {
-				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
-				log.info("Iniciando login!!" + uuid.toString());
-				log.info("login!!" + usuario.getLogin());
-				log.info("pass!!" + usuario.getPassword());
-			}
-		} catch (ParametrosInvalidos p) {
-			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
-			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
-			log.info("post.login.error parametros invalidos " + p.getMessage());
-		} catch (UsuarioNoRegistrado e) {
-			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
-			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
-			log.info("Login o contraseña invalidos-2");
-		} catch (AccesoDenegado a) {
-			result.rejectValue("password", "error.usuario.login", "Contraseña incorrecta");
-			log.info("Contraseña incorrecta-3");
-		}
-		log.info("REDIRECCIONANDO A " + view);
-		return view;
+//	@PostMapping("/login")
+//	public String comprobar(@ModelAttribute("usuario") UsuarioDTO usuario, BindingResult result) {
+//		log.info("post - login");
+//		String view = "login";
+//
+//		try {
+//			if (!result.hasErrors()) {
+//				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
+//				log.info("Iniciando login!!" + uuid);
+//				principal.setName(uuid.toString());
+//				view = "redirect:/";
+//			} else {
+//				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
+//				log.info("Iniciando login!!" + uuid.toString());
+//				log.info("login!!" + usuario.getLogin());
+//				log.info("pass!!" + usuario.getPassword());
+//			}
+//		} catch (ParametrosInvalidos p) {
+//			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
+//			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
+//			log.info("post.login.error parametros invalidos " + p.getMessage());
+//		} catch (UsuarioNoRegistrado e) {
+//			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
+//			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
+//			log.info("Login o contraseña invalidos-2");
+//		} catch (AccesoDenegado a) {
+//			result.rejectValue("password", "error.usuario.login", "Contraseña incorrecta");
+//			log.info("Contraseña incorrecta-3");
+//		}
+//		log.info("REDIRECCIONANDO A " + view);
+//		return view;
+//	}
+	
+	@GetMapping("/perfil")
+	public String verPerfil(ModelMap model, @AuthenticationPrincipal
+			UsuarioDTODetails principal) {
+		
+		List<EventoDTO> creados=ige.listarEventosCreadosPorUnUsuario(principal.getUsuario(), 0, 10);
+		List<EventoDTO> inscritos=ige.listarEventosInscritosDeUnUsuario(principal.getUsuario(), 0, 10);
+		model.addAttribute("usuario",principal.getUsuario());
+		model.addAttribute("creados",creados);
+		model.addAttribute("inscritos",inscritos);
+		return "perfilUsuario";
 	}
 
 }
