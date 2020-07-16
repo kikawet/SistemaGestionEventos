@@ -3,7 +3,6 @@ package equipo3.ujaen.backend.sistemagestioneventos.dao;
 import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,11 +17,11 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 public interface EventoDao extends JpaRepository<Evento, Long> {
     // https://jira.spring.io/browse/DATAJPA-209
     // Hay que crear dos veces el mismo método o crear un @Query
-    @Cacheable({ "buscaEvento" })
+    //    @Cacheable({ "buscaEvento" })
     List<Evento> findByCategoriaEventoAndDescripcionContainsIgnoreCaseAndTituloContainsIgnoreCase(CategoriaEvento categoria,
 	    String descripcionParcial, String titulo, Pageable cantidad);
 
-    @Cacheable({ "buscaEvento" })
+    //    @Cacheable({ "buscaEvento" })
     List<Evento> findByDescripcionContainsIgnoreCaseAndTituloContainsIgnoreCase(String descripcionParcial, String titulo, Pageable pageable);
 
     @Query("select e from Evento e join fetch e.asistentes where e.idEvento=?1")
@@ -37,17 +36,17 @@ public interface EventoDao extends JpaRepository<Evento, Long> {
     void deleteById(Long idEvento);
 
     @Override
-    @Cacheable({ "existeEvento" })
+    //    @Cacheable({ "existeEvento" })
     boolean existsById(Long idEvento);
 
     @SuppressWarnings("unchecked")
     @Override
-    @CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
+    //    @CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
     Evento save(Evento evento);
 
     @SuppressWarnings("unchecked")
     @Override
-    @CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
+    //    @CacheEvict(value = { "buscaEvento", "buscaEvento" }, allEntries = true)
     Evento saveAndFlush(Evento evento);
 
     @Query("select distinct e from Evento e where ?1 member of e.asistentes")

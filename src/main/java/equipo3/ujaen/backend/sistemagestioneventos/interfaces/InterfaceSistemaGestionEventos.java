@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.interfaces;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
@@ -153,5 +154,9 @@ public interface InterfaceSistemaGestionEventos {
     public EstadoUsuarioEvento getEstadoUsuarioEvento(UUID idUsuario, long idEvento);
 
     public List<EventoDTO> listarEventosUsuario(UUID idUsuario, EstadoUsuarioEvento eue, int pagina, int cantidad);
+
+    public List<EventoDTO> listarEventos(
+	    Optional<UUID> idUsuario, CategoriaEvento categoria, String descripcionParcial,String titulo,int pagina,
+	    int cantidad);
 
 }

@@ -1,9 +1,9 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -86,33 +86,9 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 
     @Override
     @Transactional(readOnly = true)
-    public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial,String titulo, int pagina,
-	    int cantidad) {
-	if (pagina < 0)
-	    throw new ParametrosInvalidos("La pagina no puede ser negativa");
-
-	if (cantidad <= 0)
-	    throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
-
-	if (descripcionParcial == null)
-	    throw new ParametrosInvalidos("La descripcion no puede ser null");
-
-	if (titulo == null)
-	    throw new ParametrosInvalidos("El titulo no puede ser null");
-
-	List<Evento> resultado = null;
-
-	if (categoria != null)
-	    resultado = eventoDAO.findByCategoriaEventoAndDescripcionContainsIgnoreCaseAndTituloContainsIgnoreCase(categoria, descripcionParcial,titulo,
-		    PageRequest.of(pagina, cantidad));
-	else
-	    resultado = eventoDAO.findByDescripcionContainsIgnoreCaseAndTituloContainsIgnoreCase(descripcionParcial,titulo,
-		    PageRequest.of(pagina, cantidad));
-
-	if (resultado == null)
-	    return new ArrayList<>();
-	else
-	    return resultado.parallelStream().map(evento -> evento.toDTO()).collect(Collectors.toList());
+    public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, String titulo,
+	    int pagina, int cantidad) {
+	return listarEventos(null, categoria, descripcionParcial, titulo, pagina, cantidad);
     }
 
     @Override
@@ -262,7 +238,6 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
     @Override
     @Transactional(readOnly = true)
     public EstadoUsuarioEvento getEstadoUsuarioEvento(UUID idUsuario, long idEvento) {
-
 	Usuario u = usuarioDAO.findById(idUsuario).orElseThrow(() -> new AccesoDenegado("id de usuario inexistente"));
 	Evento e = eventoDAO.findById(idEvento).orElseThrow(EventoNoExiste::new);
 
@@ -317,6 +292,45 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 	    result = eventoDAO.findByIdUsuarioWhereUsuarioIsInscrito(usuarioValido, PageRequest.of(pagina, cantidad));
 	}
 	return result.stream().map(evento -> evento.toDTO()).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EventoDTO> listarEventos(Optional<UUID> idUsuario, CategoriaEvento categoria, String descripcionParcial,
+	    String titulo, int pagina, int cantidad) {
+
+	Usuario usuarioValido = null;
+
+	if (idUsuario.isPresent())
+	    usuarioValido = validarUsuarioId(idUsuario.get());
+
+	if (pagina < 0)
+	    throw new ParametrosInvalidos("La pagina no puede ser negativa");
+
+	if (cantidad <= 0)
+	    throw new ParametrosInvalidos("La cantidad no puede ser <= 0");
+
+	if (descripcionParcial == null)
+	    throw new ParametrosInvalidos("La descripcion no puede ser null");
+
+	if (titulo == null)
+	    throw new ParametrosInvalidos("El titulo no puede ser null");
+
+	List<Evento> resultado = null;
+
+	if (categoria != null)
+	    resultado = eventoDAO.findByCategoriaEventoAndDescripcionContainsIgnoreCaseAndTituloContainsIgnoreCase(
+		    categoria, descripcionParcial, titulo, PageRequest.of(pagina, cantidad));
+	else
+	    resultado = eventoDAO.findByDescripcionContainsIgnoreCaseAndTituloContainsIgnoreCase(descripcionParcial,
+		    titulo, PageRequest.of(pagina, cantidad));
+
+	final Usuario u = usuarioValido;
+
+	if (resultado == null)
+	    return new ArrayList<>();
+	else
+	    return resultado.parallelStream().map(evento -> evento.toDTO(u)).collect(Collectors.toList());
     }
 
 }

@@ -41,7 +41,7 @@
 						placeholder="buscar ..." autocomplete="off"> <span
 						class="input-group-append"> <input role="button"
 						class="btn btn-outline-secondary border-left-0 border"
-						type="submit" value="${empty filtroTitulo ? '🔍' : '❌'}" />
+						type="submit" value="${empty filtroTitulo ?'🔍':'❌'}" />
 					</span>
 				</form>
 
