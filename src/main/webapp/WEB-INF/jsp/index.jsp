@@ -33,6 +33,7 @@
 		<div class="container my-3 mx-auto">
 			<div class="row align-items-between row-cols-2">
 				<form class="form-inline my-2 col-8" action="" method="POST">
+					<sec:csrfInput/>
 					<input name="limpiar" hidden type="checkbox"
 						${empty session.filtroTitulo ? '' : 'checked'}> <input
 						name="buscarNombre" value="${session.filtroTitulo}"

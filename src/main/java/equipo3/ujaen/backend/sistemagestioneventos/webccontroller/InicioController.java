@@ -12,7 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ch.qos.logback.classic.Logger;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
@@ -29,16 +33,29 @@ public class InicioController {
 	@Autowired
 	InterfaceSistemaGestionEventos ige;
 
-	private void initController (WebDataBinder web) {
-		log.info("Iniciando controlador!!");
-	}
+//	private void initController (WebDataBinder web) {
+//		log.info("Iniciando controlador!!");
+//	}
 	
 	@GetMapping(path = {"/"})
-	public String listado(ModelMap model) {
-			
-	        List<EventoDTO> eventos=ige.listarEventos(null, "", 0,10);	        
+	public String listado(ModelMap model,@ModelAttribute("busqueda")String filtro) {
+			//String filtro=(String)model.getAttribute("busqueda");
+		log.info("filtro: "+filtro);
+			if(filtro==null) {
+				
+				filtro="";
+			}
+	        List<EventoDTO> eventos=ige.listarEventos(null, filtro, 0,10);	        
 	        model.addAttribute("eventos", eventos);
 	        log.info("Cargando eventos!!"+eventos.size());
 	        return "index";
+	}
+	
+	@PostMapping
+	public String busqueda(@RequestParam(value = "buscarNombre")String busqueda,RedirectAttributes redirect) {
+		
+		redirect.addFlashAttribute("busqueda", busqueda);
+		
+		return "redirect:/";
 	}
 }
