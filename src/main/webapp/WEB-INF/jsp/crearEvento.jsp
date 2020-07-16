@@ -31,7 +31,7 @@
 				<s:bind path="titulo">
 					<form:input path="titulo" type="text" id="inputTitulo"
 						class="form-control ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'}"
-						placeholder='' aria-describedby='shortDesc' />
+						placeholder='' aria-describedby='shortDesc' required="required" />
 					<small id='subEvento' class='form-text text-muted '>Nombre
 						con el que se asocia el evento</small>
 					<form:errors path="titulo" cssClass="invalid-feedback" />
@@ -74,7 +74,7 @@
 					<form:input path="lugar" id="inputLugar" type='text'
 						class="form-control ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'}"
 						placeholder='ej: Calle Cervantes, 4, 23700 Linares, Jaén'
-						aria-describedby='shortDesc' />
+						aria-describedby='shortDesc' required="required" />
 					<small id='lugar' class='form-text text-muted'>Lugar donde
 						se celebraría</small>
 					<form:errors path="lugar" cssClass="invalid-feedback" />
@@ -86,7 +86,7 @@
 				<s:bind path="fecha">
 					<form:input path="fecha" type="datetime-local" id="inputFecha"
 						class="form-control ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'}"
-						placeholder='' aria-describedby='shortDesc' />
+						placeholder='' aria-describedby='shortDesc' required="required" />
 					<small id='fecha' class='form-text text-muted'></small>
 					<form:errors path="fecha" cssClass="invalid-feedback" />
 				</s:bind>
@@ -98,9 +98,9 @@
 				<label for='TextBox'>Aforo máximo</label>
 				<s:bind path="aforoMaximo">
 					<form:input id="inputAforoMaximo" path="aforoMaximo" type="number"
-						class="form-control  ${status.error ?'is-invalid': empty status.value ? '' :'is-valid'}"
-						placeholder='ej:50' aria-describedby='shortDesc' />
-					<small id='aforo' class='form-text text-muted'></small>
+						class="form-control  ${status.error ?'is-invalid': empty status.value ? 'is-valid' : '' }"
+						placeholder='ej:50' aria-describedby='shortDesc' required="required" />
+					<small id='aforo' class='form-text text-muted' ></small>
 					<form:errors path="aforoMaximo" cssClass="invalid-feedback" />
 				</s:bind>
 			</div>
