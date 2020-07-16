@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.PostConstruct;

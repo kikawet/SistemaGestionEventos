@@ -1,6 +1,7 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;

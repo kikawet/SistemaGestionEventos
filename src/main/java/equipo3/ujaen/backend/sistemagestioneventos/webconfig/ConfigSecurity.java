@@ -31,9 +31,15 @@ public class ConfigSecurity extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-	http.authorizeRequests().antMatchers("/usuario/registro").not().authenticated().antMatchers("/usuario/**")	
-	.authenticated().antMatchers("/inicio/**", "/").permitAll().anyRequest().denyAll().and().formLogin()
-	.defaultSuccessUrl("/").loginPage("/usuario/login").permitAll().and().logout().logoutSuccessUrl("/")
+	http.authorizeRequests()
+	.antMatchers("/usuario/registro").not().authenticated()
+	.antMatchers("/usuario/**").authenticated()
+	.antMatchers("/evento/**").authenticated()
+	.antMatchers("/inicio/**", "/").permitAll().anyRequest().denyAll()
+	.and()
+	.formLogin().defaultSuccessUrl("/").loginPage("/usuario/login").permitAll()
+	.and()
+	.logout().logoutSuccessUrl("/")
 	.deleteCookies("JSESSIONID").and().rememberMe().key(rememberMeKey);
     }
 }
