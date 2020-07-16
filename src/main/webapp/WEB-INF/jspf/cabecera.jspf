@@ -29,11 +29,9 @@
 				class="btn btn-secondary active" role="button" aria-pressed="true">Inicio</a>
 
 			<sec:authorize access="isAuthenticated()">
-				<a href="${pageContext.request.contextPath}/evento/crear"
-					class="btn btn-secondary" role="button" aria-pressed="true">
-					Crear Evento</a>
+				<a href="<s:url value='/evento/crea' />" class="btn btn-secondary"
+					role="button" aria-pressed="true"> Crear Evento</a>
 			</sec:authorize>
-
 
 		</div>
 	</aside>

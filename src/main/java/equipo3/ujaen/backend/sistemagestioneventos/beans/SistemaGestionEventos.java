@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -276,8 +277,8 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
 		if (usuarioInterno == null)
 			throw new UsuarioNoRegistrado();
 
-		if (!usuarioInterno.getUId().equals(usuarioDTO.getUId()))
-			throw new AccesoDenegado("id de usuario incorrecto");
+		/*if (!usuarioInterno.getUId().equals(usuarioDTO.getUId()))
+			throw new AccesoDenegado("id de usuario incorrecto");*/
 
 		return usuarioInterno;
 	}
