@@ -72,14 +72,14 @@ main {
 					<hr>
 					<p align="center"><font size="5"><b>Eventos creados: </b></font>
 						<span class="glyphicon glyphicon-envelope one"
-							style="width: 50px; font-size: 22px">${usuario.numEventosCreados}</span>
+							style="width: 50px; font-size: 22px">${creados.size()}</span>
 							
 						<custom:listaEventos eventos="${creados}"/>
 					</p>
 					<hr>
 					<p align="center"><font size="5"><b>Eventos inscritos: </b></font>
 						<span class="glyphicon glyphicon-envelope one"
-							style="width: 50px; font-size: 22px">${usuario.numEventosInscritos}</span>
+							style="width: 50px; font-size: 22px">${inscritos.size()}</span>
 							<custom:listaEventos eventos="${inscritos}"/>
 					</p>
 					<hr>

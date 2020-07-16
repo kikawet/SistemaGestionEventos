@@ -73,7 +73,7 @@ public class ServidorSistemaGestionEventos {
 
 		LocalDateTime manana = LocalDateTime.now().plusDays(20);
 
-		EventoDTO evento1 = new EventoDTO(null, 2, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
+		EventoDTO evento1 = new EventoDTO(null, 0, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
 				CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",
 				"https://cdn.discordapp.com/attachments/559336561934729217/707619803828846592/EVvyVijX0AMJdaq.png");
 

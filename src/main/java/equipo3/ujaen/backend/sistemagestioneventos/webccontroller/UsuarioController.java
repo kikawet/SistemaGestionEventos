@@ -85,39 +85,6 @@ public class UsuarioController {
 		model.addAttribute("usuario", new UsuarioDTO());
 		return "login";
 	}
-
-//	@PostMapping("/login")
-//	public String comprobar(@ModelAttribute("usuario") UsuarioDTO usuario, BindingResult result) {
-//		log.info("post - login");
-//		String view = "login";
-//
-//		try {
-//			if (!result.hasErrors()) {
-//				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
-//				log.info("Iniciando login!!" + uuid);
-//				principal.setName(uuid.toString());
-//				view = "redirect:/";
-//			} else {
-//				UUID uuid = ige.loginUsuario(usuario.getLogin(), usuario.getPassword());
-//				log.info("Iniciando login!!" + uuid.toString());
-//				log.info("login!!" + usuario.getLogin());
-//				log.info("pass!!" + usuario.getPassword());
-//			}
-//		} catch (ParametrosInvalidos p) {
-//			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
-//			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
-//			log.info("post.login.error parametros invalidos " + p.getMessage());
-//		} catch (UsuarioNoRegistrado e) {
-//			result.rejectValue("login", "error.usuario.login", "Login o contraseña invalidos");
-//			result.rejectValue("password", "error.usuario.login", "Login o contraseña invalidos");
-//			log.info("Login o contraseña invalidos-2");
-//		} catch (AccesoDenegado a) {
-//			result.rejectValue("password", "error.usuario.login", "Contraseña incorrecta");
-//			log.info("Contraseña incorrecta-3");
-//		}
-//		log.info("REDIRECCIONANDO A " + view);
-//		return view;
-//	}
 	
 	@GetMapping("/perfil")
 	public String verPerfil(ModelMap model, @AuthenticationPrincipal
