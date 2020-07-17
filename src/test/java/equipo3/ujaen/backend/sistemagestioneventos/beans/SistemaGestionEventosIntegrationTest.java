@@ -18,6 +18,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
@@ -42,6 +44,8 @@ public class SistemaGestionEventosIntegrationTest {
 	@Autowired
 	InterfaceSistemaGestionEventos gestorEventos;
 
+	private static final PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	
 	UsuarioDTO crearUsuarioRegistradoLogeado() {
 		Long login = new Random().nextLong();
 		String loginUsuario = login.toString();
@@ -94,7 +98,7 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertThat(usuario).isNotNull();
 		assertThat(usuario.getLogin()).isEqualTo(loginUsuario);
-		assertThat(usuario.getPassword()).isEqualTo(passwordUsuario);
+		assertThat(encoder.matches(passwordUsuario, usuario.getPassword())).isTrue();
 	}
 
 	@Test
@@ -111,7 +115,8 @@ public class SistemaGestionEventosIntegrationTest {
 
 		assertThat(u).isNotNull();
 		assertThat(u.getLogin()).isEqualTo(loginUsuario);
-		assertThat(u.getPassword()).isEqualTo(passwordUsuario);
+		assertThat(encoder.matches(passwordUsuario, u.getPassword())).isTrue();
+		
 
 		EventoDTO e = crearEventoValido();
 
