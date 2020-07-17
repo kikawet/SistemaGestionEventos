@@ -64,58 +64,39 @@ public class ServidorSistemaGestionEventos {
 				ige.registroUsuarios(patricio);
 				ige.registroUsuarios(francisco);
 
-	            log.info("Usuarios creados");
-    		} catch (UsuarioYaRegistrado e) {
-    			log.info("Usuarios ya registrados");
-    		}
-    
-    		patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
-    		francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
-    
-    		LocalDateTime manana = LocalDateTime.now().plusDays(20);
-    
-    		EventoDTO evento1 = new EventoDTO(null, 0, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
-    				CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",
-    				"https://cdn.discordapp.com/attachments/559336561934729217/707619803828846592/EVvyVijX0AMJdaq.png");
-    
-    		EventoDTO evento2 = new EventoDTO(null, 150, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
-    				CategoriaEvento.CHARLAS, null, 0, 0, null, "Evento 2",
-    				"https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg");
-
+				log.info("Usuarios creados");
+			} catch (UsuarioYaRegistrado e) {
+				log.info("Usuarios ya registrados");
+			}
 
 			patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
 			francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
 
-		// En el caso de persistencia necesitamos borrar los eventos
-		try {
-			EventoDTO borraEvento = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
-			ige.cancelarEventoPorUsuario(patricio, borraEvento.getIdEvento());
+			LocalDateTime manana = LocalDateTime.now().plusDays(20);
 
-			borraEvento = ige.listarEventosCreadosPorUnUsuario(francisco, 0, 10).get(0);
-			ige.cancelarEventoPorUsuario(francisco, borraEvento.getIdEvento());
-
-			log.info("Eventos anteriores borrados");
-		} catch (IndexOutOfBoundsException e) {
-			log.info("Los eventos no existían");
-		}
-
-		log.info("Creando eventos");
-		try {
-			ige.crearEventoPorUsuario(patricio, evento1, true);
-			ige.crearEventoPorUsuario(francisco, evento2, false);
-			log.info("Eventos creados");
-		} catch (EventoYaRegistrado e) {
-			log.info("Eventos ya creados");
-		} catch (EventoPrescrito e) {
-			log.info("Eventos prescritos, recreando eventos");
-
-			EventoDTO evento1 = new EventoDTO(null, 2, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
+			EventoDTO evento1 = new EventoDTO(null, 0, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
 					CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",
 					"https://cdn.discordapp.com/attachments/559336561934729217/707619803828846592/EVvyVijX0AMJdaq.png");
 
 			EventoDTO evento2 = new EventoDTO(null, 150, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
 					CategoriaEvento.CHARLAS, null, 0, 0, null, "Evento 2",
 					"https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg");
+
+			patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
+			francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
+
+			// En el caso de persistencia necesitamos borrar los eventos
+			try {
+				EventoDTO borraEvento = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
+				ige.cancelarEventoPorUsuario(patricio, borraEvento.getIdEvento());
+
+				borraEvento = ige.listarEventosCreadosPorUnUsuario(francisco, 0, 10).get(0);
+				ige.cancelarEventoPorUsuario(francisco, borraEvento.getIdEvento());
+
+				log.info("Eventos anteriores borrados");
+			} catch (IndexOutOfBoundsException e) {
+				log.info("Los eventos no existían");
+			}
 
 			try {
 				ige.crearEventoPorUsuario(patricio, evento1, true);
