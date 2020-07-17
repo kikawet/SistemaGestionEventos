@@ -33,14 +33,15 @@
 		<div class="container my-3 mx-auto">
 			<div class="row align-items-between row-cols-2">
 				<form class="form-inline my-2 col-8" action="" method="POST">
+					<sec:csrfInput/>
 					<input name="limpiar" hidden type="checkbox"
-						${empty session.filtroTitulo ? '' : 'checked'}> <input
-						name="buscarNombre" value="${session.filtroTitulo}"
+						${empty filtroTitulo ? '' : 'checked'}> <input
+						name="buscarNombre" value="${filtroTitulo}"
 						class="form-control py-2 border-right-0 border w-75" type="search"
 						placeholder="buscar ..." autocomplete="off"> <span
 						class="input-group-append"> <input role="button"
 						class="btn btn-outline-secondary border-left-0 border"
-						type="submit" value="${empty session.filtroTitulo ? '🔍' : '❌'}" />
+						type="submit" value="${empty filtroTitulo ?'🔍':'❌'}" />
 					</span>
 				</form>
 

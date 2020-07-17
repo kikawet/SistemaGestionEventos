@@ -1,5 +1,6 @@
 package equipo3.ujaen.backend.sistemagestioneventos;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.annotation.PostConstruct;
@@ -63,10 +64,24 @@ public class ServidorSistemaGestionEventos {
 				ige.registroUsuarios(patricio);
 				ige.registroUsuarios(francisco);
 
-				log.info("Usuarios creados");
-			} catch (UsuarioYaRegistrado e) {
-				log.info("Usuarios ya registrados");
-			}
+	            log.info("Usuarios creados");
+    		} catch (UsuarioYaRegistrado e) {
+    			log.info("Usuarios ya registrados");
+    		}
+    
+    		patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
+    		francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
+    
+    		LocalDateTime manana = LocalDateTime.now().plusDays(20);
+    
+    		EventoDTO evento1 = new EventoDTO(null, 0, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
+    				CategoriaEvento.DEPORTE, null, 0, 0, null, "Evento 1",
+    				"https://cdn.discordapp.com/attachments/559336561934729217/707619803828846592/EVvyVijX0AMJdaq.png");
+    
+    		EventoDTO evento2 = new EventoDTO(null, 150, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
+    				CategoriaEvento.CHARLAS, null, 0, 0, null, "Evento 2",
+    				"https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg");
+
 
 			patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
 			francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));

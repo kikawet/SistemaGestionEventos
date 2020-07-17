@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.beans;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;

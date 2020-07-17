@@ -3,6 +3,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.security.InvalidParameterException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
