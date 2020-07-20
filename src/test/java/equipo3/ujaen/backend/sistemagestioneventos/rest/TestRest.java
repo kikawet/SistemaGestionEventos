@@ -1,57 +1,68 @@
 package equipo3.ujaen.backend.sistemagestioneventos.rest;
 
-import java.time.LocalDate;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.annotation.PostConstruct;
-
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import equipo3.ujaen.backend.sistemagestioneventos.beans.SistemaGestionEventos;
+import equipo3.ujaen.backend.sistemagestioneventos.dao.EventoDao;
 import equipo3.ujaen.backend.sistemagestioneventos.dao.UsuarioDao;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.CategoriaEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
 import equipo3.ujaen.backend.sistemagestioneventos.restapi.RESTEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.restapi.RESTUsuario;
-import lombok.With;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 
 //Rest da problemas al insertar json a la BD, como se va a mockear no hay problema
 //@ActiveProfiles("test")
-@WithUserDetails("ajml0012")
+@WithMockUser(username = "ajml0012")
 //@SpringBootTest(classes = equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.RANDOM_PORT)
-@WebMvcTest(controllers = RESTUsuario.class)
+@WebMvcTest
 public class TestRest {
 
 	@Autowired
 	MockMvc mvc;
 	
+	@Autowired
+	private ObjectMapper jsonObjectMapper;
+
+
 	@MockBean
 	SistemaGestionEventos sge;
-	
+
+	@MockBean
+	UsuarioDao usuarioDao;
+
+	@MockBean
+	EventoDao eventoDao;
+
+	static final String rootPath = "/rest";
+
 	UsuarioDTO crearUsuarioValido() {
 		Long login = new Random().nextLong();
 		String loginUsuario = login.toString();
@@ -68,7 +79,7 @@ public class TestRest {
 		int aforoMaximo = 1500;
 		String descripcion = "El evento al que todo el mundo vendrá";
 		LocalDateTime fecha = manana;
-		Long idEvento = null;
+		Long idEvento = (long) 0;
 		String lugar = "Jaén";
 		EventoDTO.TipoEvento tipoEvento = TipoEvento.NO_BENEFICO;
 		EventoDTO.CategoriaEvento categoriaEvento = CategoriaEvento.EXCURSIONES;
@@ -82,93 +93,151 @@ public class TestRest {
 		return new EventoDTO(idEvento, aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, idCreador,
 				numAsistentes, numListaEspera, estado, titulo, foto);
 	}
+
 	@BeforeEach
 	void generarDatos() {
-		BDDMockito.given(sge.getUsuarioLogin("ajml0012")).willReturn(new UsuarioDTO("ajml0012","1234"));
-	}
-
-	
-
-	@Test
-	void testPing() {
-		//ResponseEntity<Void> respuesta = restTemplateEvento.getForEntity("/ping", Void.class);
-
-		//Assertions.assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+		BDDMockito.given(sge.getUsuarioLogin("ajml0012")).willReturn(new UsuarioDTO("ajml0012", "1234"));
+		BDDMockito.given(sge.getEvento(0)).willReturn(crearEventoValido());
 	}
 
 	@Test
-	void registroYLoginUsuario() {
+	void testPing() throws Exception {
+
+		mvc.perform(get(rootPath + "/usuario/ping").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+		mvc.perform(get(rootPath + "/evento/ping").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
+	}
+
+	@Test
+	void registroYLoginUsuario() throws Exception{
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
+		UUID UUIDUsuario=usuarioDTO.getUId();
+		
+		//FALTA COMPROBARLOS Y SOLUCIONAR ERROR EN LINEA 122 
+		
+		//registro
+		mvc.perform(post(rootPath + "/usuario/registro")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(jsonObjectMapper.writeValueAsString(usuarioDTO))
+				.accept(MediaType.APPLICATION_JSON))
+				 .andExpect(ResultMatcher.matchAll(status().isOk()));
+		
+		//login
+		BDDMockito.given(sge.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword())).willReturn(UUIDUsuario);
+		mvc.perform(post(rootPath + "/usuario/login", UUIDUsuario)
+				.accept(MediaType.APPLICATION_JSON))
+				 .andExpect(ResultMatcher.matchAll(
+						 status().isOk(),
+						 content().contentType(MediaType.APPLICATION_JSON),
+						 jsonPath(".uId").value(UUIDUsuario.toString())
+						 ));
+		
+		
+		
+		// ResponseEntity<Void> respuesta =
+		// restTemplateUsuario.postForEntity("/registro", usuarioDTO, Void.class);
 
-		//ResponseEntity<Void> respuesta = restTemplateUsuario.postForEntity("/registro", usuarioDTO, Void.class);
+		// Assertions.assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
 
-		//Assertions.assertEquals(HttpStatus.CREATED, respuesta.getStatusCode());
+		// ResponseEntity<UUID> esperado = restTemplateUsuario.postForEntity("/login",
+		// usuarioDTO, UUID.class);
 
-		//ResponseEntity<UUID> esperado = restTemplateUsuario.postForEntity("/login", usuarioDTO, UUID.class);
-
-		//Assertions.assertEquals(sistemaGestionEventos.getUsuario(esperado.getBody()), usuarioDTO);
+		// Assertions.assertEquals(sistemaGestionEventos.getUsuario(esperado.getBody()),
+		// usuarioDTO);
 	}
 
 	@Test
 	void getUsuarioTest() {
 
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		//sistemaGestionEventos.registroUsuarios(usuarioDTO);
-		//UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		// sistemaGestionEventos.registroUsuarios(usuarioDTO);
+		// UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(),
+		// usuarioDTO.getPassword());
 
-		//ResponseEntity<UsuarioDTO> respuesta = restTemplateUsuario.getForEntity("/" + uidUsuario + "?id=" + uidUsuario,
-				//UsuarioDTO.class);
+		// ResponseEntity<UsuarioDTO> respuesta = restTemplateUsuario.getForEntity("/" +
+		// uidUsuario + "?id=" + uidUsuario,
+		// UsuarioDTO.class);
 
-		//Assertions.assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-		//Assertions.assertEquals(usuarioDTO.getLogin(), respuesta.getBody().getLogin());
+		// Assertions.assertEquals(HttpStatus.OK, respuesta.getStatusCode());
+		// Assertions.assertEquals(usuarioDTO.getLogin(),
+		// respuesta.getBody().getLogin());
 	}
-	
-	
 
 	@Test
-	void listarInscritosTest() {
+	void listarInscritosTest() throws Exception {
 
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		//sistemaGestionEventos.registroUsuarios(usuarioDTO);
+		String UUIDusuario = UUID.randomUUID().toString();
 
-		//UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
-
-		// ResponseEntity<> respuesta = restTemplateUsuario
-		// .getForEntity("/" + uidUsuario + "/inscritos?id=" + uidUsuario,
-		// Object[].class);
-
-		// Assertions.assertTrue(respuesta.getBody().length > 0);
+		List<EventoDTO> listaEventos = new ArrayList<EventoDTO>();
+		listaEventos.add(crearEventoValido());
+		listaEventos.add(crearEventoValido());
+		BDDMockito.given(sge.listarEventosUsuario(UUID.fromString(UUIDusuario), null, 0, 10)).willReturn(listaEventos);
+		mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("id", UUIDusuario)
+				.accept(MediaType.APPLICATION_JSON))
+				 .andExpect(ResultMatcher.matchAll(
+						 status().isOk(),
+						 content().contentType(MediaType.APPLICATION_JSON),
+						 jsonPath(".eventoDTOList").isArray(),
+						 jsonPath(".anterior").doesNotExist(),
+						 jsonPath(".siguiente").doesNotExist()));
+		
+		listaEventos.remove(0);		
+		
+		BDDMockito.given(sge.listarEventosUsuario(UUID.fromString(UUIDusuario), null, 0, 1)).willReturn(listaEventos);
+		mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("id", UUIDusuario).param("cant", "1")
+				.accept(MediaType.APPLICATION_JSON))
+				 .andExpect(ResultMatcher.matchAll(
+						 status().isOk(),
+						 content().contentType(MediaType.APPLICATION_JSON),
+						 jsonPath(".eventoDTOList.length()").value(1),
+						 jsonPath(".anterior").doesNotExist(),
+						 jsonPath(".siguiente").exists()));
+		
+		BDDMockito.given(sge.listarEventosUsuario(UUID.fromString(UUIDusuario), null, 0, 1)).willReturn(listaEventos);
+		mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("id", UUIDusuario).param("page", "1")
+				.accept(MediaType.APPLICATION_JSON))
+				 .andExpect(ResultMatcher.matchAll(
+						 status().isOk(),
+						 content().contentType(MediaType.APPLICATION_JSON),
+						 jsonPath(".anterior").exists(),
+						 jsonPath(".siguiente").doesNotExist()));
+			
+			
 	}
 
 	@Test
 	void crearEventoTest() {
 		EventoDTO eventoDTO = crearEventoValido();
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		//sistemaGestionEventos.registroUsuarios(usuarioDTO);
+		// sistemaGestionEventos.registroUsuarios(usuarioDTO);
 
-		//UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		// UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(),
+		// usuarioDTO.getPassword());
 
-		//ResponseEntity<Void> response = restTemplateEvento.postForEntity("/?id=" + uidUsuario, eventoDTO, Void.class);
+		// ResponseEntity<Void> response = restTemplateEvento.postForEntity("/?id=" +
+		// uidUsuario, eventoDTO, Void.class);
 
-		//Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+		// Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 	}
 
 	@Test
 	void getEventoTest() {
 		UsuarioDTO usuarioDTO = crearUsuarioValido();
-		//sistemaGestionEventos.registroUsuarios(usuarioDTO);
-		//UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+		// sistemaGestionEventos.registroUsuarios(usuarioDTO);
+		// UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(),
+		// usuarioDTO.getPassword());
 
-		//usuarioDTO.setUId(uidUsuario);
+		// usuarioDTO.setUId(uidUsuario);
 		EventoDTO eventoDTO = crearEventoValido();
-		//eventoDTO.setIdCreador(uidUsuario);
+		// eventoDTO.setIdCreador(uidUsuario);
 
-		//sistemaGestionEventos.crearEventoPorUsuario(usuarioDTO, eventoDTO, false);
+		// sistemaGestionEventos.crearEventoPorUsuario(usuarioDTO, eventoDTO, false);
 
-		//ResponseEntity<EventoDTO> response = restTemplateEvento
-				//.getForEntity("/" + eventoDTO.getIdEvento() + "?uid=" + uidUsuario, EventoDTO.class);
+		// ResponseEntity<EventoDTO> response = restTemplateEvento
+		// .getForEntity("/" + eventoDTO.getIdEvento() + "?uid=" + uidUsuario,
+		// EventoDTO.class);
 
-		//Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-		//Assertions.assertEquals(eventoDTO, response.getBody());
+		// Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+		// Assertions.assertEquals(eventoDTO, response.getBody());
 	}
 }

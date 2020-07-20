@@ -26,7 +26,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.excepciones.AccesoDenegado;
 import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos;
 
 @RestController
-@RequestMapping("{rest.base-path}/usuario")
+@RequestMapping("/rest/usuario")
 public class RESTUsuario {
 
 	@Autowired
@@ -83,7 +83,7 @@ public class RESTUsuario {
 
 		eventos = RESTEvento.addLinks(eventos);
 
-		Link selfLink = linkTo(RESTUsuario.class).withSelfRel();
+		Link selfLink = linkTo(methodOn(RESTUsuario.class).listarInscritos(id, pagina, cantidad, estado, idUsuarioPeticion)).withSelfRel();
 
 		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
 
@@ -95,7 +95,7 @@ public class RESTUsuario {
 							.withRel("anterior"));
 
 		// La siguiente página ya no tendrá resultados
-		if (eventos.size() < cantidad)
+		if (eventos.size() == cantidad)
 			resultado.add(linkTo(
 					methodOn(RESTUsuario.class).listarInscritos(id, pagina + 1, cantidad, estado, idUsuarioPeticion))
 							.withRel("siguiente"));
