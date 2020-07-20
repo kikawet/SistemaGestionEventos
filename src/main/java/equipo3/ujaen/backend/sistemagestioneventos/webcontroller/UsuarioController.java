@@ -1,4 +1,4 @@
-package equipo3.ujaen.backend.sistemagestioneventos.webccontroller;
+package equipo3.ujaen.backend.sistemagestioneventos.webcontroller;
 
 
 import java.security.Principal;
