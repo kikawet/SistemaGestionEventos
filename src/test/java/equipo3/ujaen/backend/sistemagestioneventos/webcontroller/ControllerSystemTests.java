@@ -81,7 +81,7 @@ public class ControllerSystemTests {
 	// Test name: CrearEvento
 	// Step # | name | target | value
 	// 1 | open | /sge-api/ |
-	driver.get("http://localhost:12021/sge-api/");
+	driver.get(appUrl);
 	// 2 | setWindowSize | 1552x840 |
 	driver.manage().window().setSize(new Dimension(1552, 840));
 	// 3 | click | css=.btn:nth-child(2) |
@@ -174,7 +174,7 @@ public class ControllerSystemTests {
 	// Test name: PerfilTest
 	// Step # | name | target | value
 	// 1 | open | http://localhost:12021/sge-api/ |
-	driver.get("http://localhost:12021/sge-api/");
+	driver.get(appUrl);
 	// 2 | setWindowSize | 974x765 |
 	driver.manage().window().setSize(new Dimension(974, 765));
 	// 3 | click | css=.btn:nth-child(2) |
