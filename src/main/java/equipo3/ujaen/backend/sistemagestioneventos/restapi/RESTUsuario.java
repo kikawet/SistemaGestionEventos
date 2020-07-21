@@ -83,7 +83,9 @@ public class RESTUsuario {
 
 		eventos = RESTEvento.addLinks(eventos);
 
-		Link selfLink = linkTo(methodOn(RESTUsuario.class).listarInscritos(id, pagina, cantidad, estado, idUsuarioPeticion)).withSelfRel();
+		Link selfLink = linkTo(
+				methodOn(RESTUsuario.class).listarInscritos(id, pagina, cantidad, estado, idUsuarioPeticion))
+						.withSelfRel();
 
 		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
 

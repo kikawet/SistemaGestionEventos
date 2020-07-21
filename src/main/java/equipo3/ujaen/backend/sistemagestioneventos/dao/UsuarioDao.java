@@ -18,10 +18,10 @@ import equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario;
  *
  */
 public interface UsuarioDao extends JpaRepository<Usuario, UUID> {
-//	@Cacheable({ "existeUsuario" })
+	// @Cacheable({ "existeUsuario" })
 	boolean existsByLogin(String login);
 
-//	@Cacheable({ "buscaUsuario" })
+	// @Cacheable({ "buscaUsuario" })
 	Usuario findByLogin(String login);
 
 	@Query("select u from Usuario u join fetch u.eventosInscritos where u.login=?1")
@@ -32,7 +32,8 @@ public interface UsuarioDao extends JpaRepository<Usuario, UUID> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-//	@Caching(evict = { @CacheEvict("existeUsuario"), @CacheEvict("buscaUsuario") })
+	// @Caching(evict = { @CacheEvict("existeUsuario"),
+	// @CacheEvict("buscaUsuario")})
 	Usuario save(Usuario usuario);
 
 }

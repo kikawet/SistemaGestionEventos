@@ -19,12 +19,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class UsuarioDTO extends RepresentationModel<UsuarioDTO> implements Serializable {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = 413336268119887503L;
 
-	// ROL = null = ningún rol
 	public static enum RolUsuario {
 		ADMIN
 	}

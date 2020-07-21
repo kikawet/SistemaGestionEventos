@@ -31,103 +31,101 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 @RequestMapping("/rest/evento")
 public class RESTEvento {
 
-    @Autowired
-    private InterfaceSistemaGestionEventos gestorEventos;
+	@Autowired
+	private InterfaceSistemaGestionEventos gestorEventos;
 
-    @GetMapping("/ping")
-    @ResponseStatus(code = HttpStatus.OK)
-    void ping() {
-    }
-
-    static List<EventoDTO> addLinks(List<EventoDTO> eventos) {
-	for (EventoDTO evento : eventos) {
-	    Link selfLink = linkTo(methodOn(RESTEvento.class).getEvento(evento.getIdEvento(), null)).withSelfRel();
-	    evento.add(selfLink);
+	@GetMapping("/ping")
+	@ResponseStatus(code = HttpStatus.OK)
+	void ping() {
 	}
 
-	return eventos;
-    }
+	static List<EventoDTO> addLinks(List<EventoDTO> eventos) {
+		for (EventoDTO evento : eventos) {
+			Link selfLink = linkTo(methodOn(RESTEvento.class).getEvento(evento.getIdEvento(), null)).withSelfRel();
+			evento.add(selfLink);
+		}
 
-    @GetMapping
-    CollectionModel<EventoDTO> listarEventos(@RequestParam(required = false) CategoriaEvento categoria,
-	    @RequestParam(required = false, defaultValue = "") String descripcion,
-	    @RequestParam(required = false, defaultValue = "") String titulo,
-	    @RequestParam(required = false, defaultValue = "0") int pagina,
-	    @RequestParam(required = false, defaultValue = "10") int cantidad) {
-
-	List<EventoDTO> eventos = gestorEventos.listarEventos(categoria, descripcion, titulo, pagina, cantidad);
-
-	eventos = addLinks(eventos);
-
-	Link selfLink = linkTo(RESTEvento.class).withSelfRel();
-
-	CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
-
-	resultado.add(selfLink);
-
-	if (pagina > 0)
-	    resultado.add(linkTo(
-		    methodOn(RESTEvento.class).listarEventos(categoria, descripcion, titulo, pagina - 1, cantidad))
-		    .withRel("anterior"));
-
-	// La siguiente página ya no tendrá resultados
-	if (eventos.size() < cantidad)
-	    resultado.add(linkTo(
-		    methodOn(RESTEvento.class).listarEventos(categoria, descripcion, titulo, pagina + 1, cantidad))
-		    .withRel("siguiente"));
-
-	return resultado;
-    }
-
-    @GetMapping("/{id}")
-    EventoDTO getEvento(@PathVariable(value = "id") long idEvento,
-	    @RequestParam(required = false, value = "uid") UUID uId) {
-	EventoDTO evento = gestorEventos.getEvento(idEvento);
-
-	if (uId != null) {
-	    gestorEventos.getUsuario(uId);
-	    evento.add(linkTo(methodOn(RESTUsuario.class).getUsuario(evento.getIdCreador(), uId)).withRel("creador"));
-
-	    EstadoUsuarioEvento estadoUsuarioEvento = gestorEventos.getEstadoUsuarioEvento(uId, idEvento);
-
-	    if (estadoUsuarioEvento == null)
-		evento.add(linkTo(methodOn(RESTEvento.class).inscribirUsuario(idEvento, uId)).withRel("inscribir"));
-	    // else // No se puede usar linkTo si el método devuelve null
-	    // evento.add(linkTo(methodOn(RESTEvento.class).cancelarInscripcion(idEvento,
-	    // uId)).withRel("cancelarInscribir"));
+		return eventos;
 	}
-	return evento;
-    }
 
-    @PostMapping
-    @ResponseStatus(code = HttpStatus.CREATED)
-    void crearEvento(@RequestBody EventoDTO evento, @RequestParam(value = "id") UUID uId,
-	    @RequestParam(required = false, defaultValue = "false") boolean inscribir) {
-	UsuarioDTO creador = gestorEventos.getUsuario(uId);
+	@GetMapping
+	CollectionModel<EventoDTO> listarEventos(@RequestParam(required = false) CategoriaEvento categoria,
+			@RequestParam(required = false, defaultValue = "") String descripcion,
+			@RequestParam(required = false, defaultValue = "") String titulo,
+			@RequestParam(required = false, defaultValue = "0") int pagina,
+			@RequestParam(required = false, defaultValue = "10") int cantidad) {
 
-	gestorEventos.crearEventoPorUsuario(creador, evento, inscribir);
-    }
+		List<EventoDTO> eventos = gestorEventos.listarEventos(categoria, descripcion, titulo, pagina, cantidad);
 
-    @DeleteMapping("/{id}")
-    void cancelarEvento(@PathVariable(value = "id") long idEvento, @RequestParam(value = "id") UUID uId) {
-	UsuarioDTO u = gestorEventos.getUsuario(uId);
+		eventos = addLinks(eventos);
 
-	gestorEventos.cancelarEventoPorUsuario(u, idEvento);
-    }
+		Link selfLink = linkTo(RESTEvento.class).withSelfRel();
 
-    @PostMapping("/{id}/inscripcion")
-    ResponseEntity<EstadoUsuarioEvento> inscribirUsuario(@PathVariable(value = "id") long idEvento,
-	    @RequestParam(value = "id") UUID uId) {
-	UsuarioDTO u = gestorEventos.getUsuario(uId);
+		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
 
-	return ResponseEntity.ok(gestorEventos.inscribirUsuario(u, idEvento));
-    }
+		resultado.add(selfLink);
 
-    @DeleteMapping("/{id}/inscripcion/{uId}")
-    void cancelarInscripcion(@PathVariable(value = "id") long idEvento, @PathVariable UUID uId) {
-	UsuarioDTO u = gestorEventos.getUsuario(uId);
+		if (pagina > 0)
+			resultado.add(linkTo(
+					methodOn(RESTEvento.class).listarEventos(categoria, descripcion, titulo, pagina - 1, cantidad))
+							.withRel("anterior"));
 
-	gestorEventos.cancelarInscripcionUsuario(u, idEvento);
-    }
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() < cantidad)
+			resultado.add(linkTo(
+					methodOn(RESTEvento.class).listarEventos(categoria, descripcion, titulo, pagina + 1, cantidad))
+							.withRel("siguiente"));
+
+		return resultado;
+	}
+
+	@GetMapping("/{id}")
+	EventoDTO getEvento(@PathVariable(value = "id") long idEvento,
+			@RequestParam(required = false, value = "uid") UUID uId) {
+		EventoDTO evento = gestorEventos.getEvento(idEvento);
+
+		if (uId != null) {
+			gestorEventos.getUsuario(uId);
+			evento.add(linkTo(methodOn(RESTUsuario.class).getUsuario(evento.getIdCreador(), uId)).withRel("creador"));
+
+			EstadoUsuarioEvento estadoUsuarioEvento = gestorEventos.getEstadoUsuarioEvento(uId, idEvento);
+
+			if (estadoUsuarioEvento == null)
+				evento.add(linkTo(methodOn(RESTEvento.class).inscribirUsuario(idEvento, uId)).withRel("inscribir"));
+		}
+
+		return evento;
+	}
+
+	@PostMapping
+	@ResponseStatus(code = HttpStatus.CREATED)
+	void crearEvento(@RequestBody EventoDTO evento, @RequestParam(value = "id") UUID uId,
+			@RequestParam(required = false, defaultValue = "false") boolean inscribir) {
+		UsuarioDTO creador = gestorEventos.getUsuario(uId);
+
+		gestorEventos.crearEventoPorUsuario(creador, evento, inscribir);
+	}
+
+	@DeleteMapping("/{id}")
+	void cancelarEvento(@PathVariable(value = "id") long idEvento, @RequestParam(value = "id") UUID uId) {
+		UsuarioDTO u = gestorEventos.getUsuario(uId);
+
+		gestorEventos.cancelarEventoPorUsuario(u, idEvento);
+	}
+
+	@PostMapping("/{id}/inscripcion")
+	ResponseEntity<EstadoUsuarioEvento> inscribirUsuario(@PathVariable(value = "id") long idEvento,
+			@RequestParam(value = "id") UUID uId) {
+		UsuarioDTO u = gestorEventos.getUsuario(uId);
+
+		return ResponseEntity.ok(gestorEventos.inscribirUsuario(u, idEvento));
+	}
+
+	@DeleteMapping("/{id}/inscripcion/{uId}")
+	void cancelarInscripcion(@PathVariable(value = "id") long idEvento, @PathVariable UUID uId) {
+		UsuarioDTO u = gestorEventos.getUsuario(uId);
+
+		gestorEventos.cancelarInscripcionUsuario(u, idEvento);
+	}
 
 }
