@@ -3,7 +3,6 @@ package equipo3.ujaen.backend.sistemagestioneventos.webcontroller;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
@@ -83,7 +82,7 @@ public class UnitTestsInicioController {
 		status().is3xxRedirection(),
 		redirectedUrl("/"),
 		flash().attribute("busqueda", "1")
-		)).andDo(print());
+		));
     }
 
     @Test

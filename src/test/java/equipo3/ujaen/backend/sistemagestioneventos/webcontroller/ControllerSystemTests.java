@@ -98,7 +98,7 @@ public class ControllerSystemTests {
 		break;
 	    }
 
-	    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+	    driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
 	    return driver;
 	}
     }
