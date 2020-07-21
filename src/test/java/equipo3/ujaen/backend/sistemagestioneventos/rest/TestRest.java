@@ -121,6 +121,7 @@ public class TestRest {
 				.accept(MediaType.APPLICATION_JSON))
 				 .andExpect(ResultMatcher.matchAll(status().isCreated()));
 		
+		
 		//login
 		BDDMockito.given(sge.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword())).willReturn(UUIDUsuario);
 		mvc.perform(post(rootPath + "/usuario/login", UUIDUsuario)
