@@ -16,9 +16,15 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.Type;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
-import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;;
+import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO.RolUsuario;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;;
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Usuario {
 	private RolUsuario rol;
 
@@ -38,10 +44,6 @@ public class Usuario {
 
 	@ManyToMany
 	private List<Evento> eventosInscritos;// Para trabajar con la paginación usar listas es más comodo
-
-	public Usuario() {
-		this(null, null);
-	}
 
 	public Usuario(UsuarioDTO usuarioDTO) {
 		this(usuarioDTO.getLogin(), usuarioDTO.getPassword());
@@ -65,18 +67,6 @@ public class Usuario {
 		this.uId = null;
 	}
 
-	public void setUId(UUID uId) {
-		this.uId = uId;
-	}
-
-	public Evento nuevoEvento() {
-		return null;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
 	@Override
 	public int hashCode() {
 		return Objects.hash(uId);
@@ -92,30 +82,6 @@ public class Usuario {
 			return false;
 		Usuario other = (Usuario) obj;
 		return uId == other.uId;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-	public List<Evento> getEventosCreados() {
-		return eventosCreados;
-	}
-
-	public RolUsuario getRol() {
-		return rol;
-	}
-
-	public void setRol(RolUsuario rol) {
-		this.rol = rol;
-	}
-
-	public UUID getUId() {
-		return uId;
 	}
 
 	public List<Evento> getEventosInscritos() {

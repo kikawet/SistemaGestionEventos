@@ -88,7 +88,7 @@ public class SistemaGestionEventos implements InterfaceSistemaGestionEventos {
     @Transactional(readOnly = true)
     public List<EventoDTO> listarEventos(CategoriaEvento categoria, String descripcionParcial, String titulo,
 	    int pagina, int cantidad) {
-	return listarEventos(null, categoria, descripcionParcial, titulo, pagina, cantidad);
+	return listarEventos(Optional.empty(), categoria, descripcionParcial, titulo, pagina, cantidad);
     }
 
     @Override
