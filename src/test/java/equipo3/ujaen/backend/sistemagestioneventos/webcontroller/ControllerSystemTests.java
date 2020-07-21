@@ -2,12 +2,16 @@ package equipo3.ujaen.backend.sistemagestioneventos.webcontroller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 
 import org.junit.jupiter.api.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
@@ -45,6 +49,30 @@ public class ControllerSystemTests {
 	assertThat(driver.getTitle()).isEqualTo("Inicio");
     }
 
+
+    @Test
+    public void testbuscando() {
+	// Test name: test buscar evento 1
+	// Step # | name | target | value | comment
+	// 1 | store | Evento 1 | texto |
+	String texto = "1";
+	// 2 | open | /webapp/ | |
+	driver.get(appUrl);
+	// 3 | click | name=buscarNombre | |
+	driver.findElement(By.name("buscarNombre")).click();
+	// 4 | type | name=buscarNombre | ${texto} |
+	driver.findElement(By.name("buscarNombre")).sendKeys(texto);
+	// 5 | sendKeys | name=buscarNombre | ${KEY_ENTER} |
+	driver.findElement(By.name("buscarNombre")).sendKeys(Keys.ENTER);
+	// 6 | assertText | css=.card-title | ${texto} |
+
+	assertThat(driver.findElement(By.cssSelector(".card-title")).getText()).containsSequence(texto);
+	// 7 | assertElementNotPresent | css=.card:nth-child(2) | |
+	{
+	    List<WebElement> elements = driver.findElements(By.cssSelector(".card:nth-child(2)"));
+	    assertThat(elements).isEmpty();
+	}
+    }
 
     @TestConfiguration
     static class TestConfig {
