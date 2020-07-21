@@ -108,14 +108,15 @@ public class TestRest {
 	UsuarioDTO usuarioDTO = crearUsuarioValido();
 	UUID UUIDUsuario=usuarioDTO.getUId();
 
-	//FALTA COMPROBARLOS Y SOLUCIONAR ERROR EN LINEA 122
+
 
 	//registro
 	mvc.perform(post(rootPath + "/usuario/registro")
 		.contentType(MediaType.APPLICATION_JSON)
 		.content(jsonObjectMapper.writeValueAsString(usuarioDTO))
 		.accept(MediaType.APPLICATION_JSON))
-	.andExpect(ResultMatcher.matchAll(status().is(201)));
+	.andExpect(ResultMatcher.matchAll(status().isCreated()));
+
 
 	//login
 	BDDMockito.given(sge.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword())).willReturn(UUIDUsuario);
@@ -128,6 +129,33 @@ public class TestRest {
 		));
 
 
+    }
+
+    @Test
+    void getUsuarioTest() {
+
+	//FALTA TERMINAR LINEA 149 TIPOS
+
+	UsuarioDTO usuarioDTO=null;
+	String idUsuario=UUID.randomUUID().toString();
+	UUID uid=UUID.fromString(idUsuario);
+
+
+	//		BDDMockito.given(sge.getUsuario(uid)).willReturn(usuarioDTO);
+	//		mvc.perform(get(rootPath + "/usuario/{uId}", idUsuario)
+	//				.accept(MediaType.APPLICATION_JSON))
+	//		.andExpect(ResultMatcher.matchAll(status().isOk()));
+	//
+
+	//		mvc.perform(get(rootPath + "/usuario/{uId}", idUsuario)
+	//				.accept(MediaType.APPLICATION_JSON))
+	//				 .andExpect(ResultMatcher.matchAll(
+	//						 status().isOk()
+	//						 ));
+
+	// sistemaGestionEventos.registroUsuarios(usuarioDTO);
+	// UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(),
+	// usuarioDTO.getPassword());
 
 
 	// ResponseEntity<Void> respuesta =
@@ -142,22 +170,6 @@ public class TestRest {
 	// usuarioDTO);
     }
 
-    @Test
-    void getUsuarioTest() {
-
-	UsuarioDTO usuarioDTO = crearUsuarioValido();
-	// sistemaGestionEventos.registroUsuarios(usuarioDTO);
-	// UUID uidUsuario = sistemaGestionEventos.loginUsuario(usuarioDTO.getLogin(),
-	// usuarioDTO.getPassword());
-
-	// ResponseEntity<UsuarioDTO> respuesta = restTemplateUsuario.getForEntity("/" +
-	// uidUsuario + "?id=" + uidUsuario,
-	// UsuarioDTO.class);
-
-	// Assertions.assertEquals(HttpStatus.OK, respuesta.getStatusCode());
-	// Assertions.assertEquals(usuarioDTO.getLogin(),
-	// respuesta.getBody().getLogin());
-    }
 
     @Test
     void listarInscritosTest() throws Exception {
