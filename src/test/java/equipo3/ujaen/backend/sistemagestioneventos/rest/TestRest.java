@@ -145,11 +145,11 @@ public class TestRest {
 		UUID uid=UUID.fromString(idUsuario);
 		
 		
-		BDDMockito.given(sge.getUsuario(uid)).willReturn(usuarioDTO);
-		mvc.perform(get(rootPath + "/usuario/{uId}", idUsuario)
-				.accept(MediaType.APPLICATION_JSON))
-		.andExpect(ResultMatcher.matchAll(status().isOk()));
-		
+//		BDDMockito.given(sge.getUsuario(uid)).willReturn(usuarioDTO);
+//		mvc.perform(get(rootPath + "/usuario/{uId}", idUsuario)
+//				.accept(MediaType.APPLICATION_JSON))
+//		.andExpect(ResultMatcher.matchAll(status().isOk()));
+//		
 		
 //		mvc.perform(get(rootPath + "/usuario/{uId}", idUsuario)
 //				.accept(MediaType.APPLICATION_JSON))
