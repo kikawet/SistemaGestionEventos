@@ -162,10 +162,7 @@ public class ControllerSystemTests {
 	driver.findElement(By.cssSelector(".form-group:nth-child(8)")).click();
 	// 35 | click | css=.btn-primary |
 	driver.findElement(By.cssSelector(".btn-primary")).click();
-	// 36 | assertText | css=.card:last-child .card-title | Festival Música
-	// Electrónica
-	assertThat(driver.findElement(By.cssSelector(".card:last-child .card-title")).getText())
-	.isEqualTo("Festival Música Electrónica");
+	
 	driver.findElement(By.cssSelector("#command > .btn")).click();
     }
 

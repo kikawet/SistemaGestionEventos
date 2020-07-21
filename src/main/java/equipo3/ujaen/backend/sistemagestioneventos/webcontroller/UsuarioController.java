@@ -1,6 +1,5 @@
 package equipo3.ujaen.backend.sistemagestioneventos.webcontroller;
 
-
 import java.security.Principal;
 import java.util.List;
 import java.util.UUID;
@@ -39,10 +38,6 @@ public class UsuarioController {
 
 	@Autowired
 	InterfaceSistemaGestionEventos ige;
-
-	//@Autowired
-	//Principal principal;
-	
 
 	@RequestMapping(value = "/registro", method = RequestMethod.GET)
 	public String resgitro(ModelMap model) {
@@ -85,16 +80,15 @@ public class UsuarioController {
 		model.addAttribute("usuario", new UsuarioDTO());
 		return "login";
 	}
-	
+
 	@GetMapping("/perfil")
-	public String verPerfil(ModelMap model, @AuthenticationPrincipal
-			UsuarioDTODetails principal) {
-		
-		List<EventoDTO> creados=ige.listarEventosCreadosPorUnUsuario(principal.getUsuario(), 0, 10);
-		List<EventoDTO> inscritos=ige.listarEventosInscritosDeUnUsuario(principal.getUsuario(), 0, 10);
-		model.addAttribute("usuario",principal.getUsuario());
-		model.addAttribute("creados",creados);
-		model.addAttribute("inscritos",inscritos);
+	public String verPerfil(ModelMap model, @AuthenticationPrincipal UsuarioDTODetails principal) {
+
+		List<EventoDTO> creados = ige.listarEventosCreadosPorUnUsuario(principal.getUsuario(), 0, 10);
+		List<EventoDTO> inscritos = ige.listarEventosInscritosDeUnUsuario(principal.getUsuario(), 0, 10);
+		model.addAttribute("usuario", principal.getUsuario());
+		model.addAttribute("creados", creados);
+		model.addAttribute("inscritos", inscritos);
 		return "perfilUsuario";
 	}
 

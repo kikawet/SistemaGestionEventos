@@ -25,42 +25,39 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 @RequestMapping("/")
 public class InicioController {
 
-    private static final Logger log = (Logger) LoggerFactory.getLogger(InicioController.class);
+	private static final Logger log = (Logger) LoggerFactory.getLogger(InicioController.class);
 
-    @Autowired
-    InterfaceSistemaGestionEventos ige;
+	@Autowired
+	InterfaceSistemaGestionEventos ige;
 
-    // private void initController (WebDataBinder web) {
-    // log.info("Iniciando controlador!!");
-    // }
+	@GetMapping(path = { "/" })
+	public String listado(ModelMap model, @ModelAttribute("busqueda") String tituloParcial,
+			@AuthenticationPrincipal UsuarioDTODetails principal) {
 
-    @GetMapping(path = { "/" })
-    public String listado(ModelMap model, @ModelAttribute("busqueda") String tituloParcial, @AuthenticationPrincipal
-	    UsuarioDTODetails principal) {
+		UUID uId = null;
 
-	UUID uId = null;
+		if (principal != null)
+			uId = principal.getUsuario().getUId();
 
-	if(principal!= null)
-	    uId = principal.getUsuario().getUId();
+		if (tituloParcial == null) {
+			tituloParcial = "";
+		}
 
-	if (tituloParcial == null) {
-	    tituloParcial = "";
+		List<EventoDTO> eventos = ige.listarEventos(Optional.ofNullable(uId), null, "", tituloParcial, 0, 10);
+		model.addAttribute("eventos", eventos);
+		model.addAttribute("filtroTitulo", tituloParcial);
+		log.info("Cargando eventos!!" + eventos.size());
+
+		return "index";
 	}
 
-	List<EventoDTO> eventos = ige.listarEventos(Optional.ofNullable(uId), null, "", tituloParcial, 0, 10);//ige.listarEventos(null, "", tituloParcial, 0, 10);
-	model.addAttribute("eventos", eventos);
-	model.addAttribute("filtroTitulo",tituloParcial);
-	log.info("Cargando eventos!!" + eventos.size());
+	@PostMapping
+	public String busqueda(@RequestParam(value = "buscarNombre") String busqueda,
+			@RequestParam(required = false) boolean limpiar, RedirectAttributes redirect) {
+		if (!limpiar) {
+			redirect.addFlashAttribute("busqueda", busqueda);
+		}
 
-	return "index";
-    }
-
-    @PostMapping
-    public String busqueda(@RequestParam(value = "buscarNombre") String busqueda,@RequestParam(required = false) boolean limpiar, RedirectAttributes redirect) {
-	if(!limpiar) {
-	    redirect.addFlashAttribute("busqueda", busqueda);
+		return "redirect:/";
 	}
-
-	return "redirect:/";
-    }
 }

@@ -17,32 +17,26 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 @Order(2)
 public class ConfigSecurity extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    UserDetailsService uds;
+	@Autowired
+	UserDetailsService uds;
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-	PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-	auth.inMemoryAuthentication().withUser("usuario").password("{noop}secreto").roles().and().withUser("admin")
-	.password(encoder.encode("secreto")).roles(UsuarioDTO.RolUsuario.ADMIN.toString());
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+		auth.inMemoryAuthentication().withUser("usuario").password("{noop}secreto").roles().and().withUser("admin")
+				.password(encoder.encode("secreto")).roles(UsuarioDTO.RolUsuario.ADMIN.toString());
 
-	auth.userDetailsService(uds);
-    }
+		auth.userDetailsService(uds);
+	}
 
-    @Value("${remember-me.key}")
-    private static String rememberMeKey;
+	@Value("${remember-me.key}")
+	private static String rememberMeKey;
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-	http.authorizeRequests()
-	.antMatchers("/usuario/registro").not().authenticated()
-	.antMatchers("/usuario/**").authenticated()
-	.antMatchers("/evento/**").authenticated()
-	.antMatchers("/inicio/**", "/").permitAll().anyRequest().denyAll()
-	.and()
-	.formLogin().defaultSuccessUrl("/").loginPage("/usuario/login").permitAll()
-	.and()
-	.logout().logoutSuccessUrl("/")
-	.deleteCookies("JSESSIONID").and().rememberMe().key(rememberMeKey);
-    }
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.authorizeRequests().antMatchers("/usuario/registro").not().authenticated().antMatchers("/usuario/**")
+				.authenticated().antMatchers("/evento/**").authenticated().antMatchers("/inicio/**", "/").permitAll()
+				.anyRequest().denyAll().and().formLogin().defaultSuccessUrl("/").loginPage("/usuario/login").permitAll()
+				.and().logout().logoutSuccessUrl("/").deleteCookies("JSESSIONID").and().rememberMe().key(rememberMeKey);
+	}
 }

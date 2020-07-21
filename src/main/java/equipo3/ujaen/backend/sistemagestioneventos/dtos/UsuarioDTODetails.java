@@ -21,9 +21,6 @@ import lombok.ToString;
 @Getter
 public class UsuarioDTODetails implements UserDetails {
 
-	/**
-	 *
-	 */
 	private static final long serialVersionUID = -1160774859723575032L;
 
 	private UsuarioDTO usuario;

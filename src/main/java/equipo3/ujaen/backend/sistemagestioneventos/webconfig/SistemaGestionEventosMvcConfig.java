@@ -5,13 +5,13 @@ import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class SistemaGestionEventosMvcConfig implements WebMvcConfigurer{
+public class SistemaGestionEventosMvcConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		
-		//WebMvcConfigurer.super.addViewControllers(registry);
+
+		// WebMvcConfigurer.super.addViewControllers(registry);
 		registry.addViewController("/").setViewName("index");
-		
+
 	}
 }

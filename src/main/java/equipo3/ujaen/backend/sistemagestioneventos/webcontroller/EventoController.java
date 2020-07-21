@@ -49,7 +49,6 @@ public class EventoController {
 		log.info("post - registro");
 		String view = "redirect:/";
 
-		// log.info(eventoDTO.getFecha().toString());
 		if (!result.hasErrors()) {
 			try {
 				ige.crearEventoPorUsuario(principal.getUsuario(), eventoDTO, false);
@@ -73,7 +72,7 @@ public class EventoController {
 		String view = "redirect:/";
 		String flashmsg = "";
 		try {
-			
+
 			if (cancelar) {
 				ige.cancelarInscripcionUsuario(principal.getUsuario(), idEvento);
 				flashmsg = "Cancelado correctamente";
@@ -81,8 +80,7 @@ public class EventoController {
 				ige.inscribirUsuario(principal.getUsuario(), idEvento);
 				flashmsg = "Incsrito correctamente";
 			}
-			
-			
+
 		} catch (EventoNoRegistrado enr) {
 			log.info("Evento no registrado");
 			flashmsg = "Error: Evento no registrado";
@@ -96,9 +94,9 @@ public class EventoController {
 			log.info("Evento preescrito");
 			flashmsg = "Error: Evento preescrito";
 		}
-		
+
 		redirect.addFlashAttribute("estado", flashmsg);
-		
+
 		return view;
 	}
 }
