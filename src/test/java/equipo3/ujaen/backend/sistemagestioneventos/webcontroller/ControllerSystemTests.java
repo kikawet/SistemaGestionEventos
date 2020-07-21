@@ -2,6 +2,7 @@ package equipo3.ujaen.backend.sistemagestioneventos.webcontroller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
