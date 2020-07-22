@@ -30,7 +30,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 
 @RestController
 @RequestMapping("/rest/evento")
-@CrossOrigin(maxAge = 3600,origins = "http://localhost:4200")
+@CrossOrigin(maxAge = 3600, origins = "http://localhost:4200")
 public class RESTEvento {
 
 	@Autowired

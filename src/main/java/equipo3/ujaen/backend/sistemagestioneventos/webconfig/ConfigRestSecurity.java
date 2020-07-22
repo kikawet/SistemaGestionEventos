@@ -19,42 +19,37 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 @Configuration
 @Order(1)
 public class ConfigRestSecurity extends WebSecurityConfigurerAdapter {
+	
 	@Bean
 	public AuthenticationEntryPoint authenticationEntryPoint() {
 		BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
 		entryPoint.setRealmName("club api");
 		return entryPoint;
 	}
-	
-//	@Override
-//    public void addCorsMappings(CorsRegistry registry) {
-//		
-//        registry.addMapping("/**");
-//    }
+
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		http.antMatcher("/rest/**").authorizeRequests().antMatchers(HttpMethod.GET, "/**/ping").permitAll()
-				.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-				.antMatchers(HttpMethod.GET, "**/evento/**").permitAll().antMatchers(HttpMethod.DELETE, "/evento/**")
-				.access("#uId == principal.usuario.uId or hasRole('ADMIN')").antMatchers(HttpMethod.POST, "/evento/**")
-				.access("#uId == principal.usuario.uId or hasRole('ADMIN')").antMatchers("/usuario/registro")
-				.permitAll().antMatchers("/usuario/login").permitAll().antMatchers("/usuario/**")
-				.access("#id == principal.usuario.uId").anyRequest().authenticated().and().httpBasic()
-				.authenticationEntryPoint(authenticationEntryPoint()).and().sessionManagement()
-				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors().and().csrf().disable();
+//		http.antMatcher("/rest/**").authorizeRequests()
+//				.antMatchers(HttpMethod.GET, "/**/ping").permitAll()
+//				.antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+//				.antMatchers(HttpMethod.GET, "/**/evento").permitAll()
+//				.antMatchers(HttpMethod.DELETE, "/evento/**")
+//				.access("#uId == principal.usuario.uId or hasRole('ADMIN')").antMatchers(HttpMethod.POST, "/evento/**")
+//				.access("#uId == principal.usuario.uId or hasRole('ADMIN')").antMatchers("/usuario/registro")
+//				.permitAll().antMatchers("/usuario/login").permitAll().antMatchers("/usuario/**")
+//				.access("#id == principal.usuario.uId").anyRequest().authenticated().and().httpBasic()
+//				.authenticationEntryPoint(authenticationEntryPoint()).and().sessionManagement()
+//				.sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().cors().and().csrf().disable();
+		
+		http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
+		
+		http.authorizeRequests().antMatchers(HttpMethod.GET, "/rest/evento").permitAll();
+		http.authorizeRequests().antMatchers(HttpMethod.POST, "/rest/evento/crea").authenticated();
+		
+		
 	}
 	
-	@Bean
-    CorsConfigurationSource corsConfigurationSource() 
-    {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST","OPTIONS"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }

@@ -41,7 +41,7 @@ public class UsuarioDTO extends RepresentationModel<UsuarioDTO> implements Seria
 		this.login = login;
 		this.password = password;
 	}
-
+ 
 	public void clone(UsuarioDTO u) {
 		this.rol = u.rol;
 		this.login = u.login;
