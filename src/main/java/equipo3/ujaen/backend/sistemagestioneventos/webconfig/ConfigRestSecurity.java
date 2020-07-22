@@ -40,11 +40,12 @@ public class ConfigRestSecurity extends WebSecurityConfigurerAdapter {
 	http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 	http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
 
-	String uirRestEvento = "/rest/evento";
-	String uirRestUsuario = "/rest/usuario";
+	String uriRestEvento = "/rest/evento";
+	String uriRestUsuario = "/rest/usuario";
 
 	http.authorizeRequests()
-	.antMatchers(HttpMethod.GET, uirRestEvento).permitAll()
+	.antMatchers(HttpMethod.GET, uriRestEvento).permitAll()
+	.antMatchers(uriRestUsuario+"/login", uriRestUsuario+"/registro").permitAll()
 	.anyRequest().authenticated();
     }
 
