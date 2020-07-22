@@ -181,7 +181,7 @@ public class TestRest {
 	listaEventos.add(crearEventoValido());
 	listaEventos.add(crearEventoValido());
 	BDDMockito.given(sge.listarEventosUsuario(UUID.fromString(UUIDusuario), null, 0, 10)).willReturn(listaEventos);
-	mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("id", UUIDusuario)
+	mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("uId", UUIDusuario)
 		.accept(MediaType.APPLICATION_JSON))
 	.andExpect(ResultMatcher.matchAll(
 		status().isOk(),
@@ -193,7 +193,7 @@ public class TestRest {
 	listaEventos.remove(0);
 
 	BDDMockito.given(sge.listarEventosUsuario(UUID.fromString(UUIDusuario), null, 0, 1)).willReturn(listaEventos);
-	mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("id", UUIDusuario).param("cant", "1")
+	mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("uId", UUIDusuario).param("cant", "1")
 		.accept(MediaType.APPLICATION_JSON))
 	.andExpect(ResultMatcher.matchAll(
 		status().isOk(),
@@ -203,7 +203,7 @@ public class TestRest {
 		jsonPath(".siguiente").exists()));
 
 	BDDMockito.given(sge.listarEventosUsuario(UUID.fromString(UUIDusuario), null, 0, 1)).willReturn(listaEventos);
-	mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("id", UUIDusuario).param("page", "1")
+	mvc.perform(get(rootPath + "/usuario/{uId}/inscritos", UUIDusuario).param("uId", UUIDusuario).param("page", "1")
 		.accept(MediaType.APPLICATION_JSON))
 	.andExpect(ResultMatcher.matchAll(
 		status().isOk(),

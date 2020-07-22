@@ -162,7 +162,7 @@ public class ControllerSystemTests {
 	driver.findElement(By.cssSelector(".form-group:nth-child(8)")).click();
 	// 35 | click | css=.btn-primary |
 	driver.findElement(By.cssSelector(".btn-primary")).click();
-	
+
 	driver.findElement(By.cssSelector("#command > .btn")).click();
     }
 
@@ -191,7 +191,7 @@ public class ControllerSystemTests {
 	// 10 | assertText | css=.container > h2 | Patricio Ruiz
 	assertThat(driver.findElement(By.cssSelector(".container > h2")).getText()).isEqualTo("Patricio Ruiz");
 	// 11 | assertText | css=p:nth-child(5) > .glyphicon | 1
-	assertThat(driver.findElement(By.cssSelector("p:nth-child(5) > .glyphicon")).getText()).isEqualTo("2");
+	assertThat(driver.findElement(By.cssSelector("p:nth-child(5) > .glyphicon")).getText()).isEqualTo("1");
 	// 12 | click | css=.card:nth-child(10) .btn |
 	driver.findElement(By.cssSelector(".card:nth-child(6) .btn")).click();
 	// 13 | click | css=.card:nth-child(1) .btn |

@@ -71,9 +71,6 @@ public class ServidorSistemaGestionEventos {
 	    patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
 	    francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
 
-	    log.info("id patricio: " + patricio.getUId());
-	    log.info("id francisco: " + francisco.getUId());
-
 	    LocalDateTime manana = LocalDateTime.now().plusDays(20);
 
 	    EventoDTO evento1 = new EventoDTO(null, 0, lorem, manana, "Jáen", TipoEvento.NO_BENEFICO,
