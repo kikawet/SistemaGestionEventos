@@ -45,7 +45,7 @@ public class ConfigRestSecurity extends WebSecurityConfigurerAdapter {
 
 	http.authorizeRequests()
 	.antMatchers(HttpMethod.GET, uriRestEvento).permitAll()
-	.antMatchers(uriRestUsuario+"/login", uriRestUsuario+"/registro").permitAll()
+	.antMatchers(uriRestUsuario+"/login", uriRestUsuario+"/registro", uriRestUsuario+"/ping").permitAll()
 	.anyRequest().authenticated();
     }
 
