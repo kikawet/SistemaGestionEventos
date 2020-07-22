@@ -8,8 +8,7 @@ spring.jpa.hibernate.ddl-auto: create-drop
 spring.jpa.open-in-view: false
 
 server.servlet.context-path: /sge-api
-#rest.base-path: /rest
-
+#rest.base-path: /rest # usarlo da problemas con los test (hateoas no lo reemplaza bien y no se injecta bien con @Value)
 
 server.port: 12021
 remember-me.key: spring

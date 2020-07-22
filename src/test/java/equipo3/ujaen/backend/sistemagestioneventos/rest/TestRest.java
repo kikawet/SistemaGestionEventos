@@ -20,6 +20,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
 
@@ -34,8 +35,7 @@ import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioE
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.TipoEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.UsuarioDTO;
 
-//Rest da problemas al insertar json a la BD, como se va a mockear no hay problema
-//@ActiveProfiles("test")
+@ActiveProfiles("test")
 @WithMockUser(username = "ajml0012")
 //@SpringBootTest(classes = equipo3.ujaen.backend.sistemagestioneventos.ServidorSistemaGestionEventos.class, webEnvironment = WebEnvironment.RANDOM_PORT)
 @WebMvcTest
