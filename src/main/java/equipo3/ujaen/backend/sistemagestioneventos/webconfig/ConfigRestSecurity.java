@@ -14,27 +14,24 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationEn
 @Order(1)
 public class ConfigRestSecurity extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public AuthenticationEntryPoint authenticationEntryPoint() {
-	BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
-	entryPoint.setRealmName("club api");
-	return entryPoint;
-    }
+	@Bean
+	public AuthenticationEntryPoint authenticationEntryPoint() {
+		BasicAuthenticationEntryPoint entryPoint = new BasicAuthenticationEntryPoint();
+		entryPoint.setRealmName("club api");
+		return entryPoint;
+	}
 
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-	http.cors().and().csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-	http.httpBasic().authenticationEntryPoint(authenticationEntryPoint());
+		String uriRestEvento = "/rest/evento";
+		String uriRestUsuario = "/rest/usuario";
 
-	String uriRestEvento = "/rest/evento";
-	String uriRestUsuario = "/rest/usuario";
-
-	http.antMatcher("/rest/**")
-	.authorizeRequests()
-	.antMatchers(HttpMethod.GET, uriRestEvento + "/**").permitAll()
-	.antMatchers(uriRestUsuario + "/login", uriRestUsuario + "/registro", uriRestUsuario + "/ping").permitAll()
-	.anyRequest().authenticated();
-    }
+		http.antMatcher("/rest/**").authorizeRequests().antMatchers(HttpMethod.GET, uriRestEvento + "/**").permitAll()
+				.antMatchers(uriRestUsuario + "/login", uriRestUsuario + "/registro", uriRestUsuario + "/ping")
+				.permitAll().anyRequest().authenticated();
+	}
 
 }

@@ -31,110 +31,110 @@ import equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGe
 @CrossOrigin(maxAge = 3600, origins = "http://localhost:4200")
 public class RESTUsuario {
 
-    @Autowired
-    private InterfaceSistemaGestionEventos gestorEventos;
+	@Autowired
+	private InterfaceSistemaGestionEventos gestorEventos;
 
-    @GetMapping("/ping")
-    void ping() {
+	@GetMapping("/ping")
+	void ping() {
 
-    }
-
-    @PostMapping("/registro")
-    @ResponseStatus(HttpStatus.CREATED)
-    void registrar(@RequestBody UsuarioDTO usuarioDTO) {
-	gestorEventos.registroUsuarios(usuarioDTO);
-    }
-
-    @PostMapping("/login")
-    UUID login(@RequestBody UsuarioDTO usuarioDTO) {
-	return gestorEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
-    }
-
-    @GetMapping("/{id}")
-    UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "uId") UUID idUsuarioPeticion) {
-	// Comprovamos que el usuario está logeado
-	UsuarioDTO usuario = gestorEventos.getUsuario(idUsuarioPeticion);
-
-	UsuarioDTO u = gestorEventos.getUsuario(id);
-
-	if (!u.equals(usuario)) {
-	    throw new AccesoDenegado("No tienes permitido leer los datos de este usuario");
 	}
 
-	if (u.getNumEventosInscritos() > 0)
-	    u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, 0, 10, null, idUsuarioPeticion))
-		    .withRel("eventosInscritos"));
+	@PostMapping("/registro")
+	@ResponseStatus(HttpStatus.CREATED)
+	void registrar(@RequestBody UsuarioDTO usuarioDTO) {
+		gestorEventos.registroUsuarios(usuarioDTO);
+	}
 
-	if (u.getNumEventosCreados() > 0)
-	    u.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, 0, 10, idUsuarioPeticion))
-		    .withRel("eventosCreados"));
+	@PostMapping("/login")
+	UUID login(@RequestBody UsuarioDTO usuarioDTO) {
+		return gestorEventos.loginUsuario(usuarioDTO.getLogin(), usuarioDTO.getPassword());
+	}
 
-	return u;
-    }
+	@GetMapping("/{id}")
+	UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "uId") UUID idUsuarioPeticion) {
+		// Comprovamos que el usuario está logeado
+		UsuarioDTO usuario = gestorEventos.getUsuario(idUsuarioPeticion);
 
-    @GetMapping("/{id}/inscritos")
-    CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
-	    @RequestParam(required = false, defaultValue = "0", value = "page") int pagina,
-	    @RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad,
-	    @RequestParam(required = false, value = "estado") EstadoUsuarioEvento estado,
-	    @RequestParam(value = "uId") UUID idUsuarioPeticion) {
-	gestorEventos.getUsuario(idUsuarioPeticion);
-	UsuarioDTO u = gestorEventos.getUsuario(id);
+		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-	List<EventoDTO> eventos = gestorEventos.listarEventosUsuario(id, estado, pagina, cantidad);
+		if (!u.equals(usuario)) {
+			throw new AccesoDenegado("No tienes permitido leer los datos de este usuario");
+		}
 
-	eventos = RESTEvento.addLinks(eventos);
+		if (u.getNumEventosInscritos() > 0)
+			u.add(linkTo(methodOn(RESTUsuario.class).listarInscritos(id, 0, 10, null, idUsuarioPeticion))
+					.withRel("eventosInscritos"));
 
-	Link selfLink = linkTo(
-		methodOn(RESTUsuario.class).listarInscritos(id, pagina, cantidad, estado, idUsuarioPeticion))
-		.withSelfRel();
+		if (u.getNumEventosCreados() > 0)
+			u.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, 0, 10, idUsuarioPeticion))
+					.withRel("eventosCreados"));
 
-	CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
+		return u;
+	}
 
-	resultado.add(selfLink);
+	@GetMapping("/{id}/inscritos")
+	CollectionModel<EventoDTO> listarInscritos(@PathVariable UUID id,
+			@RequestParam(required = false, defaultValue = "0", value = "page") int pagina,
+			@RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad,
+			@RequestParam(required = false, value = "estado") EstadoUsuarioEvento estado,
+			@RequestParam(value = "uId") UUID idUsuarioPeticion) {
+		gestorEventos.getUsuario(idUsuarioPeticion);
+		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-	if (pagina > 0)
-	    resultado.add(linkTo(
-		    methodOn(RESTUsuario.class).listarInscritos(id, pagina - 1, cantidad, estado, idUsuarioPeticion))
-		    .withRel("anterior"));
+		List<EventoDTO> eventos = gestorEventos.listarEventosUsuario(id, estado, pagina, cantidad);
 
-	// La siguiente página ya no tendrá resultados
-	if (eventos.size() == cantidad)
-	    resultado.add(linkTo(
-		    methodOn(RESTUsuario.class).listarInscritos(id, pagina + 1, cantidad, estado, idUsuarioPeticion))
-		    .withRel("siguiente"));
+		eventos = RESTEvento.addLinks(eventos);
 
-	return resultado;
-    }
+		Link selfLink = linkTo(
+				methodOn(RESTUsuario.class).listarInscritos(id, pagina, cantidad, estado, idUsuarioPeticion))
+						.withSelfRel();
 
-    @GetMapping("/{id}/creados")
-    CollectionModel<EventoDTO> listarCreados(@PathVariable UUID id,
-	    @RequestParam(required = false, defaultValue = "0") int pagina,
-	    @RequestParam(required = false, defaultValue = "10") int cantidad,
-	    @RequestParam(value = "uId") UUID idUsuarioPeticion) {
-	gestorEventos.getUsuario(idUsuarioPeticion);
-	UsuarioDTO u = gestorEventos.getUsuario(id);
+		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
 
-	List<EventoDTO> eventos = gestorEventos.listarEventosCreadosPorUnUsuario(u, pagina, cantidad);
+		resultado.add(selfLink);
 
-	eventos = RESTEvento.addLinks(eventos);
+		if (pagina > 0)
+			resultado.add(linkTo(
+					methodOn(RESTUsuario.class).listarInscritos(id, pagina - 1, cantidad, estado, idUsuarioPeticion))
+							.withRel("anterior"));
 
-	Link selfLink = linkTo(RESTUsuario.class).withSelfRel();
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() == cantidad)
+			resultado.add(linkTo(
+					methodOn(RESTUsuario.class).listarInscritos(id, pagina + 1, cantidad, estado, idUsuarioPeticion))
+							.withRel("siguiente"));
 
-	CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
+		return resultado;
+	}
 
-	resultado.add(selfLink);
+	@GetMapping("/{id}/creados")
+	CollectionModel<EventoDTO> listarCreados(@PathVariable UUID id,
+			@RequestParam(required = false, defaultValue = "0") int pagina,
+			@RequestParam(required = false, defaultValue = "10") int cantidad,
+			@RequestParam(value = "uId") UUID idUsuarioPeticion) {
+		gestorEventos.getUsuario(idUsuarioPeticion);
+		UsuarioDTO u = gestorEventos.getUsuario(id);
 
-	if (pagina > 0)
-	    resultado.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, pagina - 1, cantidad, idUsuarioPeticion))
-		    .withRel("anterior"));
+		List<EventoDTO> eventos = gestorEventos.listarEventosCreadosPorUnUsuario(u, pagina, cantidad);
 
-	// La siguiente página ya no tendrá resultados
-	if (eventos.size() < cantidad)
-	    resultado.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, pagina + 1, cantidad, idUsuarioPeticion))
-		    .withRel("siguiente"));
+		eventos = RESTEvento.addLinks(eventos);
 
-	return resultado;
-    }
+		Link selfLink = linkTo(RESTUsuario.class).withSelfRel();
+
+		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
+
+		resultado.add(selfLink);
+
+		if (pagina > 0)
+			resultado.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, pagina - 1, cantidad, idUsuarioPeticion))
+					.withRel("anterior"));
+
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() < cantidad)
+			resultado.add(linkTo(methodOn(RESTUsuario.class).listarCreados(id, pagina + 1, cantidad, idUsuarioPeticion))
+					.withRel("siguiente"));
+
+		return resultado;
+	}
 
 }
