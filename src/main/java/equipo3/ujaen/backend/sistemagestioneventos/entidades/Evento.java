@@ -32,128 +32,128 @@ import lombok.Setter;
 @Entity
 public class Evento {
 
-    private int aforoMaximo;
+	private int aforoMaximo;
 
-    @ManyToMany
-    private Set<Usuario> asistentes;
+	@ManyToMany
+	private Set<Usuario> asistentes;
 
-    @ManyToMany
-    @OrderColumn
-    private List<Usuario> listaEspera;
+	@ManyToMany
+	@OrderColumn
+	private List<Usuario> listaEspera;
 
-    @Column(columnDefinition = "LONGTEXT")
-    private String descripcion;
-    private LocalDateTime fecha;
+	@Column(columnDefinition = "LONGTEXT")
+	private String descripcion;
+	private LocalDateTime fecha;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private Usuario creador;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private Usuario creador;
 
-    @Id
-    @GeneratedValue
-    private Long idEvento;
+	@Id
+	@GeneratedValue
+	private Long idEvento;
 
-    private String lugar;
-    private EventoDTO.TipoEvento tipoEvento;
-    @NotNull
-    private EventoDTO.CategoriaEvento categoriaEvento;
+	private String lugar;
+	private EventoDTO.TipoEvento tipoEvento;
+	@NotNull
+	private EventoDTO.CategoriaEvento categoriaEvento;
 
-    private String titulo;
-    private String foto;
+	private String titulo;
+	private String foto;
 
-    public Evento(EventoDTO eventoDTO, Usuario creador) {
+	public Evento(EventoDTO eventoDTO, Usuario creador) {
 
-	this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
-		eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), creador, eventoDTO.getTitulo(),
-		eventoDTO.getFoto());
+		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), creador, eventoDTO.getTitulo(),
+				eventoDTO.getFoto());
 
-	if (eventoDTO.getIdEvento() != null)
-	    this.idEvento = eventoDTO.getIdEvento();
-	else
-	    eventoDTO.setIdEvento(this.idEvento);
-    }
-
-    public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
-	    EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador, String titulo,
-	    String foto) {
-	super();
-	this.lugar = lugar;
-	this.fecha = fecha;
-	this.tipoEvento = tipoEvento;
-	this.categoriaEvento = categoriaEvento;
-	this.descripcion = descripcion;
-	this.aforoMaximo = aforoMaximo;
-	this.idEvento = null;
-	this.creador = creador;
-	this.asistentes = new HashSet<>();
-	this.listaEspera = new ArrayList<>();
-	this.titulo = titulo;
-	this.foto = foto;
-    }
-
-    /**
-     * @brief Añade un nuevo usuario a la lista de asistentes o de espera en función
-     *        del aforo
-     * @param u
-     * @return null si no se ha añadido o la lista donde se insertó
-     */
-    public EstadoUsuarioEvento anadirAsistente(Usuario u) {
-	EstadoUsuarioEvento estado = null;
-
-	if (this.asistentes.size() < this.aforoMaximo) {
-	    if (this.asistentes.add(u))
-		estado = EstadoUsuarioEvento.ACEPTADO;
-	} else if (!this.asistentes.contains(u) && !this.listaEspera.contains(u) && this.listaEspera.add(u)) {
-	    estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
+		if (eventoDTO.getIdEvento() != null)
+			this.idEvento = eventoDTO.getIdEvento();
+		else
+			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	return estado;
-    }
-
-    public void eliminarAsistente(Usuario u) {
-	if (!this.asistentes.remove(u)) {
-	    if (!this.listaEspera.remove(u))
-		throw new UsuarioNoEstaEvento();
-	} else if (!this.listaEspera.isEmpty()) {
-	    Usuario primero = this.listaEspera.remove(0);
-	    this.asistentes.add(primero);
+	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
+			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador, String titulo,
+			String foto) {
+		super();
+		this.lugar = lugar;
+		this.fecha = fecha;
+		this.tipoEvento = tipoEvento;
+		this.categoriaEvento = categoriaEvento;
+		this.descripcion = descripcion;
+		this.aforoMaximo = aforoMaximo;
+		this.idEvento = null;
+		this.creador = creador;
+		this.asistentes = new HashSet<>();
+		this.listaEspera = new ArrayList<>();
+		this.titulo = titulo;
+		this.foto = foto;
 	}
-    }
 
-    public List<Usuario> getAsistentes() {
-	return asistentes.stream().collect(Collectors.toList());
-    }
+	/**
+	 * @brief Añade un nuevo usuario a la lista de asistentes o de espera en función
+	 *        del aforo
+	 * @param u
+	 * @return null si no se ha añadido o la lista donde se insertó
+	 */
+	public EstadoUsuarioEvento anadirAsistente(Usuario u) {
+		EstadoUsuarioEvento estado = null;
 
-    public List<Usuario> getListaEspera() {
-	return listaEspera.stream().collect(Collectors.toList());
-    }
+		if (this.asistentes.size() < this.aforoMaximo) {
+			if (this.asistentes.add(u))
+				estado = EstadoUsuarioEvento.ACEPTADO;
+		} else if (!this.asistentes.contains(u) && !this.listaEspera.contains(u) && this.listaEspera.add(u)) {
+			estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
+		}
 
-    public EventoDTO toDTO(Usuario u) {
-	UUID creadorId = this.creador == null ? null : this.creador.getUId();
-	int numAsistentes = this.asistentes == null ? 0 : this.asistentes.size();
-	int numListaEspera = this.listaEspera == null ? 0 : this.listaEspera.size();
+		return estado;
+	}
 
-	EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
-		this.tipoEvento, this.categoriaEvento, creadorId, numAsistentes, numListaEspera,
-		this.getEstadoUsuario(u), this.titulo, this.foto);
+	public void eliminarAsistente(Usuario u) {
+		if (!this.asistentes.remove(u)) {
+			if (!this.listaEspera.remove(u))
+				throw new UsuarioNoEstaEvento();
+		} else if (!this.listaEspera.isEmpty()) {
+			Usuario primero = this.listaEspera.remove(0);
+			this.asistentes.add(primero);
+		}
+	}
 
-	return eventoDTO;
-    }
+	public List<Usuario> getAsistentes() {
+		return asistentes.stream().collect(Collectors.toList());
+	}
 
-    public EventoDTO toDTO() {
-	return toDTO(null);
-    }
+	public List<Usuario> getListaEspera() {
+		return listaEspera.stream().collect(Collectors.toList());
+	}
 
-    public void setAforoMaximo(int aforoMaximo) {
-	if (aforoMaximo < this.asistentes.size())
-	    throw new InvalidParameterException("No se puede reducir el aforo si hay gente registrada");
+	public EventoDTO toDTO(Usuario u) {
+		UUID creadorId = this.creador == null ? null : this.creador.getUId();
+		int numAsistentes = this.asistentes == null ? 0 : this.asistentes.size();
+		int numListaEspera = this.listaEspera == null ? 0 : this.listaEspera.size();
 
-	this.aforoMaximo = aforoMaximo;
-    }
+		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
+				this.tipoEvento, this.categoriaEvento, creadorId, numAsistentes, numListaEspera,
+				this.getEstadoUsuario(u), this.titulo, this.foto);
 
-    public EstadoUsuarioEvento getEstadoUsuario(Usuario u) {
-	return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
-		: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
-    }
+		return eventoDTO;
+	}
+
+	public EventoDTO toDTO() {
+		return toDTO(null);
+	}
+
+	public void setAforoMaximo(int aforoMaximo) {
+		if (aforoMaximo < this.asistentes.size())
+			throw new InvalidParameterException("No se puede reducir el aforo si hay gente registrada");
+
+		this.aforoMaximo = aforoMaximo;
+	}
+
+	public EstadoUsuarioEvento getEstadoUsuario(Usuario u) {
+		return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
+				: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
+	}
 
 }
