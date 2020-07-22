@@ -43,10 +43,11 @@ public class ConfigRestSecurity extends WebSecurityConfigurerAdapter {
 	String uriRestEvento = "/rest/evento";
 	String uriRestUsuario = "/rest/usuario";
 
-	http.authorizeRequests()
+	http//.antMatcher("/rest/**")
+	.authorizeRequests()
 	.antMatchers(HttpMethod.GET, uriRestEvento).permitAll()
 	.antMatchers(uriRestUsuario+"/login", uriRestUsuario+"/registro", uriRestUsuario+"/ping").permitAll()
-	.anyRequest().authenticated();
+	.anyRequest().authenticated();//access("#uId == principal.usuario.uId or hasRole('ADMIN')");
     }
 
 }

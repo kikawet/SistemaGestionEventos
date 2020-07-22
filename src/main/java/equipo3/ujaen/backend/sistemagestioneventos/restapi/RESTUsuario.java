@@ -51,7 +51,7 @@ public class RESTUsuario {
     }
 
     @GetMapping("/{id}")
-    UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "id") UUID idUsuarioPeticion) {
+    UsuarioDTO getUsuario(@PathVariable UUID id, @RequestParam(value = "uId") UUID idUsuarioPeticion) {
 	// Comprovamos que el usuario está logeado
 	UsuarioDTO usuario = gestorEventos.getUsuario(idUsuarioPeticion);
 
@@ -77,7 +77,7 @@ public class RESTUsuario {
 	    @RequestParam(required = false, defaultValue = "0", value = "page") int pagina,
 	    @RequestParam(required = false, defaultValue = "10", value = "cant") int cantidad,
 	    @RequestParam(required = false, value = "estado") EstadoUsuarioEvento estado,
-	    @RequestParam(value = "id") UUID idUsuarioPeticion) {
+	    @RequestParam(value = "uId") UUID idUsuarioPeticion) {
 	gestorEventos.getUsuario(idUsuarioPeticion);
 	UsuarioDTO u = gestorEventos.getUsuario(id);
 
@@ -111,7 +111,7 @@ public class RESTUsuario {
     CollectionModel<EventoDTO> listarCreados(@PathVariable UUID id,
 	    @RequestParam(required = false, defaultValue = "0") int pagina,
 	    @RequestParam(required = false, defaultValue = "10") int cantidad,
-	    @RequestParam(value = "id") UUID idUsuarioPeticion) {
+	    @RequestParam(value = "uId") UUID idUsuarioPeticion) {
 	gestorEventos.getUsuario(idUsuarioPeticion);
 	UsuarioDTO u = gestorEventos.getUsuario(id);
 
