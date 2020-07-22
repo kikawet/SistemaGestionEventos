@@ -24,7 +24,7 @@ public class ConfigRestSecurity extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.antMatcher("/rest/**").authorizeRequests().antMatchers(HttpMethod.GET, "/**/ping").permitAll()
-				.antMatchers(HttpMethod.GET, "/evento/**").permitAll().antMatchers(HttpMethod.DELETE, "/evento/**")
+				.antMatchers(HttpMethod.GET, "**/evento/**").permitAll().antMatchers(HttpMethod.DELETE, "/evento/**")
 				.access("#uId == principal.usuario.uId or hasRole('ADMIN')").antMatchers(HttpMethod.POST, "/evento/**")
 				.access("#uId == principal.usuario.uId or hasRole('ADMIN')").antMatchers("/usuario/registro")
 				.permitAll().antMatchers("/usuario/login").permitAll().antMatchers("/usuario/**")
