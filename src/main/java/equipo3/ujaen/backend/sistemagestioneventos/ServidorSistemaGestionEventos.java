@@ -83,7 +83,7 @@ public class ServidorSistemaGestionEventos {
 
 			patricio = ige.getUsuario(ige.loginUsuario("Patricio Ruiz", "1234"));
 			francisco = ige.getUsuario(ige.loginUsuario("Francisco López", "1234"));
-
+			System.out.println(patricio.getUId());
 			// En el caso de persistencia necesitamos borrar los eventos
 			try {
 				EventoDTO borraEvento = ige.listarEventosCreadosPorUnUsuario(patricio, 0, 10).get(0);
@@ -122,5 +122,8 @@ public class ServidorSistemaGestionEventos {
 				}
 			}
 		}
+		
+	
 	}
+	
 }
