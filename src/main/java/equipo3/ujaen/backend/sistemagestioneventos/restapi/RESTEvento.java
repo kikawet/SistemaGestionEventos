@@ -4,9 +4,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.validation.Valid;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
@@ -60,6 +62,38 @@ public class RESTEvento {
 			@RequestParam(required = false, defaultValue = "10") int cantidad) {
 
 		List<EventoDTO> eventos = gestorEventos.listarEventos(categoria, descripcion, titulo, pagina, cantidad);
+
+		eventos = addLinks(eventos);
+
+		Link selfLink = linkTo(RESTEvento.class).withSelfRel();
+
+		CollectionModel<EventoDTO> resultado = new CollectionModel<>(eventos);
+
+		resultado.add(selfLink);
+
+		if (pagina > 0)
+			resultado.add(linkTo(
+					methodOn(RESTEvento.class).listarEventos(categoria, descripcion, titulo, pagina - 1, cantidad))
+							.withRel("anterior"));
+
+		// La siguiente página ya no tendrá resultados
+		if (eventos.size() < cantidad)
+			resultado.add(linkTo(
+					methodOn(RESTEvento.class).listarEventos(categoria, descripcion, titulo, pagina + 1, cantidad))
+							.withRel("siguiente"));
+
+		return resultado;
+	}
+	
+	@GetMapping("/perfil/{uid}")
+	CollectionModel<EventoDTO> listarEventosUsuario(@PathVariable UUID uid, 
+			@RequestParam(required = false) CategoriaEvento categoria,
+			@RequestParam(required = false, defaultValue = "") String descripcion,
+			@RequestParam(required = false, defaultValue = "") String titulo,
+			@RequestParam(required = false, defaultValue = "0") int pagina,
+			@RequestParam(required = false, defaultValue = "10") int cantidad) {
+
+		List<EventoDTO> eventos = gestorEventos.listarEventos(Optional.of(uid), categoria, descripcion, titulo, pagina, cantidad);
 
 		eventos = addLinks(eventos);
 
