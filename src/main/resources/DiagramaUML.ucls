@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.2.4" icons="true" automaticImage="JPEG" always-add-relationships="false" 
+  generalizations="true" realizations="true" associations="true" dependencies="false" nesting-relationships="true" 
+  router="FAN">  
+  <class id="1" language="java" name="equipo3.ujaen.backend.sistemagestioneventos.entidades.Evento" 
+    project="SistemaGestionEventos" 
+    file="/SistemaGestionEventos/src/main/java/equipo3/ujaen/backend/sistemagestioneventos/entidades/Evento.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="385" width="303" x="80" y="613"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="2" language="java" name="equipo3.ujaen.backend.sistemagestioneventos.entidades.Usuario" 
+    project="SistemaGestionEventos" 
+    file="/SistemaGestionEventos/src/main/java/equipo3/ujaen/backend/sistemagestioneventos/entidades/Usuario.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="380" width="248" x="742" y="615"/>    
+    <display autosize="false" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </class>  
+  <class id="3" language="java" name="equipo3.ujaen.backend.sistemagestioneventos.beans.SistemaGestionEventos" 
+    project="SistemaGestionEventos" 
+    file="/SistemaGestionEventos/src/main/java/equipo3/ujaen/backend/sistemagestioneventos/beans/SistemaGestionEventos.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="564" y="435"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="false" package="false" protected="false" private="false" static="true"/>      
+      <operations public="false" package="false" protected="false" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="4" language="java" 
+    name="equipo3.ujaen.backend.sistemagestioneventos.interfaces.InterfaceSistemaGestionEventos" 
+    project="SistemaGestionEventos" 
+    file="/SistemaGestionEventos/src/main/java/equipo3/ujaen/backend/sistemagestioneventos/interfaces/InterfaceSistemaGestionEventos.java" 
+    binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="565" y="254"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+      sort-features="false" accessors="true" visibility="true">      
+      <attributes public="true" package="true" protected="true" private="true" static="true"/>      
+      <operations public="true" package="true" protected="true" private="true" static="true"/>    
+    </display>  
+  </interface>  
+  <association id="5">    
+    <bendpoint x="383" y="640"/>    
+    <bendpoint x="576" y="640"/>    
+    <bendpoint x="720" y="640"/>    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="6" name="asistentes">        
+        <position height="18" width="58" x="485" y="620"/>      
+      </attribute>      
+      <multiplicity id="7" minimum="0" maximum="2147483647">        
+        <position height="16" width="21" x="390" y="620"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="8">    
+    <bendpoint x="867" y="435"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="9" name="usuarios">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="10" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="11">    
+    <bendpoint x="383" y="976"/>    
+    <bendpoint x="559" y="976"/>    
+    <bendpoint x="684" y="976"/>    
+    <bendpoint x="726" y="976"/>    
+    <end type="SOURCE" refId="1" navigable="false">      
+      <attribute id="12" name="listaEspera">        
+        <position height="18" width="61" x="541" y="952"/>      
+      </attribute>      
+      <multiplicity id="13" minimum="0" maximum="2147483647">        
+        <position height="16" width="21" x="391" y="953"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="2" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="14">    
+    <bendpoint x="232" y="436"/>    
+    <end type="SOURCE" refId="3" navigable="false">      
+      <attribute id="15" name="eventos">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="16" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <realization id="17">    
+    <end type="SOURCE" refId="3"/>    
+    <end type="TARGET" refId="4"/>  
+  </realization>  
+  <association id="18">    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="19" name="eventosCreados">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </attribute>      
+      <multiplicity id="20" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="0" y="0"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <association id="21">    
+    <bendpoint x="745" y="907"/>    
+    <bendpoint x="559" y="907"/>    
+    <bendpoint x="407" y="907"/>    
+    <end type="SOURCE" refId="2" navigable="false">      
+      <attribute id="22" name="eventosInscritos">        
+        <position height="18" width="88" x="605" y="884"/>      
+      </attribute>      
+      <multiplicity id="23" minimum="0" maximum="2147483647">        
+        <position height="16" width="21" x="717" y="885"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="1" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    sort-features="false" accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="true" static="true"/>    
+    <operations public="true" package="true" protected="true" private="true" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

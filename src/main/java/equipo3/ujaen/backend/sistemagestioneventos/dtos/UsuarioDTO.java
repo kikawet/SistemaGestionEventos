@@ -1,89 +1,51 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
-public class UsuarioDTO {
+import java.io.Serializable;
+import java.util.UUID;
 
-	// ROL = null = ningún rol
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.springframework.hateoas.RepresentationModel;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class UsuarioDTO extends RepresentationModel<UsuarioDTO> implements Serializable {
+
+	private static final long serialVersionUID = 413336268119887503L;
+
 	public static enum RolUsuario {
 		ADMIN
 	}
 
+	@Size(min = 6, max = 25, message = "El login debe de estar entre {min} y {max} caracteres")
+	private String login;
+	@Pattern(regexp = "^((?=(.*[\\d]){2,})(?=(.*[a-z]){2,})(?=(.*[A-Z]){2,})(?=(.*[^\\w\\d\\s]){2,})).{8,}$", message = "La contraseña debe de tener al menos 8 caracteres, 2 minusculas, 2 mayusculas, 2 números y 2 caracteres especiales. Sin repetir dos caracteres seguidos")
+	private String password;
+	@Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Email incorrecto ejemplo: ejemplo@simple.com")
+	private String email;
+	private UUID uId;
 	private RolUsuario rol;
 
-	private String login;
-	private String password;
-
-	private Long uId;
-
 	private int numEventosCreados;
-
 	private int numEventosInscritos;
 
 	public UsuarioDTO(String login, String password) {
-		this(login, password, null, null, -1, -1);
-	}
-
-	public UsuarioDTO(String login, String password, Long uId, RolUsuario rol, int numEventosCreados,
-			int numEventosInscritos) {
-		super();
-		this.rol = rol;
 		this.login = login;
 		this.password = password;
-		this.uId = uId;
-		this.numEventosCreados = numEventosCreados;
-		this.numEventosInscritos = numEventosInscritos;
-	}
-
-	public RolUsuario getRol() {
-		return rol;
-	}
-
-	public void setRol(RolUsuario rol) {
-		this.rol = rol;
-	}
-
-	public String getLogin() {
-		return login;
-	}
-
-	public void setLogin(String login) {
-		this.login = login;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public Long getuId() {
-		return uId;
-	}
-
-	public void setuId(Long uId) {
-		this.uId = uId;
-	}
-
-	public int getNumEventosCreados() {
-		return numEventosCreados;
-	}
-
-	public void setNumEventosCreados(int numEventosCreados) {
-		this.numEventosCreados = numEventosCreados;
-	}
-
-	public int getNumEventosInscritos() {
-		return numEventosInscritos;
-	}
-
-	public void setNumEventosInscritos(int numEventosInscritos) {
-		this.numEventosInscritos = numEventosInscritos;
 	}
 
 	public void clone(UsuarioDTO u) {
 		this.rol = u.rol;
 		this.login = u.login;
+		this.email = u.email;
 		this.password = u.password;
 		this.uId = u.uId;
 		this.numEventosCreados = u.numEventosCreados;

@@ -1,33 +1,40 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.security.InvalidParameterException;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.context.ActiveProfiles;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 
+//No se necesita acceso a base de datos
+@ActiveProfiles("test")
 class EventoTestUnitarios {
 	private final static String lugar = "Jaén";
-	private final static Date fecha = new Date();
+	private final static LocalDateTime fecha = LocalDateTime.now();
 	private final static EventoDTO.TipoEvento tipoEvento = EventoDTO.TipoEvento.BENEFICO;
 	private final static EventoDTO.CategoriaEvento categoriaEvento = EventoDTO.CategoriaEvento.DEPORTE;
 	private final static String descripcion = "Evento al que todo el mundo asistirá";
 	private final static int aforoMaximo = 1500;
+	private final static String titulo = "Evento 1";
+	private final static String foto = "https://mymiddlec.files.wordpress.com/2013/09/empty-box.jpg";
 
 	Evento crearEvento() {
-		return new Evento(aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento);
+		return new Evento(aforoMaximo, descripcion, fecha, lugar, tipoEvento, categoriaEvento, null, titulo, foto);
 	}
 
 	Usuario crearUsuario() {
 		// Aunque tengan el mismo usuario y contraseña tendrán disinto ID
-		return new Usuario("login", "password");
+		Usuario u = new Usuario("login", "password");
+		u.setUId(UUID.randomUUID());
+		return u;
 	}
 
 	/**
@@ -40,17 +47,21 @@ class EventoTestUnitarios {
 		Evento evento = crearEvento();
 
 		// Datos creados por el constuctor
-		assertTrue(evento.getLugar().equals(lugar));
-		assertTrue(evento.getFecha().equals(fecha));
-		assertTrue(evento.getTipoEvento().equals(tipoEvento));
-		assertTrue(evento.getCategoriaEvento().equals(categoriaEvento));
-		assertTrue(evento.getDescripcion().equals(descripcion));
-		assertTrue(evento.getAforoMaximo() == aforoMaximo);
+		assertThat(evento).extracting(Evento::getLugar).isEqualTo(lugar);
+		assertThat(evento).extracting(Evento::getFecha).isEqualTo(fecha);
+		assertThat(evento).extracting(Evento::getTipoEvento).isEqualTo(tipoEvento);
+		assertThat(evento).extracting(Evento::getCategoriaEvento).isEqualTo(categoriaEvento);
+		assertThat(evento).extracting(Evento::getDescripcion).isEqualTo(descripcion);
+		assertThat(evento).extracting(Evento::getAforoMaximo).isEqualTo(aforoMaximo);
 
 		// Datos creados internamente
-		assertTrue(evento.getIdEvento() != null && evento.getIdEvento() != 0);
-		assertTrue(evento.getAsistentes().isEmpty());
-		assertTrue(evento.getListaEspera().isEmpty());
+
+		// REPASAR!!!!!!!!
+		// assertNotNull(evento.getIdEvento());
+		// assertTrue(evento.getIdEvento() != 0);
+
+		assertThat(evento.getAsistentes()).isEmpty();
+		assertThat(evento.getListaEspera()).isEmpty();
 	}
 
 	@Test
@@ -60,7 +71,7 @@ class EventoTestUnitarios {
 
 		String nuevoLugar = "Sevilla";
 		TimeUnit.SECONDS.sleep(1);
-		Date nuevaFecha = new Date();
+		LocalDateTime nuevaFecha = LocalDateTime.now();
 		EventoDTO.TipoEvento nuevoTipoEvento = EventoDTO.TipoEvento.NO_BENEFICO;
 		EventoDTO.CategoriaEvento nuevaCategoriaEventoEvento = EventoDTO.CategoriaEvento.CULTURAL;
 		String nuevaDescripcion = "Evento al que nadie en el mundo asistirá";
@@ -73,12 +84,12 @@ class EventoTestUnitarios {
 		evento.setDescripcion(nuevaDescripcion);
 		evento.setAforoMaximo(nuevoAforoMaximo);
 
-		assertTrue(evento.getLugar().equals(nuevoLugar));
-		assertTrue(evento.getFecha().equals(nuevaFecha));
-		assertTrue(evento.getTipoEvento().equals(nuevoTipoEvento));
-		assertTrue(evento.getCategoriaEvento().equals(nuevaCategoriaEventoEvento));
-		assertTrue(evento.getDescripcion().equals(nuevaDescripcion));
-		assertTrue(evento.getAforoMaximo() == nuevoAforoMaximo);
+		assertThat(evento).extracting(Evento::getLugar).isEqualTo(nuevoLugar);
+		assertThat(evento).extracting(Evento::getFecha).isEqualTo(nuevaFecha);
+		assertThat(evento).extracting(Evento::getTipoEvento).isEqualTo(nuevoTipoEvento);
+		assertThat(evento).extracting(Evento::getCategoriaEvento).isEqualTo(nuevaCategoriaEventoEvento);
+		assertThat(evento).extracting(Evento::getDescripcion).isEqualTo(nuevaDescripcion);
+		assertThat(evento).extracting(Evento::getAforoMaximo).isEqualTo(nuevoAforoMaximo);
 
 		Usuario usuario = crearUsuario();
 		Usuario usuario2 = crearUsuario();
@@ -102,20 +113,23 @@ class EventoTestUnitarios {
 
 		EstadoUsuarioEvento estado = evento.anadirAsistente(usuario);
 
-		assertTrue(estado.equals(EstadoUsuarioEvento.ACEPTADO));
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().isEmpty());
+		assertThat(estado).isEqualTo(EstadoUsuarioEvento.ACEPTADO);
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).isEmpty();
 
 		estado = evento.anadirAsistente(usuario2);
 
-		assertTrue(estado.equals(EstadoUsuarioEvento.LISTA_DE_ESPERA));
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().size() == 1);
+		assertThat(estado).isEqualTo(EstadoUsuarioEvento.LISTA_DE_ESPERA);
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).hasSize(1);
 
 		// Si el usuario ya existe devuelve null
-		assertNull(evento.anadirAsistente(usuario));
-		assertNull(evento.anadirAsistente(usuario2));
+		assertThat(evento.anadirAsistente(usuario)).isNull();
+		assertThat(evento.anadirAsistente(usuario2)).isNull();
 
 		// No se inserta ningun asistenten nuevo
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().size() == 1);
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).hasSize(1);
 	}
 
 	@Test
@@ -134,8 +148,8 @@ class EventoTestUnitarios {
 		evento.eliminarAsistente(usuario);
 
 		// Al borrar el asistente inscrito el de la lista de espera se mueve
-		assertTrue(evento.getAsistentes().size() == 1 && evento.getListaEspera().isEmpty());
-
+		assertThat(evento.getAsistentes()).hasSize(1);
+		assertThat(evento.getListaEspera()).isEmpty();
 	}
 
 }

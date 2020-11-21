@@ -1,8 +1,28 @@
 package equipo3.ujaen.backend.sistemagestioneventos.dtos;
 
-import java.util.Date;
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
-public class EventoDTO {
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.hateoas.RepresentationModel;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class EventoDTO extends RepresentationModel<EventoDTO> implements Serializable {
+
+	private static final long serialVersionUID = -8509749646502520670L;
 
 	public enum EstadoUsuarioEvento {
 		ACEPTADO, LISTA_DE_ESPERA
@@ -16,114 +36,25 @@ public class EventoDTO {
 		FESTIVAL_MUSICA, DEPORTE, CULTURAL, EXCURSIONES, CHARLAS, REUNIONES
 	}
 
-	// Atributos de evento
+	private Long idEvento;
+	@Min(message = "El valor minimo para el aforo de un evento es 5", value = 5)
+	@Max(message = "El valor máximo para el aforo de un evento es 5000", value = 5000)
 	private int aforoMaximo;
 	private String descripcion;
-	private Date fecha;
-	private Long idEvento;
+	@Future(message = "El evento tiene que ser en un futuro")
+	@DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+	private LocalDateTime fecha;
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
 	private EventoDTO.CategoriaEvento categoriaEvento;
+	private UUID idCreador;
 	private int numAsistentes;
 	private int numListaEspera;
 
 	private EventoDTO.EstadoUsuarioEvento estado;
 
-	public EventoDTO(int aforoMaximo, String descripcion, Date fecha, Long idEvento, String lugar,
-			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, int numAsistentes,
-			int numListaEspera, EventoDTO.EstadoUsuarioEvento estado) {
-		super();
-		this.aforoMaximo = aforoMaximo;
-		this.descripcion = descripcion;
-		this.fecha = fecha;
-		this.idEvento = idEvento;
-		this.lugar = lugar;
-		this.tipoEvento = tipoEvento;
-		this.categoriaEvento = categoriaEvento;
-		this.numAsistentes = numAsistentes;
-		this.numListaEspera = numListaEspera;
-		this.estado = estado;
-	}
-
-	public int getAforoMaximo() {
-		return aforoMaximo;
-	}
-
-	public void setAforoMaximo(int aforoMaximo) {
-		this.aforoMaximo = aforoMaximo;
-	}
-
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
-	}
-
-	public Long getIdEvento() {
-		return idEvento;
-	}
-
-	public void setIdEvento(Long idEvento) {
-		this.idEvento = idEvento;
-	}
-
-	public String getLugar() {
-		return lugar;
-	}
-
-	public void setLugar(String lugar) {
-		this.lugar = lugar;
-	}
-
-	public EventoDTO.TipoEvento getTipoEvento() {
-		return tipoEvento;
-	}
-
-	public void setTipoEvento(EventoDTO.TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
-	public EventoDTO.CategoriaEvento getCategoriaEvento() {
-		return categoriaEvento;
-	}
-
-	public void setCategoriaEvento(EventoDTO.CategoriaEvento categoriaEvento) {
-		this.categoriaEvento = categoriaEvento;
-	}
-
-	public int getNumAsistentes() {
-		return numAsistentes;
-	}
-
-	public void setNumAsistentes(int numAsistentes) {
-		this.numAsistentes = numAsistentes;
-	}
-
-	public int getNumListaEspera() {
-		return numListaEspera;
-	}
-
-	public void setNumListaEspera(int numListaEspera) {
-		this.numListaEspera = numListaEspera;
-	}
-
-	public EventoDTO.EstadoUsuarioEvento getEstado() {
-		return estado;
-	}
-
-	public void setEstado(EventoDTO.EstadoUsuarioEvento estado) {
-		this.estado = estado;
-	}
+	private String titulo;
+	private String foto;
 
 	public void clone(EventoDTO e) {
 		this.aforoMaximo = e.aforoMaximo;
@@ -136,6 +67,8 @@ public class EventoDTO {
 		this.numAsistentes = e.numAsistentes;
 		this.numListaEspera = e.numListaEspera;
 		this.estado = e.estado;
+		this.titulo = e.titulo;
+		this.foto = e.foto;
 	}
 
 }

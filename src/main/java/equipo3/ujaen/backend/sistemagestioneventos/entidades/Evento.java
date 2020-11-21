@@ -1,35 +1,71 @@
 package equipo3.ujaen.backend.sistemagestioneventos.entidades;
 
 import java.security.InvalidParameterException;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.OrderColumn;
+import javax.validation.constraints.NotNull;
 
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO;
 import equipo3.ujaen.backend.sistemagestioneventos.dtos.EventoDTO.EstadoUsuarioEvento;
 import equipo3.ujaen.backend.sistemagestioneventos.excepciones.UsuarioNoEstaEvento;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@NoArgsConstructor
+@Getter
+@Setter
+@Entity
 public class Evento {
 
 	private int aforoMaximo;
+
+	@ManyToMany
 	private Set<Usuario> asistentes;
+
+	@ManyToMany
+	@OrderColumn
+	private List<Usuario> listaEspera;
+
+	@Column(columnDefinition = "LONGTEXT")
 	private String descripcion;
-	private Date fecha;
+	private LocalDateTime fecha;
+
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	private Usuario creador;
+
+	@Id
+	@GeneratedValue
 	private Long idEvento;
-	private Set<Usuario> listaEspera;
 
 	private String lugar;
 	private EventoDTO.TipoEvento tipoEvento;
+	@NotNull
 	private EventoDTO.CategoriaEvento categoriaEvento;
 
-	public Evento(EventoDTO eventoDTO) {
+	private String titulo;
+	private String foto;
+
+	public Evento(EventoDTO eventoDTO, Usuario creador) {
+
 		this(eventoDTO.getAforoMaximo(), eventoDTO.getDescripcion(), eventoDTO.getFecha(), eventoDTO.getLugar(),
-				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento());
+				eventoDTO.getTipoEvento(), eventoDTO.getCategoriaEvento(), creador, eventoDTO.getTitulo(),
+				eventoDTO.getFoto());
 
 		if (eventoDTO.getIdEvento() != null)
 			this.idEvento = eventoDTO.getIdEvento();
@@ -37,8 +73,9 @@ public class Evento {
 			eventoDTO.setIdEvento(this.idEvento);
 	}
 
-	public Evento(int aforoMaximo, String descripcion, Date fecha, String lugar, EventoDTO.TipoEvento tipoEvento,
-			EventoDTO.CategoriaEvento categoriaEvento) {
+	public Evento(int aforoMaximo, String descripcion, LocalDateTime fecha, String lugar,
+			EventoDTO.TipoEvento tipoEvento, EventoDTO.CategoriaEvento categoriaEvento, Usuario creador, String titulo,
+			String foto) {
 		super();
 		this.lugar = lugar;
 		this.fecha = fecha;
@@ -46,10 +83,12 @@ public class Evento {
 		this.categoriaEvento = categoriaEvento;
 		this.descripcion = descripcion;
 		this.aforoMaximo = aforoMaximo;
-		this.idEvento = new Random().nextLong();
-
+		this.idEvento = null;
+		this.creador = creador;
 		this.asistentes = new HashSet<>();
-		this.listaEspera = new LinkedHashSet<>();
+		this.listaEspera = new ArrayList<>();
+		this.titulo = titulo;
+		this.foto = foto;
 	}
 
 	/**
@@ -64,7 +103,7 @@ public class Evento {
 		if (this.asistentes.size() < this.aforoMaximo) {
 			if (this.asistentes.add(u))
 				estado = EstadoUsuarioEvento.ACEPTADO;
-		} else if (!this.asistentes.contains(u) && this.listaEspera.add(u)) {
+		} else if (!this.asistentes.contains(u) && !this.listaEspera.contains(u) && this.listaEspera.add(u)) {
 			estado = EstadoUsuarioEvento.LISTA_DE_ESPERA;
 		}
 
@@ -76,63 +115,28 @@ public class Evento {
 			if (!this.listaEspera.remove(u))
 				throw new UsuarioNoEstaEvento();
 		} else if (!this.listaEspera.isEmpty()) {
-			Iterator<Usuario> primero = this.listaEspera.iterator();
-
-			// Insertamos el primer elemento de la lista
-			this.asistentes.add(primero.next());
-			// Lo borramos de la lista de espera
-			primero.remove();
+			Usuario primero = this.listaEspera.remove(0);
+			this.asistentes.add(primero);
 		}
-	}
-
-	public int getAforoMaximo() {
-		return aforoMaximo;
 	}
 
 	public List<Usuario> getAsistentes() {
 		return asistentes.stream().collect(Collectors.toList());
 	}
 
-	public String getDescripcion() {
-		return descripcion;
-	}
-
-	public Date getFecha() {
-		return fecha;
-	}
-
-	public Long getIdEvento() {
-		return idEvento;
-	}
-
 	public List<Usuario> getListaEspera() {
 		return listaEspera.stream().collect(Collectors.toList());
 	}
 
-	public String getLugar() {
-		return lugar;
-	}
-
-	public EventoDTO.TipoEvento getTipoEvento() {
-		return tipoEvento;
-	}
-
-	public EventoDTO.CategoriaEvento getCategoriaEvento() {
-		return this.categoriaEvento;
-	}
-
-	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
-	}
-
-	public void setFecha(Date fecha) {
-		this.fecha = fecha;
-	}
-
 	public EventoDTO toDTO(Usuario u) {
-		EventoDTO eventoDTO = new EventoDTO(this.aforoMaximo, this.descripcion, this.fecha, this.idEvento, this.lugar,
-				this.tipoEvento, this.categoriaEvento, this.asistentes.size(), this.listaEspera.size(),
-				getEstadoUsuario(u));
+		UUID creadorId = this.creador == null ? null : this.creador.getUId();
+		int numAsistentes = this.asistentes == null ? 0 : this.asistentes.size();
+		int numListaEspera = this.listaEspera == null ? 0 : this.listaEspera.size();
+
+		EventoDTO eventoDTO = new EventoDTO(this.idEvento, this.aforoMaximo, this.descripcion, this.fecha, this.lugar,
+				this.tipoEvento, this.categoriaEvento, creadorId, numAsistentes, numListaEspera,
+				this.getEstadoUsuario(u), this.titulo, this.foto);
+
 		return eventoDTO;
 	}
 
@@ -147,26 +151,9 @@ public class Evento {
 		this.aforoMaximo = aforoMaximo;
 	}
 
-	public void setIdEvento(Long idEvento) {
-		this.idEvento = idEvento;
-	}
-
-	public void setLugar(String lugar) {
-		this.lugar = lugar;
-	}
-
-	public void setTipoEvento(EventoDTO.TipoEvento tipoEvento) {
-		this.tipoEvento = tipoEvento;
-	}
-
-	public void setCategoriaEvento(EventoDTO.CategoriaEvento categoriaEvento) {
-		this.categoriaEvento = categoriaEvento;
-	}
-
 	public EstadoUsuarioEvento getEstadoUsuario(Usuario u) {
 		return this.asistentes.contains(u) ? EstadoUsuarioEvento.ACEPTADO
 				: this.listaEspera.contains(u) ? EstadoUsuarioEvento.LISTA_DE_ESPERA : null;
-
 	}
 
 }
